@@ -13,11 +13,13 @@ public class CharacterBehavior : MonoBehaviour
         _singularity.FollowPlayer(transform.position);
 
         _timeElasped += Time.deltaTime;
-        Debug.Log($"{_timeElasped}");
+        
         if (_timeElasped >= 3f)
         {
+            Debug.Log("Throwing the ball");
             _singularity.Throw();
             _timeElasped = 0;
         }
+        
     }
 }
