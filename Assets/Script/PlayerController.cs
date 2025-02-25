@@ -25,18 +25,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
-
-        //Dash
-        if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + dashCooldown)
-        {
-            rb.AddForce(transform.forward * dashForce, ForceMode.Impulse);
-            print("Dash");
-            lastDashTime = Time.time;
-        }
 
         Vector3 move = new Vector3(moveX, 0, moveZ) * playerSpeed * Time.deltaTime;
 
@@ -45,6 +35,13 @@ public class PlayerController : MonoBehaviour
 
         isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.x + .1f);
 
+        //Dash
+        if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + dashCooldown)
+        {
+            rb.AddForce(transform.forward * dashForce, ForceMode.Impulse);
+            print("Dash");
+            lastDashTime = Time.time;
+        }
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
