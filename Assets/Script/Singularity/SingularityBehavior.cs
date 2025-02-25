@@ -1,13 +1,12 @@
 using System.Runtime.CompilerServices;
+using Cinemachine;
 using UnityEngine;
 
 public class SingularityBehavior : MonoBehaviour
 {
     [Header("-----Dependencies-----")]
     [SerializeField]
-    private Camera _camera;
-    [SerializeField]
-    private Transform _playerTransform;
+    private CinemachineVirtualCamera _camera;
 
     private Rigidbody _rigidbody;
     [Header("-----Singularity Placement-----")]
@@ -29,9 +28,15 @@ public class SingularityBehavior : MonoBehaviour
 
     private bool _isThrown = false;
 
+    public bool IsThrown
+    {
+        get { return _isThrown; }
+    }
+
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _camera = CameraSwitcher.Instance.PlayerCam;
     }
 
     public void FollowPlayer(Vector3 position)
@@ -63,37 +68,17 @@ public class SingularityBehavior : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision == null) return;
+        if (collision == null || !_isThrown) return;
+
         _rigidbody.linearVelocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
         RigidbodyShouldBeEnabled(false);
 
-        SwitchBackToCharacter();
+        CharactersManager.Instance.ChangePlayersTurn();
     }
 
-    private void SwitchBackToCharacter()
+    public void ShouldAllowThrowAgain(bool a_shouldBe)
     {
-        Debug.Log("Yes");
-        _playerTransform.position = transform.position + new Vector3(0, 4, 0);
-        CameraSwitcher.Instance.SwitchCameraToCharacter();
-        _isThrown = false;
-    }
-
-    private float _timeElasped;
-    private void Update()
-    {
-        if (!_isThrown)
-        {
-            _timeElasped = 0;
-            return;
-        }
-
-        _timeElasped += Time.deltaTime;
-
-        if (_timeElasped >= 4f)
-        {
-            SwitchBackToCharacter();
-            _timeElasped = 0;
-        }
+        _isThrown = !a_shouldBe;
     }
 }

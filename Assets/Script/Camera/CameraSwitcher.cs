@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class CameraSwitcher : MonoBehaviour
 {
-    [SerializeField]
-    private CinemachineVirtualCamera _playerCam;
-    [SerializeField]
-    private CinemachineVirtualCamera _singularityCam;
+    [field: SerializeField]
+    internal CinemachineVirtualCamera PlayerCam { get; private set; }
+    [field: SerializeField]
+    internal CinemachineVirtualCamera SingularityCam { get; private set; }
 
     public static CameraSwitcher Instance { get; private set; }
 
@@ -24,19 +24,25 @@ public class CameraSwitcher : MonoBehaviour
 
     void Start()
     {
-        _playerCam.Priority = 5;
-        _singularityCam.Priority = 0;
+        PlayerCam.Priority = 5;
+        SingularityCam.Priority = 0;
+    }
+
+    public void SetDependencies(GameObject a_characterToFollow, GameObject a_singularityToFollow)
+    {
+        PlayerCam.Follow = a_characterToFollow.transform;
+        SingularityCam.Follow = a_singularityToFollow.transform;
     }
 
     public void SwitchCameraToSingularity()
     {
-        _playerCam.Priority = 0;
-        _singularityCam.Priority = 5;
+        PlayerCam.Priority = 0;
+        SingularityCam.Priority = 5;
     }
 
     public void SwitchCameraToCharacter()
     {
-        _playerCam.Priority = 5;
-        _singularityCam.Priority = 0; 
+        PlayerCam.Priority = 5;
+        SingularityCam.Priority = 0; 
     }
 }
