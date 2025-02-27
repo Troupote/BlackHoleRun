@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector.Editor;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -11,6 +12,9 @@ public class CharactersManager : MonoBehaviour
 
     [SerializeField]
     private GameObject _singularityPrefab;
+
+    [SerializeField]
+    private LayerMask groundLayer;
 
     private GameObject _singularityObject;
     private GameObject _characterObject;
@@ -61,7 +65,7 @@ public class CharactersManager : MonoBehaviour
 
     public void SpawnCharacterAtPosition(Vector3 a_position)
     {
-        if (_characterObject == null && _singularityObject == null)
+        if (!AreObjectsInstancied())
         {
             InstanciatePrefabsOnScene();
         }
@@ -70,22 +74,45 @@ public class CharactersManager : MonoBehaviour
 
     }
 
-    private void SwitchCharacterToSingularity()
+    float GetCharacterHeight()
     {
+        CapsuleCollider collider = _characterObject.GetComponent<CapsuleCollider>();
+        if (collider)
+        {
+            return collider.height;
+        }
 
+        return 2.0f;
     }
 
-    private void SwitchSingularityToCharacter()
-    {
 
+    public void SwitchCharacterAndSingularity()
+    {
+        Vector3 singularityPosition = _singularityObject.transform.position;
+        RaycastHit hit;
+        if (Physics.Raycast(singularityPosition + Vector3.up * 0.5f, Vector3.down, out hit, 2.0f, groundLayer))
+        {
+            singularityPosition.y = hit.point.y + GetCharacterHeight();
+        }
+
+        Vector3 oldCharacterPosition = _characterObject.transform.position;
+        _characterObject.transform.position = singularityPosition;
+        _singularityObject.transform.position = oldCharacterPosition;
     }
 
-    public void ChangePlayersTurn()
+    public void ChangePlayersTurn(bool a_isEarly)
     {
-        SwitchCharacterToSingularity();
-        SwitchSingularityToCharacter();
+        StartCoroutine(WaitForBlendingAndSwitch(a_isEarly));
+    }
 
-        _characterObject.transform.position = _singularityObject.transform.position + new Vector3(0, 4, 0);
+    private IEnumerator WaitForBlendingAndSwitch(bool a_isEarly)
+    {
+        if (!a_isEarly)
+        {
+            yield return new WaitUntil(() => !CameraSwitcher.Instance.IsBlending);
+        }
+
+        SwitchCharacterAndSingularity();
         CameraSwitcher.Instance.SwitchCameraToCharacter();
         a_singularityBehavior.ShouldAllowThrowAgain(true);
     }
@@ -107,7 +134,7 @@ public class CharactersManager : MonoBehaviour
 
             if (timeElasped > 4f)
             {
-                ChangePlayersTurn();
+                ChangePlayersTurn(false);
                 timeElasped = 0;
             }
         }

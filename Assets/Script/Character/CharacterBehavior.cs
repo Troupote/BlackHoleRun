@@ -6,23 +6,39 @@ public class CharacterBehavior : MonoBehaviour
     [SerializeField]
     private SingularityBehavior _singularity;
 
-    private float _timeElasped;
+    private Rigidbody _rigidbody;
+
+    internal bool IsThrown => _singularity.IsThrown;
+
+    private bool _hasTouchedGround = true;
+
+    private void Start()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+    }
 
     public void SetDependencies(SingularityBehavior a_singularity)
     {
         _singularity = a_singularity;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ThrowSingularity()
     {
-        _timeElasped += Time.deltaTime;
-        
-        if (_timeElasped >= 3f)
+        if (_singularity.IsThrown && !_singularity.AlreadyCollided)
         {
-            _singularity.Throw();
-            _timeElasped = 0;
+            CharactersManager.Instance.ChangePlayersTurn(true);
+            return;
         }
-        
+        if (!_hasTouchedGround) return;
+
+        _singularity.Throw(_rigidbody);
+        _hasTouchedGround = false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer != 6) return;
+
+        _hasTouchedGround = true;
     }
 }

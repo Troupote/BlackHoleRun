@@ -123,11 +123,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 0}
-  _offsetX: 2.55
-  _offsetY: 0.5
-  _offsetZ: 5
+  _offsetX: 2.2
+  _offsetY: -1
+  _offsetZ: 4.5
   _secondsBeforeSpawningCharacterBackIfNoCollision: 0
-  _throwForce: 10
+  _throwForce: 40
 --- !u!54 &9170475032202126854
 Rigidbody:
   m_ObjectHideFlags: 0
