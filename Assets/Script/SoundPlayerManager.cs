@@ -10,15 +10,15 @@ public class SoundPlayerManager : MonoBehaviour
 
     [Space]
 
-    [ValidateInput("ValidateLists", "Les listes doivent avoir la même longueur.")]
+    [ValidateInput("ValidateLists", "Les listes doivent avoir la mï¿½me longueur.")]
     [SerializeField]
     private AudioSource[] ListeSourcesAudio;
 
-    [ValidateInput("ValidateLists", "Les listes doivent avoir la même longueur.")]
+    [ValidateInput("ValidateLists", "Les listes doivent avoir la mï¿½me longueur.")]
     [SerializeField]
     private AudioClip[] ListeDeLaMusique;
 
-    [ValidateInput("ValidateLists", "Les listes doivent avoir la même longueur.")]
+    [ValidateInput("ValidateLists", "Les listes doivent avoir la mï¿½me longueur.")]
     [SerializeField]
     private Collider[] ListeDesColliders;
 
@@ -32,7 +32,7 @@ public class SoundPlayerManager : MonoBehaviour
     {
         if (startupCollider == null)
         {
-            Debug.LogError("Le champ startupCollider ne peut pas être null.");
+            Debug.LogError("Le champ startupCollider ne peut pas ï¿½tre null.");
         }
     }
 
@@ -46,9 +46,9 @@ public class SoundPlayerManager : MonoBehaviour
                 ListeSourcesAudio[j].clip = ListeDeLaMusique[j];
                 ListeSourcesAudio[0].volume = 1f;
                 ListeSourcesAudio[0].Play();
-                ListeSourcesAudio[1].volume = 1f;
-                ListeSourcesAudio[2].volume = 1f;
-                ListeSourcesAudio[3].volume = 1f;
+                ListeSourcesAudio[1].volume = 0f;
+                ListeSourcesAudio[2].volume = 0f;
+                ListeSourcesAudio[3].volume = 0f;
             }
         }
         
