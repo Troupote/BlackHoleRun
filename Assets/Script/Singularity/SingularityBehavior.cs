@@ -38,27 +38,27 @@ public class SingularityBehavior : MonoBehaviour
         _camera = CameraSwitcher.Instance.PlayerCam;
     }
 
-    public void FollowPlayer(Vector3 position)
+    private Vector3 velocity = Vector3.zero;
+
+    public void FollowPlayer()
     {
         if (_isThrown) return;
 
-        transform.SetParent(CameraSwitcher.Instance.PlayerCam.transform);
+        if (_rigidbody == null) return;
+        RigidbodyShouldBeEnabled(false);
+        _rigidbody.linearVelocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
 
-        Vector3 newPos = new Vector3(_offsetX, _offsetY, _offsetZ);
-        transform.localPosition = newPos;
-        transform.localRotation = Quaternion.identity;
+        var GameObjectAsRef = CameraSwitcher.Instance.SingularityPlacementRefTransform;
 
-        if (transform.position.y < 0.5f)
-        {
-            transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
-        }
+        transform.position = Vector3.SmoothDamp(transform.position, GameObjectAsRef.position, ref velocity, 0.1f);
     }
+
 
     public void Throw(Rigidbody rb)
     {
         if (_isThrown) return;
 
-        transform.SetParent(null);
         _isThrown = true;
         RigidbodyShouldBeEnabled(true);
 
@@ -78,6 +78,7 @@ public class SingularityBehavior : MonoBehaviour
 
     private void RigidbodyShouldBeEnabled(bool a_shouldBe)
     {
+        if (_rigidbody == null) return;
         _rigidbody.useGravity = a_shouldBe;
     }
 

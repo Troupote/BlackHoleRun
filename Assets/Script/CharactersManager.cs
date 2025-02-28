@@ -119,20 +119,30 @@ public class CharactersManager : MonoBehaviour
 
     private float timeElasped = 0;
 
+    private void FixedUpdate()
+    {
+        /*
+        if (!a_singularityBehavior.IsThrown)
+        {
+            a_singularityBehavior.FollowPlayer();
+        }
+        */
+    }
     private void Update()
     {
         if (!AreObjectsInstancied()) return;
+        if (a_singularityBehavior == null || _characterObject == null) return;
 
         if (!a_singularityBehavior.IsThrown)
         {
-            a_singularityBehavior.FollowPlayer(_characterObject.transform.position);
-            timeElasped = 0;
+            if (timeElasped > 0) timeElasped = 0;
+            a_singularityBehavior.FollowPlayer();
         }
         else
         {
             timeElasped += Time.deltaTime;
 
-            if (timeElasped > 4f)
+            if (timeElasped >= 4f)
             {
                 ChangePlayersTurn(false);
                 timeElasped = 0;

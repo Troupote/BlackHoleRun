@@ -12,6 +12,9 @@ public class CameraSwitcher : MonoBehaviour
     [field: SerializeField]
     internal CinemachineVirtualCamera SingularityCam { get; private set; }
 
+    [field: SerializeField]
+    internal Transform SingularityPlacementRefTransform{ get; private set; }
+
     public static CameraSwitcher Instance { get; private set; }
 
     private float rotationX = 0f;

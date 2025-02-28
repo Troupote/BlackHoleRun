@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34c827a5ef8b0a14eabeb1b7c925a964, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 8
+  playerSpeed: 10
   jumpForce: 5
   dashForce: 5
 --- !u!54 &2008922893551920142
