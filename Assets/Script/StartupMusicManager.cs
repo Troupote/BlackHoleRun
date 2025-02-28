@@ -23,12 +23,7 @@ public class StartupMusicManager : MonoBehaviour
             {
                 MusicSO.audioSources[j].Play();
             }
-            MusicSO.audioSources[0].volume = 1f;
 
-            for (int i = 1; i < MusicSO.audioSources.Length; i++)
-            {
-                    MusicSO.audioSources[i].volume = 0f;
-            }
             hasExecuted = true;
         }
 
