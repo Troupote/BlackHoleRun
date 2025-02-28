@@ -31,21 +31,6 @@ public class PlayerController : MonoBehaviour
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
 
-        Vector3 moveDirection = new Vector3(moveX, 0, moveZ).normalized;
-
-        if (moveDirection != Vector3.zero)
-        {
-            blackHole.transform.position = Vector3.MoveTowards(
-                blackHole.transform.position,
-                destination.transform.position + moveDirection * -0.1f,
-                playerSpeed * Time.deltaTime
-            );
-        }
-        else
-        {
-            blackHole.transform.position = destination.transform.position;
-        }
-
         Vector3 move = new Vector3(moveX, 0, moveZ) * playerSpeed * Time.deltaTime;
 
         move = transform.TransformDirection(move);
