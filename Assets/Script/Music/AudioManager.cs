@@ -19,12 +19,12 @@ public class AudioManager : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-        InitializeMusic(FMODEvent.instance.Music);
+        //InitializeMusic(FMODEvent.instance.Music);
+        //If needs to use audio manager uncomment this line 
     }
 
     public void PlayOneShot(EventReference sound, Vector3 worldPosition)
@@ -35,7 +35,7 @@ public class AudioManager : MonoBehaviour
     private void InitializeMusic(EventReference musicEventReference)
     {
         Debug.Log("Initializing music with event: " + musicEventReference.Path);
-        musicEventInstance = RuntimeManager.CreateInstance(musicEventReference);
+        musicEventInstance = CreateInstance(musicEventReference);
         if (musicEventInstance.isValid())
         {
             Debug.Log("Music event instance created successfully.");
@@ -84,4 +84,11 @@ public class AudioManager : MonoBehaviour
             Debug.LogError("Failed to create music event instance.");
         }
     }
+
+    public EventInstance CreateInstance(EventReference eventReference)
+    {
+        EventInstance instance = RuntimeManager.CreateInstance(eventReference);
+        return instance;
+    }
+
 }
