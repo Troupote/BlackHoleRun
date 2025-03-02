@@ -12,9 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64237d9c1251cbc44842ecd33e4be43d, type: 3}
   m_Name: Music1Test
   m_EditorClassIdentifier: 
-  audioSources:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  Volume: 0
+  musicEvents:
+  - Guid:
+      Data1: 470214699
+      Data2: 1191573865
+      Data3: 173437831
+      Data4: -1733556540
+    Path: event:/Music/LevelTest/SFXClip
+  - Guid:
+      Data1: -1507476271
+      Data2: 1272277590
+      Data3: 356502971
+      Data4: 640696562
+    Path: event:/Music/LevelTest/Bass
+  - Guid:
+      Data1: -1037206288
+      Data2: 1290602433
+      Data3: 1925262218
+      Data4: -1529624619
+    Path: event:/Music/LevelTest/Batterie
+  - Guid:
+      Data1: 832509011
+      Data2: 1104399014
+      Data3: -1532865638
+      Data4: -885364434
+    Path: event:/Music/LevelTest/Guitar
+  volume: 1
