@@ -131,12 +131,11 @@ GameObject:
   - component: {fileID: 2513287}
   - component: {fileID: 2513286}
   - component: {fileID: 2513285}
-  - component: {fileID: 2513294}
   - component: {fileID: 2513290}
   - component: {fileID: 2513291}
   m_Layer: 0
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -277,29 +276,6 @@ MonoBehaviour:
   dashForce: 5
   blackHole: {fileID: 0}
   destination: {fileID: 0}
---- !u!136 &2513294
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2513284}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &124120486
 GameObject:
   m_ObjectHideFlags: 0
@@ -1037,7 +1013,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LeCollider: {fileID: 1134827234}
-  MusicSO: {fileID: 11400000, guid: fcf00b6e9e45e914b9722f8b6788535c, type: 2}
   PartOfSong: 2
 --- !u!1 &1232617318
 GameObject:
@@ -1049,6 +1024,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1232617319}
   - component: {fileID: 1232617320}
+  - component: {fileID: 1232617321}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -1082,6 +1058,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 96aa64218c4aaec419ac642277b95c81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1232617321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232617318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0351445c7f812ee4494dcb4714cb48ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1353753391
@@ -1373,7 +1361,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LeCollider: {fileID: 1803865837}
-  MusicSO: {fileID: 11400000, guid: fcf00b6e9e45e914b9722f8b6788535c, type: 2}
   PartOfSong: 3
 --- !u!1 &1859143755
 GameObject:
@@ -1442,7 +1429,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LeCollider: {fileID: 1859143757}
-  MusicSO: {fileID: 11400000, guid: fcf00b6e9e45e914b9722f8b6788535c, type: 2}
   PartOfSong: 4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
