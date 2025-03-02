@@ -1,3 +1,5 @@
+using FMOD.Studio;
+using FMODUnity;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -14,21 +16,31 @@ public class StartupMusicManager : MonoBehaviour
     [SerializeField]
     private MusicSetupSO MusicSO;
 
+    private void Start()
+    {
+        // Initialisez les instances des événements FMOD dans le gestionnaire centralisé
+        FMODInstanceManager.instance.InitializeMusicInstances(MusicSO.musicEvents, MusicSO.volume);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Le collider startup 1 est trigger.");
-        if (!hasExecuted)
+        if (other.CompareTag("Player") && !hasExecuted)
         {
-            for (int j = 0; j < MusicSO.audioSources.Length; j++)
+            Debug.Log("Le collider startup est trigger.");
+
+            // Définir les attributs 3D pour chaque instance d'événement FMOD
+            var attributes = RuntimeUtils.To3DAttributes(Vector3.zero);
+            for (int j = 0; j < MusicSO.musicEvents.Length; j++)
             {
-                MusicSO.audioSources[j].Play();
+                var musicEventInstance = FMODInstanceManager.instance.GetMusicEventInstance(j);
+                musicEventInstance.set3DAttributes(attributes);
+                musicEventInstance.start();
+                musicEventInstance.setVolume(0f);
             }
+
+            FMODInstanceManager.instance.GetMusicEventInstance(0).setVolume(1f);
 
             hasExecuted = true;
         }
-
-        
-
-
     }
 }
