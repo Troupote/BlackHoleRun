@@ -29,7 +29,7 @@ Material:
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -62,15 +62,16 @@ Material:
     - _CenterSize: 1.1
     - _Distance: 1
     - _DistorsionAmount: 0
-    - _Power: 25.53
+    - _Power: 23
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Radius: 1
-    - _Step: 0.03
+    - _Step: 0.08
+    - _TwirlPower: 0
     - _TwirlStrength: 3
     - _power: 0
     m_Colors:
-    - _Color: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 0.31764722, g: 1, b: 0, a: 1}
     - _Position: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _Ratio: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
