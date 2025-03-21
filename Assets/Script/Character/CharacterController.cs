@@ -15,39 +15,50 @@ public class PlayerController : MonoBehaviour
     private CharacterBehavior characterBehavior;
     private bool isGrounded;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         characterBehavior = GetComponent<CharacterBehavior>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
-        
-        Vector3 move = new Vector3(moveX, 0, moveZ) * playerSpeed * Time.deltaTime;
 
-        move = transform.TransformDirection(move);
-        transform.localPosition += move;
+        Transform activeCamera = CharactersManager.Instance.SingularityThrown
+            ? CameraSwitcher.Instance.SingularityCam.transform
+            : CameraSwitcher.Instance.PlayerCam.transform;
 
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.x + .1f);
+        Vector3 camForward = activeCamera.forward;
+        Vector3 camRight = activeCamera.right;
 
-        //Dash
+        camForward.y = 0;
+        camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        Vector3 moveDirection = (camForward * moveZ + camRight * moveX).normalized * playerSpeed * Time.deltaTime;
+
+        transform.position += moveDirection;
+
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.x + 0.1f);
+
+        // Dash
         if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + dashCooldown)
         {
-            rb.AddForce(transform.forward * (dashForce + 5f), ForceMode.Impulse);
+            rb.AddForce(activeCamera.forward * (dashForce + 5f), ForceMode.Impulse);
             print("Dash");
             lastDashTime = Time.time;
         }
 
+        // Jump
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
+        // Throw Singularity
         if (Input.GetKeyDown(KeyCode.E))
         {
             characterBehavior.ThrowSingularity();

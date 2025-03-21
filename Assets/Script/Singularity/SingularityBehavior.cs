@@ -74,6 +74,7 @@ public class SingularityBehavior : MonoBehaviour
         _rigidbody.AddForce(throwDirection.normalized * _throwForce, ForceMode.Impulse);
 
         CameraSwitcher.Instance.SwitchCameraToSingularity();
+        CharactersManager.Instance.IsSingularityThrown(true);
     }
 
     private void RigidbodyShouldBeEnabled(bool a_shouldBe)
@@ -99,5 +100,6 @@ public class SingularityBehavior : MonoBehaviour
     {
         _isThrown = !a_shouldBe;
         AlreadyCollided = false;
+        CharactersManager.Instance.IsSingularityThrown(false);
     }
 }

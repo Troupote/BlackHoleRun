@@ -1,4 +1,3 @@
-using Sirenix.OdinInspector.Editor;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -21,6 +20,8 @@ public class CharactersManager : MonoBehaviour
 
     private SingularityBehavior a_singularityBehavior;
     private CharacterBehavior a_characterBehavior;
+
+    internal bool SingularityThrown = false;
 
     public static CharactersManager Instance { get; private set; }
 
@@ -113,8 +114,13 @@ public class CharactersManager : MonoBehaviour
         }
 
         SwitchCharacterAndSingularity();
-        CameraSwitcher.Instance.SwitchCameraToCharacter();
+        CameraSwitcher.Instance.SwitchCameraToCharacter(_characterObject.transform.position);
         a_singularityBehavior.ShouldAllowThrowAgain(true);
+    }
+
+    public void IsSingularityThrown(bool a_isIt)
+    {
+        SingularityThrown = a_isIt;
     }
 
     private float timeElasped = 0;

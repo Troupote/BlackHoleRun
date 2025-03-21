@@ -13,12 +13,13 @@ public class CameraSwitcher : MonoBehaviour
     internal CinemachineVirtualCamera SingularityCam { get; private set; }
 
     [field: SerializeField]
-    internal Transform SingularityPlacementRefTransform{ get; private set; }
+    internal Transform SingularityPlacementRefTransform { get; private set; }
 
     public static CameraSwitcher Instance { get; private set; }
 
     private float rotationX = 0f;
     private float rotationY = 0f;
+    private float initialRotationY;
 
     private void Awake()
     {
@@ -50,17 +51,33 @@ public class CameraSwitcher : MonoBehaviour
 
     public void SwitchCameraToSingularity()
     {
+        initialRotationY = transform.eulerAngles.y;
+        rotationY = initialRotationY;
+
+        SingularityCam.transform.rotation = PlayerCam.transform.rotation;
+
         SingularityCam.gameObject.SetActive(true);
         PlayerCam.Priority = 0;
         SingularityCam.Priority = 5;
     }
 
-    public void SwitchCameraToCharacter()
+    public void SwitchCameraToCharacter(Vector3 a_characterPosition)
     {
+        // Move the player to where the singularity camera was
+        PlayerCam.transform.position = a_characterPosition;
+        PlayerCam.transform.rotation = SingularityCam.transform.rotation;
+
+        // Disable SingularityCam
         SingularityCam.gameObject.SetActive(false);
+
+        // Ensure PlayerCam has priority
         PlayerCam.Priority = 5;
-        SingularityCam.Priority = 0; 
+        SingularityCam.Priority = 0;
+
+        // Force Cinemachine to update instantly (avoid smooth blending effect)
+        PlayerCam.OnTargetObjectWarped(PlayerCam.Follow, SingularityCam.transform.position - PlayerCam.Follow.position);
     }
+
 
     void Update()
     {
@@ -72,11 +89,23 @@ public class CameraSwitcher : MonoBehaviour
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, -90, 90);
 
-        PlayerCam.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+        if (CharactersManager.Instance.SingularityThrown)
+        {
+            float targetRotationY = rotationY + mouseX;
+            targetRotationY = Mathf.Clamp(targetRotationY, initialRotationY - 90, initialRotationY + 90);
+            rotationY = targetRotationY;
 
-        transform.Rotate(Vector3.up * mouseX);
-        PlayerCam.Follow.gameObject.transform.Rotate(Vector3.up * mouseX);
+            SingularityCam.transform.rotation = Quaternion.Euler(rotationX, rotationY, 0);
+        }
+        else
+        {
+            rotationY += mouseX;
+            transform.rotation = Quaternion.Euler(0, rotationY, 0);
+            PlayerCam.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+            PlayerCam.Follow.gameObject.transform.Rotate(Vector3.up * mouseX);
+        }
 
+        // Adjust FOV
         if (moveZ > 0)
         {
             PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(PlayerCam.m_Lens.FieldOfView, 90, Time.deltaTime * 2);
