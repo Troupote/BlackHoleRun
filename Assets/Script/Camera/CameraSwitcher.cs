@@ -1,4 +1,5 @@
 using Cinemachine;
+using System.Collections;
 using UnityEngine;
 
 public class CameraSwitcher : MonoBehaviour
@@ -63,19 +64,22 @@ public class CameraSwitcher : MonoBehaviour
 
     public void SwitchCameraToCharacter(Vector3 a_characterPosition)
     {
-        // Move the player to where the singularity camera was
         PlayerCam.transform.position = a_characterPosition;
         PlayerCam.transform.rotation = SingularityCam.transform.rotation;
 
-        // Disable SingularityCam
-        SingularityCam.gameObject.SetActive(false);
+        StartCoroutine(InstantSwitch());
+    }
 
-        // Ensure PlayerCam has priority
+    private IEnumerator InstantSwitch()
+    {
+        MainCamBrain.enabled = false;
+        yield return new WaitForEndOfFrame();
+
         PlayerCam.Priority = 5;
         SingularityCam.Priority = 0;
+        SingularityCam.gameObject.SetActive(false);
 
-        // Force Cinemachine to update instantly (avoid smooth blending effect)
-        PlayerCam.OnTargetObjectWarped(PlayerCam.Follow, SingularityCam.transform.position - PlayerCam.Follow.position);
+        MainCamBrain.enabled = true;
     }
 
 

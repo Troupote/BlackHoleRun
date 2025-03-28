@@ -46,8 +46,6 @@ public class SingularityBehavior : MonoBehaviour
 
         if (_rigidbody == null) return;
         RigidbodyShouldBeEnabled(false);
-        _rigidbody.linearVelocity = Vector3.zero;
-        _rigidbody.angularVelocity = Vector3.zero;
 
         var GameObjectAsRef = CameraSwitcher.Instance.SingularityPlacementRefTransform;
 
@@ -77,10 +75,12 @@ public class SingularityBehavior : MonoBehaviour
         CharactersManager.Instance.IsSingularityThrown(true);
     }
 
-    private void RigidbodyShouldBeEnabled(bool a_shouldBe)
+    void RigidbodyShouldBeEnabled(bool state)
     {
-        if (_rigidbody == null) return;
-        _rigidbody.useGravity = a_shouldBe;
+        _rigidbody.isKinematic = !state;
+        _rigidbody.useGravity = state;
+        _rigidbody.linearVelocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
     }
 
     internal bool AlreadyCollided { get; private set; } = false;
