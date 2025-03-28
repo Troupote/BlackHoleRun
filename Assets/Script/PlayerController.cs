@@ -33,18 +33,19 @@ public class PlayerController : MonoBehaviour
 
         Vector3 move = new Vector3(moveX, 0, moveZ) * playerSpeed * Time.deltaTime;
 
-        move = transform.TransformDirection(move);
-        transform.localPosition += move;
 
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.x + .1f);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.x + .3f);
 
         //Dash
         if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + dashCooldown)
         {
             rb.AddForce(transform.forward * dashForce, ForceMode.Impulse);
-            print("Dash");
+
             lastDashTime = Time.time;
         }
+
+        move = transform.TransformDirection(move);
+        transform.localPosition += move;
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
