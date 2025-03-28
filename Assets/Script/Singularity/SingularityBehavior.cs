@@ -35,7 +35,7 @@ public class SingularityBehavior : MonoBehaviour
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        _camera = CameraSwitcher.Instance.PlayerCam;
+        _camera = CameraManager.Instance.PlayerCam;
     }
 
     private Vector3 velocity = Vector3.zero;
@@ -47,7 +47,7 @@ public class SingularityBehavior : MonoBehaviour
         if (_rigidbody == null) return;
         RigidbodyShouldBeEnabled(false);
 
-        var GameObjectAsRef = CameraSwitcher.Instance.SingularityPlacementRefTransform;
+        var GameObjectAsRef = CameraManager.Instance.SingularityPlacementRefTransform;
 
         transform.position = Vector3.SmoothDamp(transform.position, GameObjectAsRef.position, ref velocity, 0.1f);
     }
@@ -71,7 +71,7 @@ public class SingularityBehavior : MonoBehaviour
 
         _rigidbody.AddForce(throwDirection.normalized * _throwForce, ForceMode.Impulse);
 
-        CameraSwitcher.Instance.SwitchCameraToSingularity();
+        CameraManager.Instance.SwitchCameraToSingularity();
         CharactersManager.Instance.IsSingularityThrown(true);
     }
 

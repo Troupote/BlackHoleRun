@@ -51,7 +51,7 @@ public class CharactersManager : MonoBehaviour
         a_characterBehavior = _characterObject.GetComponent<CharacterBehavior>();
 
         a_characterBehavior.SetDependencies(a_singularityBehavior);
-        CameraSwitcher.Instance.SetDependencies(_characterObject, _singularityObject);
+        CameraManager.Instance.SetDependencies(_characterObject, _singularityObject);
     }
 
     private bool AreObjectsInstancied()
@@ -110,11 +110,11 @@ public class CharactersManager : MonoBehaviour
     {
         if (!a_isEarly)
         {
-            yield return new WaitUntil(() => !CameraSwitcher.Instance.IsBlending);
+            yield return new WaitUntil(() => !CameraManager.Instance.IsBlending);
         }
 
         SwitchCharacterAndSingularity();
-        CameraSwitcher.Instance.SwitchCameraToCharacter(_characterObject.transform.position);
+        CameraManager.Instance.SwitchCameraToCharacter(_characterObject.transform.position);
         a_singularityBehavior.ShouldAllowThrowAgain(true);
     }
 

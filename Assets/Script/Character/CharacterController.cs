@@ -27,8 +27,8 @@ public class PlayerController : MonoBehaviour
         float moveZ = Input.GetAxisRaw("Vertical");
 
         Transform activeCamera = CharactersManager.Instance.SingularityThrown
-            ? CameraSwitcher.Instance.SingularityCam.transform
-            : CameraSwitcher.Instance.PlayerCam.transform;
+            ? CameraManager.Instance.SingularityCam.transform
+            : CameraManager.Instance.PlayerCam.transform;
 
         Vector3 camForward = activeCamera.forward;
         Vector3 camRight = activeCamera.right;

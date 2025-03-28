@@ -2,7 +2,7 @@ using Cinemachine;
 using System.Collections;
 using UnityEngine;
 
-public class CameraSwitcher : MonoBehaviour
+public class CameraManager : MonoBehaviour
 {
     [field: SerializeField]
     internal CinemachineBrain MainCamBrain { get; private set; }
@@ -16,7 +16,7 @@ public class CameraSwitcher : MonoBehaviour
     [field: SerializeField]
     internal Transform SingularityPlacementRefTransform { get; private set; }
 
-    public static CameraSwitcher Instance { get; private set; }
+    public static CameraManager Instance { get; private set; }
 
     private float rotationX = 0f;
     private float rotationY = 0f;
