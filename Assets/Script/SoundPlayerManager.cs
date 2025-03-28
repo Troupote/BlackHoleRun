@@ -1,3 +1,6 @@
+using DG.Tweening;
+using FMOD.Studio;
+using FMODUnity;
 using NUnit.Framework;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -6,59 +9,34 @@ public class SoundPlayerManager : MonoBehaviour
 {
     [Required]
     [SerializeField]
-    private Collider startupCollider;
+    private Collider LeCollider;
 
-    [Space]
-
-    [ValidateInput("ValidateLists", "Les listes doivent avoir la même longueur.")]
     [SerializeField]
-    private AudioSource[] ListeSourcesAudio;
+    private int PartOfSong;
 
-    [ValidateInput("ValidateLists", "Les listes doivent avoir la même longueur.")]
-    [SerializeField]
-    private AudioClip[] ListeDeLaMusique;
-
-    [ValidateInput("ValidateLists", "Les listes doivent avoir la même longueur.")]
-    [SerializeField]
-    private Collider[] ListeDesColliders;
-
-
-    private bool ValidateLists()
+    private void OnTriggerEnter(Collider other)
     {
-        return ListeSourcesAudio.Length == ListeDeLaMusique.Length && ListeDeLaMusique.Length == ListeDesColliders.Length;
-    }
-
-    void Start()
-    {
-        if (startupCollider == null)
+        if (other.CompareTag("Player"))
         {
-            Debug.LogError("Le champ startupCollider ne peut pas être null.");
-        }
-    }
+            Debug.Log("Le collider " + LeCollider.name + " est trigger.");
 
-    void Update()
-    {
-
-        if (startupCollider.isTrigger)
-        {
-            for (int j = 0; j < ListeSourcesAudio.Length; j++)
+            // Jouez l'événement FMOD correspondant à la partie de la chanson
+            if (PartOfSong > 0)
             {
-                ListeSourcesAudio[j].clip = ListeDeLaMusique[j];
-                ListeSourcesAudio[0].volume = 1f;
-                ListeSourcesAudio[0].Play();
-                ListeSourcesAudio[1].volume = 0f;
-                ListeSourcesAudio[2].volume = 0f;
-                ListeSourcesAudio[3].volume = 0f;
+                var musicEventInstance = FMODInstanceManager.instance.GetMusicEventInstance(PartOfSong - 1);
+                if (musicEventInstance.isValid())
+                {
+                    // Définir les attributs 3D pour l'instance de musique
+                    var attributes = RuntimeUtils.To3DAttributes(Vector3.zero);
+                    musicEventInstance.set3DAttributes(attributes);
+
+                    musicEventInstance.setVolume(1f);
+                    Debug.Log("Playing part of song: " + PartOfSong);
+                }
             }
-        }
-        
-
-
-        for (int i = 0; i < ListeDesColliders.Length; i++)
-        {
-            if (ListeDesColliders[i].isTrigger)
+            else
             {
-
+                Debug.LogError("PartOfSong index is out of range.");
             }
         }
     }
