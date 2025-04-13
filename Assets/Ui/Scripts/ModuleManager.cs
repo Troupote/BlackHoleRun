@@ -20,6 +20,8 @@ public class ModuleManager : MonoBehaviour
     private GameObject PlayerSelection;
     [SerializeField]
     private GameObject Pause;
+    [SerializeField]
+    private GameObject HUD;
 
     [SerializeField, ReadOnly] private GameObject _currentModule = null;
     [SerializeField, ReadOnly] private Stack<GameObject> _historic = new Stack<GameObject>();
@@ -77,6 +79,11 @@ public class ModuleManager : MonoBehaviour
     public void PauseModule(bool cannotReturn)
     {
         ProcessModuleState(Pause, cannotReturn);
+    }
+
+    public void HUDModule(bool cannotReturn)
+    {
+        ProcessModuleState(HUD, cannotReturn);
     }
 
     public void ChangeScene(string scene)
