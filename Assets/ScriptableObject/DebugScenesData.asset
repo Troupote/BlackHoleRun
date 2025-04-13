@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4a220e23ce25bb4b84035348b8305fc, type: 3}
+  m_Name: DebugScenesData
+  m_EditorClassIdentifier: 
+  TestScene: 
+  MainMenuScene: MainMenu
+  LevelsScene: []
+  Canvas: {fileID: 5905793881606850063, guid: 5df53c5ed3c9a474bb41857eff1e93e4, type: 3}
+  MainTitle: {fileID: 136647737572750909, guid: 87d37cf8779f81f4892bc2454fbc9c76, type: 3}
+  Settings: {fileID: 6784361578246074967, guid: 882f072a1e4df80418d0b0395ee12a6b, type: 3}
+  MapRebinding: {fileID: 0}
+  Credits: {fileID: 7674279337748467886, guid: 49d65ebf0f5183d4cbd5df82baf34a79, type: 3}
+  LevelSelection: {fileID: 0}
+  PlayerSelection: {fileID: 0}
+  Pause: {fileID: 0}
