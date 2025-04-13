@@ -64,6 +64,21 @@ public class ModuleManager : MonoBehaviour
         ProcessModuleState(Credits, cannotReturn);
     }
 
+    public void LevelSelectionModule(bool cannotReturn)
+    {
+        ProcessModuleState(LevelSelection, cannotReturn);
+    }
+
+    public void PlayerSelectionModule(bool cannotReturn)
+    {
+        ProcessModuleState(PlayerSelection, cannotReturn);
+    }
+
+    public void PauseModule(bool cannotReturn)
+    {
+        ProcessModuleState(Pause, cannotReturn);
+    }
+
     public void ChangeScene(string scene)
     {
         ScenesManager.Instance.ChangeScene(scene);
@@ -90,13 +105,11 @@ public class ModuleManager : MonoBehaviour
     {
         if( _historic.Count > 0 )
         {
-            Debug.Log("Back !");
             ProcessModuleState(_historic.Pop(), false, true);
         }
-        else
+        else if(_currentModule == LevelSelection) // Specific case after returning to menu from Pause module, it's a SMALL SMALL SMALL detail but ENJMIN said "c'est pas ergo" ;)
         {
-            Debug.Log("No historic");
+            ProcessModuleState(MainTitle, false, true);
         }
-
     }
 }
