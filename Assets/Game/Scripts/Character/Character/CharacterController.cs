@@ -4,21 +4,17 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
-    public float playerSpeed = 5;
-    public float jumpForce = 5;
-    public float dashForce = 5;
-
-    private float dashCooldown = 1.5f;
     private float lastDashTime = 0;
 
     private Rigidbody rb;
-    private CharacterBehavior characterBehavior;
     private bool isGrounded;
+
+    private GameplayData m_gameplayData;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        characterBehavior = GetComponent<CharacterBehavior>();
+        m_gameplayData = CharactersManager.Instance.GameplayData;
     }
 
     void Update()
@@ -38,16 +34,16 @@ public class PlayerController : MonoBehaviour
         camForward.Normalize();
         camRight.Normalize();
 
-        Vector3 moveDirection = (camForward * moveZ + camRight * moveX).normalized * playerSpeed * Time.deltaTime;
+        Vector3 moveDirection = (camForward * moveZ + camRight * moveX).normalized * m_gameplayData.PlayerSpeed * Time.deltaTime;
 
         transform.position += moveDirection;
 
         isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.x + 0.1f);
 
         // Dash
-        if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + dashCooldown)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + m_gameplayData.DashCooldown)
         {
-            rb.AddForce(activeCamera.forward * (dashForce + 5f), ForceMode.Impulse);
+            rb.AddForce(activeCamera.forward * (m_gameplayData.DashForce + 5f), ForceMode.Impulse);
             print("Dash");
             lastDashTime = Time.time;
         }
@@ -55,13 +51,13 @@ public class PlayerController : MonoBehaviour
         // Jump
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
         }
 
         // Throw Singularity
         if (Input.GetKeyDown(KeyCode.E))
         {
-            characterBehavior.ThrowSingularity();
+            CharactersManager.Instance.TryThrowSingularity();
         }
     }
 }

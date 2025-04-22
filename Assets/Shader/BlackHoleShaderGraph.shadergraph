@@ -319,7 +319,7 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
-                    "m_Id": "9530b28c072a45ee8480fb5beae299a5"
+                    "m_Id": "805a5dbad72a4d2cbe01acf73b50a8ae"
                 },
                 "m_SlotId": 2
             },
@@ -611,8 +611,8 @@
     "m_ObjectId": "0a93aa25b6a24142bc4771294ccadc2b",
     "m_Title": "Black Center",
     "m_Position": {
-        "x": -126.00003051757813,
-        "y": -186.00003051757813
+        "x": -126.66650390625,
+        "y": -185.33331298828126
     }
 }
 
@@ -757,8 +757,8 @@
     "m_ObjectId": "1dd1853301324c60aeb9b8964cabfa07",
     "m_Title": "Distorsion",
     "m_Position": {
-        "x": -1518.0001220703125,
-        "y": 261.00006103515627
+        "x": -1518.6666259765625,
+        "y": 261.3333740234375
     }
 }
 
@@ -1183,7 +1183,7 @@
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
     "m_Hidden": false,
-    "m_Value": 0.5,
+    "m_Value": 0.20000000298023225,
     "m_FloatType": 0,
     "m_RangeValues": {
         "x": 0.0,
@@ -2403,8 +2403,8 @@
     "m_ObjectId": "9cb220e932ca4cc08a2595ce70177fa6",
     "m_Title": "Custom fresnel",
     "m_Position": {
-        "x": -2397.0,
-        "y": -577.0
+        "x": -2397.333251953125,
+        "y": -576.6666870117188
     }
 }
 
@@ -2564,7 +2564,7 @@
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
     "m_Hidden": false,
-    "m_Value": 0.0,
+    "m_Value": 2.0,
     "m_FloatType": 0,
     "m_RangeValues": {
         "x": 0.0,

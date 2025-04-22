@@ -655,9 +655,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterPrefab: {fileID: 4458174275016469787, guid: 82e7f987ce0e31e4a935311e5b410ea4, type: 3}
   _singularityPrefab: {fileID: 2938045941139767026, guid: df3099e18e29c6048a76f111051f5ad7, type: 3}
+  m_gameplayData: {fileID: 11400000, guid: bab024fbbe50866409ddc44d8a098e36, type: 2}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
 --- !u!4 &180385469
 Transform:
   m_ObjectHideFlags: 0

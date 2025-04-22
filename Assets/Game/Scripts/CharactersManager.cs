@@ -1,16 +1,18 @@
 using System.Collections;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class CharactersManager : MonoBehaviour
 {
-    /* Is used to spawn characters */
-
     [SerializeField]
     private GameObject _characterPrefab;
 
     [SerializeField]
     private GameObject _singularityPrefab;
+
+    [SerializeField]
+    private GameplayData m_gameplayData;
+
+    internal GameplayData GameplayData => m_gameplayData;
 
     [SerializeField]
     private LayerMask groundLayer;
@@ -39,7 +41,7 @@ public class CharactersManager : MonoBehaviour
 
     private void Start()
     {
-        SpawnCharacterAtPosition(Vector3.zero + new Vector3(0,5,0));
+        SpawnCharacterAtPosition(Vector3.zero + new Vector3(0, 5, 0));
     }
 
     private void InstanciatePrefabsOnScene()
@@ -50,18 +52,12 @@ public class CharactersManager : MonoBehaviour
         a_singularityBehavior = _singularityObject.GetComponent<SingularityBehavior>();
         a_characterBehavior = _characterObject.GetComponent<CharacterBehavior>();
 
-        a_characterBehavior.SetDependencies(a_singularityBehavior);
         CameraManager.Instance.SetDependencies(_characterObject, _singularityObject);
     }
 
     private bool AreObjectsInstancied()
     {
-        if (_characterObject != null && _singularityObject != null && a_singularityBehavior != null && a_characterBehavior != null)
-        {
-            return true;
-        }
-
-        return false;
+        return _characterObject != null && _singularityObject != null && a_singularityBehavior != null && a_characterBehavior != null;
     }
 
     public void SpawnCharacterAtPosition(Vector3 a_position)
@@ -72,20 +68,13 @@ public class CharactersManager : MonoBehaviour
         }
 
         _characterObject.transform.position = a_position;
-
     }
 
     float GetCharacterHeight()
     {
         CapsuleCollider collider = _characterObject.GetComponent<CapsuleCollider>();
-        if (collider)
-        {
-            return collider.height;
-        }
-
-        return 2.0f;
+        return collider ? collider.height : 2.0f;
     }
-
 
     public void SwitchCharacterAndSingularity()
     {
@@ -115,7 +104,7 @@ public class CharactersManager : MonoBehaviour
 
         SwitchCharacterAndSingularity();
         CameraManager.Instance.SwitchCameraToCharacter(_characterObject.transform.position);
-        a_singularityBehavior.ShouldAllowThrowAgain(true);
+        a_singularityBehavior.ResetThrowState(true);
     }
 
     public void IsSingularityThrown(bool a_isIt)
@@ -123,17 +112,20 @@ public class CharactersManager : MonoBehaviour
         SingularityThrown = a_isIt;
     }
 
+    public void TryThrowSingularity()
+    {
+        if (a_singularityBehavior.IsThrown && !a_singularityBehavior.AlreadyCollided)
+        {
+            ChangePlayersTurn(true);
+            return;
+        }
+
+        a_singularityBehavior.Throw();
+        IsSingularityThrown(true);
+    }
+
     private float timeElasped = 0;
 
-    private void FixedUpdate()
-    {
-        /*
-        if (!a_singularityBehavior.IsThrown)
-        {
-            a_singularityBehavior.FollowPlayer();
-        }
-        */
-    }
     private void Update()
     {
         if (!AreObjectsInstancied()) return;
