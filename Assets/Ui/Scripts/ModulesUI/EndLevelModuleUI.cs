@@ -50,7 +50,7 @@ public class EndLevelModuleUI : MonoBehaviour
     private void UpdateRunInfos()
     {
         _levelNameText.text = $"Level {FakeLevelData.ID.ToString("D2")} - {FakeLevelData.name}";
-        _currentTimeText.text = "TIME : " + TimeFormat(FakeEndTime);
+        _currentTimeText.text = "TIME : " + UtilitiesFunctions.TimeFormat(FakeEndTime);
         // Get from save files best time
         //_bestTimeText.text = "BEST : " + TimeFormat(player prefs ?);
     }
@@ -109,7 +109,7 @@ public class EndLevelModuleUI : MonoBehaviour
         _medalNameText.text = currentMedal.ToString();
 
         float time = FakeLevelData.Times[currentMedal];
-        _medalTimeText.text = TimeFormat(time);
+        _medalTimeText.text = UtilitiesFunctions.TimeFormat(time);
 
         _medalNameText.color = _medalTimeText.color = FakeEndTime <= time ? Color.white : _unlockedMedalColor;
     }
@@ -123,16 +123,6 @@ public class EndLevelModuleUI : MonoBehaviour
     private void ActivateButtons()
     {
         _leftArrowButton.enabled = _rightArrowButton.enabled = !_rightArrowButton.enabled;
-    }
-    #endregion
-
-    #region Utilities
-    private string TimeFormat(float timeInSeconds)
-    {
-        int minutes = Mathf.FloorToInt(timeInSeconds / 60f);
-        int seconds = Mathf.FloorToInt(timeInSeconds % 60f);
-        int centiseconds = Mathf.FloorToInt((timeInSeconds * 100f) % 100f);
-        return string.Format("{0}:{1:00}:{2:00}", minutes, seconds, centiseconds);
     }
     #endregion
 }

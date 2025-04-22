@@ -9,6 +9,9 @@ public class ModuleManager : MonoBehaviour
     [SerializeField, ReadOnly] private GameObject _currentModule = null;
     [SerializeField, ReadOnly] private Stack<GameObject> _historic = new Stack<GameObject>();
 
+    private bool _canBack = true;
+    public bool CanBack { get => _canBack; set => _canBack = value;  }
+
     public GameObject MainMenuDefaultModule;
     public GameObject LevelDefaultModule;
 #if UNITY_EDITOR
@@ -72,7 +75,7 @@ public class ModuleManager : MonoBehaviour
 
     public void Back()
     {
-        if( _historic.Count > 0 )
+        if( _historic.Count > 0 && CanBack)
         {
             ProcessModuleState(_historic.Pop(), false, true);
         }
