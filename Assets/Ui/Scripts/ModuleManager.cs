@@ -6,25 +6,14 @@ using UnityEngine;
 public class ModuleManager : MonoBehaviour
 {
     public static ModuleManager Instance;
-    [Header("Modules data"), SerializeField]
-    private GameObject MainTitle;
-    [SerializeField]
-    private GameObject Settings;
-    [SerializeField]
-    private GameObject MapRebinding;
-    [SerializeField]
-    private GameObject Credits;
-    [SerializeField]
-    private GameObject LevelSelection;
-    [SerializeField]
-    private GameObject PlayerSelection;
-    [SerializeField]
-    private GameObject Pause;
-    [SerializeField]
-    private GameObject HUD;
-
     [SerializeField, ReadOnly] private GameObject _currentModule = null;
     [SerializeField, ReadOnly] private Stack<GameObject> _historic = new Stack<GameObject>();
+
+    public GameObject MainMenuDefaultModule;
+    public GameObject LevelDefaultModule;
+#if UNITY_EDITOR
+    public GameObject TestDefaultModule;
+#endif
 
     private void Awake()
     {
@@ -45,61 +34,34 @@ public class ModuleManager : MonoBehaviour
             Back();
     }
 
-    #region Button functions
-    public void MainTitleModule(bool cannotReturn)
+    public void OnModuleEnable(GameObject moduleGO)
     {
-        ProcessModuleState(MainTitle, cannotReturn);
+        ProcessModuleState(moduleGO);
     }
 
-    public void SettingsModule(bool cannotReturn)
+    public void ClearHistoric()
     {
-        ProcessModuleState(Settings, cannotReturn);
+        _historic.Clear();
     }
 
-    public void MapRebindingModule(bool cannotReturn)
+    public void ChangeScene(SceneDataSO sceneData)
     {
-        ProcessModuleState(MapRebinding, cannotReturn);
+        ScenesManager.Instance.ChangeScene(sceneData);
     }
 
-    public void CreditsModule(bool cannotReturn)
+    public void QuitGame()
     {
-        ProcessModuleState(Credits, cannotReturn);
+        ScenesManager.Instance.QuitGame();
     }
 
-    public void LevelSelectionModule(bool cannotReturn)
-    {
-        ProcessModuleState(LevelSelection, cannotReturn);
-    }
-
-    public void PlayerSelectionModule(bool cannotReturn)
-    {
-        ProcessModuleState(PlayerSelection, cannotReturn);
-    }
-
-    public void PauseModule(bool cannotReturn)
-    {
-        ProcessModuleState(Pause, cannotReturn);
-    }
-
-    public void HUDModule(bool cannotReturn)
-    {
-        ProcessModuleState(HUD, cannotReturn);
-    }
-
-    public void ChangeScene(string scene)
-    {
-        ScenesManager.Instance.ChangeScene(scene);
-    }
-    #endregion
-
-    private void ProcessModuleState(GameObject module, bool cannotReturn = false, bool back = false)
+    public void ProcessModuleState(GameObject module, bool cannotReturn = false, bool back = false)
     {
         module.SetActive(true);
 
         if(cannotReturn || back)
         {
             if(cannotReturn)
-                _historic.Clear();
+                ClearHistoric();
         }
         else
             _historic.Push(_currentModule);
@@ -113,10 +75,6 @@ public class ModuleManager : MonoBehaviour
         if( _historic.Count > 0 )
         {
             ProcessModuleState(_historic.Pop(), false, true);
-        }
-        else if(_currentModule == LevelSelection) // Specific case after returning to menu from Pause module, it's a SMALL SMALL SMALL detail but ENJMIN said "c'est pas ergo" ;)
-        {
-            ProcessModuleState(MainTitle, false, true);
         }
     }
 }
