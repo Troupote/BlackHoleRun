@@ -134,7 +134,6 @@ public class CharactersManager : MonoBehaviour
         if (!a_singularityBehavior.IsThrown)
         {
             if (timeElasped > 0) timeElasped = 0;
-            a_singularityBehavior.FollowPlayer();
         }
         else
         {
@@ -145,6 +144,16 @@ public class CharactersManager : MonoBehaviour
                 ChangePlayersTurn(false);
                 timeElasped = 0;
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (!AreObjectsInstancied()) return;
+
+        if (!a_singularityBehavior.IsThrown)
+        {
+            a_singularityBehavior.FollowPlayer();
         }
     }
 }

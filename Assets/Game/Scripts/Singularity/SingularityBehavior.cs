@@ -46,7 +46,9 @@ public class SingularityBehavior : MonoBehaviour
 
         SetRigidbodyState(false);
         Transform followTarget = CameraManager.Instance.SingularityPlacementRefTransform;
-        transform.position = Vector3.SmoothDamp(transform.position, followTarget.position, ref followVelocity, 0.1f);
+        Vector3 targetPos = followTarget.position;
+        Vector3 smoothedPos = Vector3.SmoothDamp(transform.position, targetPos, ref followVelocity, 0.1f);
+        rb.MovePosition(smoothedPos);
     }
 
     public void Throw()
