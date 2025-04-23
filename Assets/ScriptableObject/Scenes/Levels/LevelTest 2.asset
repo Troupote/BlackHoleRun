@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 828efc05d7ba4504a9ad60d0c2c38ca7, type: 3}
-  m_Name: LevelTest
+  m_Name: LevelTest 2
   m_EditorClassIdentifier: 
   SceneName: LevelTest
   LevelName: Test
-  ID: 1
+  ID: 3
   Times:
     m_Keys: 010000000200000003000000
     m_Values:

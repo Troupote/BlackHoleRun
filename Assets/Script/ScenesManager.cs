@@ -69,6 +69,7 @@ namespace BHR
         public void ChangeScene(SceneDataSO sceneData)
         {
             Debug.Log($"Changing scene from {SceneManager.GetActiveScene().name} to {sceneData.SceneName}");
+            CurrentSceneData = sceneData;
             SceneManager.LoadScene(sceneData.SceneName);
         }
 

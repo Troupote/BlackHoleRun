@@ -30,9 +30,7 @@ public class EndLevelModuleUI : MonoBehaviour
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] TextMeshProUGUI _medalTimeText;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] Button _rightArrowButton;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] Button _leftArrowButton;
-    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private Color _unlockedMedalColor;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _hideScale;
-    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private Color _hideColor;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _hideMove;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _revealMove;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _switchDuration;
@@ -49,7 +47,7 @@ public class EndLevelModuleUI : MonoBehaviour
     #region Run infos UI
     private void UpdateRunInfos()
     {
-        _levelNameText.text = $"Level {FakeLevelData.ID.ToString("D2")} - {FakeLevelData.name}";
+        _levelNameText.text = $"Level {FakeLevelData.ID.ToString("D2")} - {FakeLevelData.LevelName}";
         _currentTimeText.text = "TIME : " + UtilitiesFunctions.TimeFormat(FakeEndTime);
         // Get from save files best time
         //_bestTimeText.text = "BEST : " + TimeFormat(player prefs ?);
@@ -61,7 +59,7 @@ public class EndLevelModuleUI : MonoBehaviour
     {
         // Check medal obtained
         // @todo maybe link to the game manager to obtain medal ref
-        MedalsType medalObtained = FakeLevelData.Times.Where(t => t.Value >= FakeEndTime).OrderBy(t => t.Value).FirstOrDefault().Key;
+        MedalsType medalObtained = FakeLevelData.MedalObtained(FakeEndTime);
         _currentMedalId = (int)medalObtained;
 
         int spriteCount = 0;
@@ -72,7 +70,7 @@ public class EndLevelModuleUI : MonoBehaviour
             if (2 - medalObtained - i <= 0 && 4 - medalObtained - i >= 0)
             {
                 medal.GetComponent<Image>().sprite = _medalsSprite[spriteCount];
-                medal.GetComponent<Image>().color = spriteCount <= _currentMedalId ? Color.white : _hideColor;
+                medal.GetComponent<Image>().color = spriteCount <= _currentMedalId ? Color.white : ModuleManager.Instance.HideMedalColor;
                 spriteCount++;
             }
             else
@@ -111,7 +109,7 @@ public class EndLevelModuleUI : MonoBehaviour
         float time = FakeLevelData.Times[currentMedal];
         _medalTimeText.text = UtilitiesFunctions.TimeFormat(time);
 
-        _medalNameText.color = _medalTimeText.color = FakeEndTime <= time ? Color.white : _unlockedMedalColor;
+        _medalNameText.color = _medalTimeText.color = FakeEndTime <= time ? Color.white : ModuleManager.Instance.HideMedalTextColor;
     }
 
     private void CheckButtons()

@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -8,11 +9,14 @@ namespace BHR
     [CreateAssetMenu(fileName = "LevelData", menuName = "ScenesData/LevelData")]
     public class LevelDataSO : SceneDataSO
     {
-        public string Name;
+        public string LevelName;
         public int ID; 
         [Header("TIMES"), ShowInInspector, ValidateInput("TimesValidate"), Tooltip("Times are in seconds")]
         public SerializedDictionary<MedalsType, float> Times = new SerializedDictionary<MedalsType, float>();
 
+        public MedalsType MedalObtained(float timeInSeconds) => Times.Where(t => t.Value >= timeInSeconds).OrderBy(t => t.Value).FirstOrDefault().Key;
+        public MedalsType MedalObtained() => Times.Where(t => t.Value >= BestTime()).OrderBy(t => t.Value).FirstOrDefault().Key;
+        public float BestTime() => PlayerPrefs.GetFloat(ID.ToString(), float.MaxValue);
 
 #if UNITY_EDITOR
         private bool TimesValidate(ref string errorMessage)

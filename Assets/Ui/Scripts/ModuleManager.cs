@@ -18,6 +18,9 @@ public class ModuleManager : MonoBehaviour
     public GameObject TestDefaultModule;
 #endif
 
+    [FoldoutGroup("UI Settings")] public Color HideMedalColor;
+    [FoldoutGroup("UI Settings")] public Color HideMedalTextColor;
+
     private void Awake()
     {
         if (Instance == null)
@@ -50,6 +53,11 @@ public class ModuleManager : MonoBehaviour
     public void ChangeScene(SceneDataSO sceneData)
     {
         ScenesManager.Instance.ChangeScene(sceneData);
+    }
+
+    public void ReloadScene()
+    {
+        ScenesManager.Instance.ChangeScene(ScenesManager.Instance.CurrentSceneData);
     }
 
     public void QuitGame()
