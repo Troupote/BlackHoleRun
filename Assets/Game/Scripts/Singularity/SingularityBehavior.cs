@@ -83,7 +83,7 @@ public class SingularityBehavior : MonoBehaviour
         if (!isThrown || AlreadyCollided || collision == null) return;
 
         AlreadyCollided = true;
-        CharactersManager.Instance.ChangePlayersTurn(false);
+        CharactersManager.Instance.ChangePlayersTurn();
     }
 
     public void ResetThrowState(bool allowThrow)

@@ -5,6 +5,7 @@ public class CharacterBehavior : MonoBehaviour
     private Rigidbody _rigidbody;
 
     private bool _hasTouchedGround = true;
+    public bool HasTouchedGround => _hasTouchedGround;
 
     [SerializeField]
     private LayerMask m_groundLayer;
@@ -19,7 +20,23 @@ public class CharacterBehavior : MonoBehaviour
         if (!_hasTouchedGround) return;
 
         CharactersManager.Instance.TryThrowSingularity();
-        _hasTouchedGround = false;
+    }
+
+    public void ResetVelocity()
+    {
+        _rigidbody.linearVelocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
+    }
+
+    public void ImobilizeCharacter(bool a_shouldImobilize)
+    {
+        _rigidbody.useGravity = !a_shouldImobilize;
+        _rigidbody.isKinematic = a_shouldImobilize;
+
+        if (a_shouldImobilize)
+        { 
+            _hasTouchedGround = false;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)

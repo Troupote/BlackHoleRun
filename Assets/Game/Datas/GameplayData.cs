@@ -6,7 +6,7 @@ public class GameplayData : ScriptableObject
 {
     [Title("Singularity Settings")]
     [SerializeField]
-    private float m_secondsBeforeSpawningCharacterBackIfNoCollision = 5f;
+    private float m_secondsBeforeSpawningCharacterBackIfNoCollision = 4f;
     public float SecondsBeforeSpawningCharacterBackIfNoCollision => m_secondsBeforeSpawningCharacterBackIfNoCollision;
 
     [SerializeField]
@@ -15,11 +15,11 @@ public class GameplayData : ScriptableObject
 
     [Title("Character Settings")]
     [SerializeField]
-    private float m_playerSpeed = 5f;
+    private float m_playerSpeed = 30f;
     public float PlayerSpeed => m_playerSpeed;
 
     [SerializeField]
-    private float m_jumpForce = 5f;
+    private float m_jumpForce = 12f;
     public float JumpForce => m_jumpForce;
 
     [SerializeField]

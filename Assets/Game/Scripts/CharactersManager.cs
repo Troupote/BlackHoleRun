@@ -85,12 +85,16 @@ public class CharactersManager : MonoBehaviour
             singularityPosition.y = hit.point.y + GetCharacterHeight();
         }
 
+        a_characterBehavior.ResetVelocity();
+
         Vector3 oldCharacterPosition = _characterObject.transform.position;
         _characterObject.transform.position = singularityPosition;
         _singularityObject.transform.position = oldCharacterPosition;
+
+        a_characterBehavior.ImobilizeCharacter(false);
     }
 
-    public void ChangePlayersTurn(bool a_isEarly)
+    public void ChangePlayersTurn(bool a_isEarly = false)
     {
         StartCoroutine(WaitForBlendingAndSwitch(a_isEarly));
     }
@@ -120,7 +124,10 @@ public class CharactersManager : MonoBehaviour
             return;
         }
 
+        if (!a_characterBehavior.HasTouchedGround) return;
+
         a_singularityBehavior.Throw();
+        a_characterBehavior.ImobilizeCharacter(true);
         IsSingularityThrown(true);
     }
 
@@ -139,9 +146,9 @@ public class CharactersManager : MonoBehaviour
         {
             timeElasped += Time.deltaTime;
 
-            if (timeElasped >= 4f)
+            if (timeElasped >= m_gameplayData.SecondsBeforeSpawningCharacterBackIfNoCollision)
             {
-                ChangePlayersTurn(false);
+                ChangePlayersTurn();
                 timeElasped = 0;
             }
         }
