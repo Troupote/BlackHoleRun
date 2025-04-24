@@ -110,6 +110,7 @@ public class CameraManager : MonoBehaviour
         }
 
         // Adjust FOV
+        /*
         if (moveZ > 0)
         {
             PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(PlayerCam.m_Lens.FieldOfView, 90, Time.deltaTime * 2);
@@ -122,5 +123,6 @@ public class CameraManager : MonoBehaviour
         {
             PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(PlayerCam.m_Lens.FieldOfView, 60, Time.deltaTime * 2);
         }
+        */
     }
 }
