@@ -2,12 +2,17 @@ using BHR;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ModuleManager : MonoBehaviour
 {
     public static ModuleManager Instance;
     [SerializeField, ReadOnly] private GameObject _currentModule = null;
+    public UnityEvent<GameObject, bool> OnModuleEnabled;
     [SerializeField, ReadOnly] private Stack<GameObject> _historic = new Stack<GameObject>();
+    private Selectable _savedBackSelectable;
 
     private bool _canBack = true;
     public bool CanBack { get => _canBack; set => _canBack = value;  }
@@ -45,6 +50,17 @@ public class ModuleManager : MonoBehaviour
         ProcessModuleState(moduleGO);
     }
 
+    public void SaveBackSelectable(Selectable selectable)
+    {
+        _savedBackSelectable = selectable;
+    }
+
+    public void SelectBackSelectable()
+    {
+        _savedBackSelectable?.Select();
+        _savedBackSelectable = null;
+    }
+
     public void ClearHistoric()
     {
         _historic.Clear();
@@ -79,6 +95,10 @@ public class ModuleManager : MonoBehaviour
 
         _currentModule?.SetActive(false);
         _currentModule = module;
+
+        OnModuleEnabled.Invoke(module, _savedBackSelectable != null && back);
+        if (back)
+            SelectBackSelectable();
     }
 
     public void Back()

@@ -1,5 +1,4 @@
 using BHR;
-using NUnit.Framework;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using TMPro;
@@ -26,7 +25,13 @@ public class LevelSelectionUI : MonoBehaviour
     private void OnEnable()
     {
         LoadLevelsSelection();
-        Back();
+        UnloadLevel();
+    }
+    private void UnloadLevel()
+    {
+        _levelSelectedPanel.SetActive(false);
+        _levelSelectionPanel.SetActive(true);
+        ModuleManager.Instance.CanBack = true;
     }
 
     private void LoadLevelsSelection()
@@ -78,8 +83,7 @@ public class LevelSelectionUI : MonoBehaviour
     public void Back()
     {
         // @todo link with back input from instance module manager
-        _levelSelectedPanel.SetActive(false);
-        _levelSelectionPanel.SetActive(true);
-        ModuleManager.Instance.CanBack = true;
+        UnloadLevel();
+        ModuleManager.Instance.SelectBackSelectable();
     }
 }
