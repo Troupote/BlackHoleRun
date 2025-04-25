@@ -40,6 +40,8 @@ public class CameraManager : MonoBehaviour
         SingularityCam.Priority = 0;
         SingularityCam.gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
+
+        PlayerCam.m_Lens.FieldOfView = CharactersManager.Instance.GameplayData.BaseFOV;
     }
 
     public void SetDependencies(GameObject a_characterToFollow, GameObject a_singularityToFollow)
@@ -110,19 +112,21 @@ public class CameraManager : MonoBehaviour
         }
 
         // Adjust FOV
-        /*
+        
+        float currentFOV = PlayerCam.m_Lens.FieldOfView;
+
         if (moveZ > 0)
         {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(PlayerCam.m_Lens.FieldOfView, 90, Time.deltaTime * 2);
+            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingForwardFOV, Time.deltaTime * 2);
         }
         else if (moveZ < 0)
         {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(PlayerCam.m_Lens.FieldOfView, 50, Time.deltaTime * 2);
+            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingBackwardFOV, Time.deltaTime * 2);
         }
         else
         {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(PlayerCam.m_Lens.FieldOfView, 60, Time.deltaTime * 2);
+            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.BaseFOV, Time.deltaTime * 2);
         }
-        */
+        
     }
 }

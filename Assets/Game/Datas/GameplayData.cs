@@ -1,5 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine.Rendering;
 
 [CreateAssetMenu(fileName = "GameplayData", menuName = "Scriptable Objects/GameplayData")]
 public class GameplayData : ScriptableObject
@@ -29,4 +30,15 @@ public class GameplayData : ScriptableObject
     [SerializeField]
     private float m_dashCooldown = 1.5f;
     public float DashCooldown => m_dashCooldown;
+
+    [Title("Camera Settings")]
+    [SerializeField]
+    private float m_baseFOV = 60f;
+    public float BaseFOV => m_baseFOV;
+    [SerializeField]
+    private float m_MovingForwardFOV = 70f;
+    public float MovingForwardFOV => m_MovingForwardFOV;
+    [SerializeField]
+    private float m_MovingBackwardFOV = 50f;
+    public float MovingBackwardFOV => m_MovingBackwardFOV;
 }
