@@ -479,6 +479,7 @@ MonoBehaviour:
   - Master
   Banks:
   - BankMusicCooking
+  - BankSfx
   - BankTestLevel
   BanksToLoad: []
   LiveUpdatePort: 9264
