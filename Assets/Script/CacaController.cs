@@ -26,12 +26,7 @@ public class CacaController : MonoBehaviour
     private Vector3 lastPosition;
     private Vector3 currentVelocity;
     private float footstepTimer = 0f;
-    
-    [SerializeField] private float footstepInterval = 0.3f;
-    [SerializeField] private float minSpeedFactor = 0.5f;
-    [SerializeField] private float maxSpeedFactor = 3f;
-    [SerializeField] private float stepVolume = 1f;
-    
+
     //audio 
     public EventInstance playerFootsteps;
 
@@ -65,53 +60,13 @@ public class CacaController : MonoBehaviour
         move = transform.TransformDirection(move);
         transform.localPosition += move;
         
-        Debug.Log("justeavant le son ");
         currentVelocity = (transform.position - lastPosition) / Time.deltaTime;
         lastPosition = transform.position;
         
-        UpdateSound();
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-    }
-    
-    private void UpdateSound()
-    {
-        // Calculer la vitesse horizontale (ignorer le mouvement vertical)
-        float horizontalSpeed = new Vector2(currentVelocity.x, currentVelocity.z).magnitude;
-        bool isMoving = horizontalSpeed > 0.2f && isGrounded;
-
-        if (isMoving && isGrounded)
-        {
-            footstepTimer += Time.deltaTime;
-            
-            float currentInterval = footstepInterval;
-            
-
-            if (footstepTimer >= currentInterval)
-            {
-                footstepTimer = 0f;
-
-                var attributes = RuntimeUtils.To3DAttributes(transform.position);
-                playerFootsteps.set3DAttributes(attributes);
-
-                playerFootsteps.setVolume(stepVolume);
-
-                PLAYBACK_STATE playbackState;
-                playerFootsteps.getPlaybackState(out playbackState);
-                if (playbackState != PLAYBACK_STATE.PLAYING)
-                {
-                    playerFootsteps.start();
-                }
-            }
-        }
-        else
-        {
-            
-            playerFootsteps.stop(STOP_MODE.ALLOWFADEOUT);
-            footstepTimer = footstepInterval; // Prêt pour le prochain pas
         }
     }
 }
