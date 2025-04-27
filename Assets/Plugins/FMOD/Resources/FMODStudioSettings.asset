@@ -478,9 +478,7 @@ MonoBehaviour:
   MasterBanks:
   - Master
   Banks:
-  - BankMusicCooking
-  - BankSfx
-  - BankTestLevel
+  - SFX
   BanksToLoad: []
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0

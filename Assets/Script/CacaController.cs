@@ -1,12 +1,4 @@
-using Cinemachine;
-using Unity.PlasticSCM.Editor.UI;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using FMOD.Studio;
-using FMODUnity;
-using STOP_MODE = FMOD.Studio.STOP_MODE;
-
 
 public class CacaController : MonoBehaviour
 {
@@ -27,14 +19,12 @@ public class CacaController : MonoBehaviour
     private Vector3 currentVelocity;
     private float footstepTimer = 0f;
 
-    //audio 
-    public EventInstance playerFootsteps;
+  
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        playerFootsteps = AudioManager.instance.CreateInstance(FMODEvent.instance.Footsteps);
         lastPosition = transform.position;
     }
 
