@@ -8,6 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Game/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Dev/SceneMarius.unity
+    guid: c55134248f3a64446a084325d99656ca
+  - enabled: 1
+    path: Assets/Scenes/Dev/InGameTestMarius.unity
+    guid: 04a7f6a7f09a67b41aa803a68ea4b7dd
+  - enabled: 1
+    path: Assets/Scenes/Levels/LevelTest.unity
+    guid: 08a2587194ecf8e438308416bf630abc
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
