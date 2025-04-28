@@ -1,0 +1,180 @@
+using Sirenix.OdinInspector;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
+
+namespace BHR
+{
+    public class GameManager : ManagerSingleton<GameManager>
+    {
+        [SerializeField]
+        private PlayerState _activePlayerState;
+        public PlayerState ActivePlayerState => _activePlayerState;
+        private bool _mainPlayerIsPlayerOne = true;
+        private LevelDataSO _selectedLevel = null;
+        private LevelDataSO _currentLevel = null;
+        public LevelDataSO SelectedLevel
+        {
+            get => _selectedLevel;
+            set => _selectedLevel = value;
+        }
+        public LevelDataSO CurrentLevel => _currentLevel;
+        public UnityEvent OnLaunchLevel;
+        public UnityEvent<float> OnEndLevel;
+
+        #region During Game Level
+        private float _timer;
+        public float Timer
+        {
+            get => _timer;
+            private set
+            {
+                _timer = value;
+                OnTimerChanged.Invoke(_timer);
+            }
+        }
+        public UnityEvent<float> OnTimerChanged;
+        private bool _isPlaying = false;
+        public bool IsPlaying
+        {
+            get => _isPlaying;
+            set
+            {
+                _isPlaying = value;
+                _isPaused = !_isPlaying;
+                _gameTimeScale = _isPlaying ? _savedGameTimeScale : 0f;
+            }
+        }
+        private bool _isPaused = false;
+        public bool IsPaused
+        {
+            get => _isPaused;
+            private set
+            {
+                _isPaused = value;
+                IsPlaying = !_isPaused;
+            }
+        }
+        private PlayerState _savedPausedState = PlayerState.NONE;
+        private float _savedGameTimeScale = 1f;
+        private float _gameTimeScale;
+        public float GameTimeScale => _gameTimeScale;
+        #endregion
+
+        public UnityEvent<int, PlayerState> OnPlayerStateChanged;
+
+        private void Start()
+        {
+            Init();
+        }
+
+        private void Init()
+        {
+            _activePlayerState = PlayerState.UI;
+        }
+
+        #region Level gestion
+        public void SaveSelectedLevel(LevelDataSO data) => SelectedLevel = data;
+
+        public void LaunchLevel()
+        {
+            ScenesManager.Instance.ChangeScene(SelectedLevel);
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
+            ModuleManager.Instance.ClearNavigationHistoric();
+
+            _currentLevel = SelectedLevel;
+            _mainPlayerIsPlayerOne = !PlayersInputManager.Instance.IsSwitched;
+
+            Timer = 0f;
+            IsPlaying = false;
+            OnLaunchLevel.Invoke();
+        }
+
+        public void StartLevel()
+        {
+            IsPlaying = true;
+            ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
+        }
+
+        public void TogglePause()
+        {
+            if (!IsPaused) Pause(); else Resume();
+        }
+
+        private void Pause()
+        {
+            _savedGameTimeScale = GameTimeScale;
+            _savedPausedState = ActivePlayerState;
+            IsPaused = true;
+            //ChangeMainPlayerState(PlayerState.UI, false);
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE));
+        }
+
+        public void Resume()
+        {
+            IsPaused = false;
+            //ChangeMainPlayerState(_savedPausedState, false);
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
+        }
+
+        public void EndLevel()
+        {
+            IsPlaying = false;
+            _currentLevel.SaveTime(Timer);
+            ChangeMainPlayerState(PlayerState.UI, false);
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.END_LEVEL));
+            ModuleManager.Instance.ClearNavigationHistoric();
+            OnEndLevel.Invoke(Timer);
+        }
+
+        public void QuitLevel()
+        {
+            ChangeMainPlayerState(PlayerState.UI, false);
+            ScenesManager.Instance.ChangeScene(ScenesManager.Instance.MenuScene);
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.LEVEL_SELECTION));
+            ModuleManager.Instance.ClearNavigationHistoric();
+        }
+
+        public void RestartLevel()
+        {
+            Resume();
+            ChangeMainPlayerState(PlayerState.UI, false);
+            LaunchLevel();
+        }
+        #endregion
+        public void OnSceneChanged()
+        {
+            // Clean all we need to clean
+            PlayerInputReceiver.Instance?.DestroyInstance(false);
+        }
+
+        private void Update()
+        {
+            if (IsPlaying)
+                Timer += Time.deltaTime * GameTimeScale;
+        }
+
+        public void ChangeMainPlayerState(PlayerState state, bool switchActivePlayer)
+        {
+            if(switchActivePlayer) _mainPlayerIsPlayerOne = !_mainPlayerIsPlayerOne;
+
+            int activePlayerId = _mainPlayerIsPlayerOne ? 1 : 0;
+
+            _activePlayerState = state;
+
+            // SoloMode version
+            if(PlayersInputManager.Instance.SoloPlayer)
+            {
+                PlayersInputManager.Instance.PlayersInputRef[0].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+            }
+            else
+            {
+                PlayersInputManager.Instance.PlayersInputRef[activePlayerId].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+
+                PlayerState secondPlayerState = _activePlayerState == PlayerState.UI ? PlayerState.UI : PlayerState.INACTIVE;
+                PlayersInputManager.Instance.PlayersInputRef[1-activePlayerId].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
+            }
+        }
+    }
+}
