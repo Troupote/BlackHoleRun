@@ -3,7 +3,11 @@ using FMODUnity;
 
 public class FmodEventsCreator : MonoBehaviour
 {
-    [field: Header("Throw Black Hole")]
+    [field: Header("Player SFX")]
+	[field: SerializeField] public EventReference playerFootsetps {get; private set;}
+
+
+	[field: Header("Throw Black Hole")]
     [field: SerializeField] public EventReference blackHoleTrowSfx {get; private set;}
     
     public static FmodEventsCreator instance;
