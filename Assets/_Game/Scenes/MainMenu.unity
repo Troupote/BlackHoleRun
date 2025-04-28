@@ -127,6 +127,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3015832174486616052, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.0009765625
+      objectReference: {fileID: 0}
     - target: {fileID: 4734163077719743939, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
       propertyPath: m_Name
       value: UIModulesManager
@@ -210,6 +214,14 @@ PrefabInstance:
     - target: {fileID: 6046980556903365440, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273237043982098267, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.0021972656
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696950661859447890, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.0021972656
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -552,6 +564,10 @@ PrefabInstance:
       propertyPath: DebugUnlockedMode
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5643024956058840588, guid: ba72bcc73fc99cb4587844a42b7b367e, type: 3}
+      propertyPath: _levelsFolderPath
+      value: Assets/_Game/ScriptableObjects/Datas/ScenesLevels/Levels
+      objectReference: {fileID: 0}
     - target: {fileID: 7681573604665701232, guid: ba72bcc73fc99cb4587844a42b7b367e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.722455
@@ -666,10 +682,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SceneManager
       objectReference: {fileID: 0}
-    - target: {fileID: 1907301246826769675, guid: c4d3c09baf3367a4f866c492af8bc238, type: 3}
-      propertyPath: _startSceneData
-      value: 
-      objectReference: {fileID: 11400000, guid: be872c7620fbe9646a53dbdd91e10c2e, type: 2}
     - target: {fileID: 7438249079801694573, guid: c4d3c09baf3367a4f866c492af8bc238, type: 3}
       propertyPath: m_LocalPosition.x
       value: 412.96335

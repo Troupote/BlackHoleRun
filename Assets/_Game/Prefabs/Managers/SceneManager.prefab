@@ -44,5 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04f9df2ebec0ca440881af69327cf7a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScenesData: {fileID: 11400000, guid: c7e0a9fe70ae3fa4ab7084d532e55a12, type: 2}
-  _canvasPrefab: {fileID: 5905793881606850063, guid: 5df53c5ed3c9a474bb41857eff1e93e4, type: 3}
+  _startSceneData: {fileID: 11400000, guid: be872c7620fbe9646a53dbdd91e10c2e, type: 2}
+  MenuScene: {fileID: 11400000, guid: be872c7620fbe9646a53dbdd91e10c2e, type: 2}
+  CurrentSceneData: {fileID: 0}
