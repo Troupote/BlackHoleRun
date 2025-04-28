@@ -1,16 +1,32 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
 public class SingularityController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField]
+    private Rigidbody rb;
+    private void Start()
     {
-        
     }
-
-    // Update is called once per frame
     void Update()
     {
-        
+        if (!CharactersManager.Instance.isSingularityThrown) return;
+
+        Move();
     }
+
+    [SerializeField] private float curveForce = 0.001f;
+
+    private void Move()
+    {
+        float moveX = Input.GetAxisRaw("Horizontal");
+
+        if (moveX != 0)
+        {
+            Vector3 curveDirection = transform.right * moveX;
+            rb.AddForce(curveDirection * curveForce, ForceMode.Force);
+        }
+    }
+
 }

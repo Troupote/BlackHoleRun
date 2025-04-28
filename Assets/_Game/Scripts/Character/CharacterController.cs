@@ -9,8 +9,8 @@ public class PlayerController : MonoBehaviour
 
     private GameplayData m_gameplayData;
 
-    [SerializeField] private float fallMultiplier = 12f;
-    [SerializeField] private float lowJumpMultiplier = 10f;
+    [SerializeField] private float fallMultiplier = 3f;
+    [SerializeField] private float lowJumpMultiplier = 2f;
 
     void Start()
     {
@@ -21,12 +21,17 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Move();
         ApplyBetterGravity();
+
+        if (CharactersManager.Instance.isSingularityThrown) return;
+
+        Move();
     }
 
     void Update()
     {
+        if (CharactersManager.Instance.isSingularityThrown) return;
+
         HandleJump();
         HandleDash();
         HandleSingularity();
@@ -38,7 +43,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
         }
-        else if (rb.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
+        else if (rb.linearVelocity.y > 0)
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
         }
@@ -49,7 +54,7 @@ public class PlayerController : MonoBehaviour
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
 
-        Transform cam = CharactersManager.Instance.SingularityThrown
+        Transform cam = CharactersManager.Instance.isSingularityThrown
             ? CameraManager.Instance.SingularityCam.transform
             : CameraManager.Instance.PlayerCam.transform;
 
@@ -72,7 +77,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
         }
     }
@@ -81,7 +86,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + m_gameplayData.DashCooldown)
         {
-            Transform cam = CharactersManager.Instance.SingularityThrown
+            Transform cam = CharactersManager.Instance.isSingularityThrown
                 ? CameraManager.Instance.SingularityCam.transform
                 : CameraManager.Instance.PlayerCam.transform;
 
