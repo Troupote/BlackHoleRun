@@ -11,10 +11,6 @@ using UnityEngine.UI;
 
 public class EndLevelModuleUI : MonoBehaviour
 {
-
-    public float FakeEndTime;
-    public LevelDataSO FakeLevelData;
-
     #region Run infos
     [FoldoutGroup("Run Infos", expanded: true)]
     [SerializeField, Required, FoldoutGroup("Run Infos/Refs")] private TextMeshProUGUI _levelNameText;
@@ -27,6 +23,8 @@ public class EndLevelModuleUI : MonoBehaviour
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] Transform _medalsSpriteParent;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] private Sprite[] _medalsSprite;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] private TextMeshProUGUI _medalNameText;
+    [SerializeField, Required, FoldoutGroup("Medals/Refs")] private GameObject _nextLevelPanel;
+    [SerializeField, Required, FoldoutGroup("Medals/Refs")] private TextMeshProUGUI _endLevelText;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] TextMeshProUGUI _medalTimeText;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] Button _rightArrowButton;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] Button _leftArrowButton;
@@ -34,23 +32,49 @@ public class EndLevelModuleUI : MonoBehaviour
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _hideMove;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _revealMove;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _switchDuration;
-    private int _currentMedalId;
+    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private string _successLevelText;
+    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private string _failedLevelText;
+    private int _medalObtainedId;
+    private int _currentMedalDisplayed;
+
+    private float _endTimer;
+    private LevelDataSO _currentLevel;
+    private int MedalObtainedId
+    {
+        get => _medalObtainedId;
+        set
+        {
+            _medalObtainedId = value;
+            _currentMedalDisplayed = Mathf.Max(1, _medalObtainedId);
+        }
+    }
     #endregion
 
-    private void Awake()
+    private void OnEnable()
     {
-        // @todo link to End level event
+        GameManager.Instance.OnEndLevel.AddListener(OnEndLevel);
+    }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.OnEndLevel.RemoveListener(OnEndLevel);
+    }
+
+    private void OnEndLevel(float endTime)
+    {
+        _currentLevel = GameManager.Instance.CurrentLevel;
+        _endTimer = endTime;
         UpdateRunInfos();
         CreateMedals();
+        CheckIfNextLevel();
     }
 
     #region Run infos UI
     private void UpdateRunInfos()
     {
-        _levelNameText.text = $"Level {FakeLevelData.ID.ToString("D2")} - {FakeLevelData.LevelName}";
-        _currentTimeText.text = "TIME : " + UtilitiesFunctions.TimeFormat(FakeEndTime);
-        // Get from save files best time
-        //_bestTimeText.text = "BEST : " + TimeFormat(player prefs ?);
+        _levelNameText.text = $"Level {_currentLevel.ID.ToString("D2")} - {_currentLevel.LevelName}";
+        _currentTimeText.text = "TIME : " + UtilitiesFunctions.TimeFormat(_endTimer);
+        _bestTimeText.text = "BEST : " + UtilitiesFunctions.TimeFormat(_currentLevel.BestTime());
     }
     #endregion
 
@@ -58,19 +82,18 @@ public class EndLevelModuleUI : MonoBehaviour
     private void CreateMedals()
     {
         // Check medal obtained
-        // @todo maybe link to the game manager to obtain medal ref
-        MedalsType medalObtained = FakeLevelData.MedalObtained(FakeEndTime);
-        _currentMedalId = (int)medalObtained;
+        MedalsType medalObtained = _currentLevel.MedalObtained(_endTimer);
+        MedalObtainedId = (int)medalObtained;
 
         int spriteCount = 0;
         List<GameObject> unusedGO = new List<GameObject>();
         for(int i=0; i<_medalsSpriteParent.childCount; i++)
         {
             Transform medal = _medalsSpriteParent.GetChild(i);
-            if (2 - medalObtained - i <= 0 && 4 - medalObtained - i >= 0)
+            if (3 - _currentMedalDisplayed - i <= 0 && 5 - _currentMedalDisplayed - i >= 0)
             {
                 medal.GetComponent<Image>().sprite = _medalsSprite[spriteCount];
-                medal.GetComponent<Image>().color = spriteCount <= _currentMedalId ? Color.white : ModuleManager.Instance.HideMedalColor;
+                medal.GetComponent<Image>().color = spriteCount < MedalObtainedId ? Color.white : ModuleManager.Instance.HideMedalColor;
                 spriteCount++;
             }
             else
@@ -86,13 +109,13 @@ public class EndLevelModuleUI : MonoBehaviour
 
     public void ChangeMedal(int move)
     {
-        _currentMedalId += move;
+        _currentMedalDisplayed += move;
         for(int i=0; i < _medalsSpriteParent.childCount; i++)
         {
             Transform medal = _medalsSpriteParent.GetChild(i);
-            bool becomingSelected = _currentMedalId== i;
-            medal.DOMove(medal.position - move * new Vector3(becomingSelected || _currentMedalId-move==i ? _revealMove : _hideMove,0f), _switchDuration);
-            medal.DOScale(becomingSelected ? 1f : _hideScale, _switchDuration);
+            bool becomingDisplayed = _currentMedalDisplayed-1== i;
+            medal.DOMove(medal.position - move * new Vector3(becomingDisplayed || _currentMedalDisplayed-move-1==i ? _revealMove : _hideMove,0f), _switchDuration);
+            medal.DOScale(becomingDisplayed ? 1f : _hideScale, _switchDuration);
         }
         ActivateButtons();
         Invoke("ActivateButtons", _switchDuration + 0.01f);
@@ -103,19 +126,21 @@ public class EndLevelModuleUI : MonoBehaviour
 
     private void DisplayData()
     {
-        MedalsType currentMedal = (MedalsType)_currentMedalId;
+        _endLevelText.text = MedalObtainedId == 0 ? _failedLevelText : _successLevelText;
+
+        MedalsType currentMedal = (MedalsType)_currentMedalDisplayed;
         _medalNameText.text = currentMedal.ToString();
 
-        float time = FakeLevelData.Times[currentMedal];
+        float time = _currentLevel.Times[currentMedal];
         _medalTimeText.text = UtilitiesFunctions.TimeFormat(time);
 
-        _medalNameText.color = _medalTimeText.color = FakeEndTime <= time ? Color.white : ModuleManager.Instance.HideMedalTextColor;
+        _medalNameText.color = _medalTimeText.color = _endTimer <= time ? Color.white : ModuleManager.Instance.HideMedalTextColor;
     }
 
     private void CheckButtons()
     {
-        _leftArrowButton.gameObject.SetActive(_currentMedalId > 0);
-        _rightArrowButton.gameObject.SetActive(_currentMedalId < 2);
+        _leftArrowButton.gameObject.SetActive(_currentMedalDisplayed > 1);
+        _rightArrowButton.gameObject.SetActive(_currentMedalDisplayed < 3);
     }
 
     private void ActivateButtons()
@@ -123,4 +148,17 @@ public class EndLevelModuleUI : MonoBehaviour
         _leftArrowButton.enabled = _rightArrowButton.enabled = !_rightArrowButton.enabled;
     }
     #endregion
+
+    private void CheckIfNextLevel()
+    {
+        if (_currentLevel.ID <= DataManager.Instance.GetLastLevelCompletedID() && _currentLevel.ID != DataManager.Instance.LevelDatas.Last().ID)
+        {
+            GameManager.Instance.SelectedLevel = DataManager.Instance.LevelDatas[_currentLevel.ID + 1];
+            _nextLevelPanel.GetComponentInChildren<Button>().onClick.RemoveListener(GameManager.Instance.LaunchLevel);
+            _nextLevelPanel.GetComponentInChildren<Button>().onClick.AddListener(GameManager.Instance.LaunchLevel);
+            _nextLevelPanel.SetActive(true);
+        }
+        else
+            _nextLevelPanel.SetActive(false);
+    }
 }

@@ -1,3 +1,4 @@
+using BHR;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,10 +15,11 @@ public class StartAnimationUI : MonoBehaviour
     [SerializeField] private Image _blackHole;
     [SerializeField] private TextMeshProUGUI _counter;
 
-    IEnumerator StartAnimation()
+    IEnumerator StartAnimationCoroutine()
     {
         // Init
         _counter.gameObject.SetActive(false);
+        _blackHole.gameObject.SetActive(false);
         _blackHole.transform.localScale = Vector3.one * startScale;
         _counter.color = color3;
         _counter.text = "3";
@@ -26,6 +28,7 @@ public class StartAnimationUI : MonoBehaviour
         _blackHole.transform.DOScale(scale3, 0.4f);
         yield return new WaitForSeconds(0.4f);
 
+        _blackHole.gameObject.SetActive(true);
         _counter.gameObject.SetActive(true);
         _counter.DOColor(color2, 1f);
         _counter.transform.DOScale(textScale2,1f);
@@ -54,10 +57,19 @@ public class StartAnimationUI : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         _blackHole.gameObject.SetActive(false);
         _counter.gameObject.SetActive(false);
+        gameObject.SetActive(false);
+        GameManager.Instance.StartLevel();
     }
 
-    public void OnEnable()
+    public void Awake()
     {
-        StartCoroutine(StartAnimation());
+        _blackHole.gameObject.SetActive(false);
+        _counter.gameObject.SetActive(false);
+    }
+
+    public void StartAnimation()
+    {
+        gameObject.SetActive(true);
+        StartCoroutine(StartAnimationCoroutine());
     }
 }

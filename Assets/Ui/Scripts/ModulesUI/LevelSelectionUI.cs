@@ -3,12 +3,14 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class LevelSelectionUI : MonoBehaviour
 {
     [SerializeField, Required] private GameObject _levelSelectionPanel;
     [SerializeField, Required] private GameObject _levelSelectedPanel;
+    [SerializeField, Required] private Button _playMenuButton;
 
     [FoldoutGroup("Level Selection", expanded: true)]
     [SerializeField, FoldoutGroup("Level Selection/Refs")]
@@ -19,6 +21,7 @@ public class LevelSelectionUI : MonoBehaviour
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private TextMeshProUGUI _bestTimeText;
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private Image[] _medalsSprite;
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private TextMeshProUGUI[] _medalsTimeText;
+    [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private Button _playButton;
 
     [SerializeField, Required, FoldoutGroup("Settings")] private Color _hideColor;
 
@@ -26,6 +29,13 @@ public class LevelSelectionUI : MonoBehaviour
     {
         LoadLevelsSelection();
         UnloadLevel();
+
+        PlayersInputManager.Instance.OnUIInput.AddListener(HandleInput);
+    }
+
+    private void OnDisable()
+    {
+        PlayersInputManager.Instance.OnUIInput.RemoveListener(HandleInput);
     }
     private void UnloadLevel()
     {
@@ -47,7 +57,7 @@ public class LevelSelectionUI : MonoBehaviour
             Image moonMedal = _levelTransform[i].GetChild(3).GetComponent<Image>();
             Image sunMedal = _levelTransform[i].GetChild(4).GetComponent<Image>();
 
-            if (unlocked) // @todo get save data to know if level is unlocked
+            if (unlocked) 
             {
                 button.onClick.RemoveListener(() => LoadLevel(data));
                 button.onClick.AddListener(() => LoadLevel(data));
@@ -67,9 +77,8 @@ public class LevelSelectionUI : MonoBehaviour
 
     public void LoadLevel(LevelDataSO data)
     {
-        //_playButton.onClick.RemoveListener(() => ModuleManager.Instance.ChangeScene(data));
-        //_playButton.onClick.AddListener(() => ModuleManager.Instance.ChangeScene(data));
-        // @todo Save level choice in game manager
+        _playButton.onClick.RemoveListener(() => GameManager.Instance.SaveSelectedLevel(data));
+        _playButton.onClick.AddListener(() => GameManager.Instance.SaveSelectedLevel(data));
         _levelNameText.text = $"{data.LevelName}\n{data.ID.ToString("D2")}";
 
         UtilitiesFunctions.DisplayMedals((int)data.MedalObtained(), data, _medalsSprite, _medalsTimeText);
@@ -80,10 +89,24 @@ public class LevelSelectionUI : MonoBehaviour
         _levelSelectedPanel.SetActive(true);
     }
 
+    private void HandleInput(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed && ctx.action.name == InputActions.Cancel)
+            Back();
+    }
+
     public void Back()
     {
-        // @todo link with back input from instance module manager
-        UnloadLevel();
+        if(_levelSelectedPanel.activeSelf)
+        {
+            UnloadLevel();
+        }
+        else
+        {
+            ModuleManager.Instance.ProcessModuleState(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAIN_TITLE), false, true);
+            ModuleManager.Instance.SaveBackSelectable(_playMenuButton);
+
+        }
         ModuleManager.Instance.SelectBackSelectable();
     }
 }
