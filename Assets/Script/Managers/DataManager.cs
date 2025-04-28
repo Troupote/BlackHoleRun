@@ -6,22 +6,18 @@ using UnityEngine;
 
 namespace BHR
 {
-    public class DataManager : MonoBehaviour
+    public class DataManager : ManagerSingleton<DataManager>
     {
         public bool DebugUnlockedMode = false;
-
-        public static DataManager Instance;
 
         [SerializeField, Required] private string _levelsFolderPath;
 
         private List<LevelDataSO> _levelDatas = new List<LevelDataSO>();
         public List<LevelDataSO> LevelDatas => _levelDatas;
 
-        private void Awake()
+        public override void Awake()
         {
-            if (Instance == null)
-                Instance = this;
-
+            base.Awake();
             FindLevelDatas();
         }
 
