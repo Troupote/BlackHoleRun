@@ -12,7 +12,7 @@ namespace BHR
 
         public static string TimeFormat(float timeInSeconds)
         {
-            int minutes = Mathf.FloorToInt(timeInSeconds / 60f);
+            int minutes = Mathf.Clamp(Mathf.FloorToInt(timeInSeconds / 60f), 0, 99);
             int seconds = Mathf.FloorToInt(timeInSeconds % 60f);
             int centiseconds = Mathf.FloorToInt((timeInSeconds * 100f) % 100f);
             return string.Format("{0}:{1:00}:{2:00}", minutes, seconds, centiseconds);
@@ -31,5 +31,13 @@ namespace BHR
             }
         }
         #endregion
+
+        public static bool IsVectorBetween(Vector3 vector, Vector3 min, Vector3 max)
+        {
+            return
+            (vector.x >= Mathf.Min(min.x, max.x) && vector.x <= Mathf.Max(min.x, max.x)) &&
+            (vector.y >= Mathf.Min(min.y, max.y) && vector.y <= Mathf.Max(min.y, max.y)) &&
+            (vector.z >= Mathf.Min(min.z, max.z) && vector.z <= Mathf.Max(min.z, max.z));
+        }
     }
 }

@@ -13,6 +13,18 @@ namespace BHR
         public int ID; 
         [Header("TIMES"), ShowInInspector, ValidateInput("TimesValidate"), Tooltip("Times are in seconds")]
         public SerializedDictionary<MedalsType, float> Times = new SerializedDictionary<MedalsType, float>();
+        [Header("CONDITIONS")]
+        public HoleMans StartMan = HoleMans.BLACK_HOLE_MAN;
+
+
+        public void SaveTime(float timeInSeconds)
+        {
+            if(timeInSeconds < BestTime())
+            {
+                Debug.Log("New best time !"); // @todo maybe change UI Text if new best time or first time completed
+                PlayerPrefs.SetFloat(ID.ToString(), timeInSeconds);
+            }
+        }
 
         public MedalsType MedalObtained(float timeInSeconds) => Times.Where(t => t.Value >= timeInSeconds).OrderBy(t => t.Value).FirstOrDefault().Key;
         public MedalsType MedalObtained() => Times.Where(t => t.Value >= BestTime()).OrderBy(t => t.Value).FirstOrDefault().Key;

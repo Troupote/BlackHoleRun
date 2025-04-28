@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SceneName: LevelTest
   LevelName: Test
-  ID: 1
+  ID: 0
   Times:
     m_Keys: 010000000200000003000000
     m_Values:
     - 60
     - 45
     - 30
+  StartMan: 1
