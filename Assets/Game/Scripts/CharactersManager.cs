@@ -23,7 +23,7 @@ public class CharactersManager : MonoBehaviour
     private SingularityBehavior a_singularityBehavior;
     private CharacterBehavior a_characterBehavior;
 
-    internal bool SingularityThrown = false;
+    internal bool isSingularityThrown = false;
 
     public static CharactersManager Instance { get; private set; }
 
@@ -113,7 +113,7 @@ public class CharactersManager : MonoBehaviour
 
     public void IsSingularityThrown(bool a_isIt)
     {
-        SingularityThrown = a_isIt;
+        isSingularityThrown = a_isIt;
     }
 
     public void TryThrowSingularity()

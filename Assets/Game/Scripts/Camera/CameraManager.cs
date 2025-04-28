@@ -95,7 +95,7 @@ public class CameraManager : MonoBehaviour
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, -90, 90);
 
-        if (CharactersManager.Instance.SingularityThrown)
+        if (CharactersManager.Instance.isSingularityThrown)
         {
             float targetRotationY = rotationY + mouseX;
             targetRotationY = Mathf.Clamp(targetRotationY, initialRotationY - 90, initialRotationY + 90);

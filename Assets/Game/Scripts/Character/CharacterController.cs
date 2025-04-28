@@ -21,12 +21,17 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Move();
         ApplyBetterGravity();
+
+        if (CharactersManager.Instance.isSingularityThrown) return;
+
+        Move();
     }
 
     void Update()
     {
+        if (CharactersManager.Instance.isSingularityThrown) return;
+
         HandleJump();
         HandleDash();
         HandleSingularity();
@@ -49,7 +54,7 @@ public class PlayerController : MonoBehaviour
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
 
-        Transform cam = CharactersManager.Instance.SingularityThrown
+        Transform cam = CharactersManager.Instance.isSingularityThrown
             ? CameraManager.Instance.SingularityCam.transform
             : CameraManager.Instance.PlayerCam.transform;
 
@@ -81,7 +86,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + m_gameplayData.DashCooldown)
         {
-            Transform cam = CharactersManager.Instance.SingularityThrown
+            Transform cam = CharactersManager.Instance.isSingularityThrown
                 ? CameraManager.Instance.SingularityCam.transform
                 : CameraManager.Instance.PlayerCam.transform;
 
