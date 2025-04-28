@@ -1,8 +1,5 @@
-using Cinemachine;
-using Unity.PlasticSCM.Editor.UI;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using FMOD.Studio;
 
 public class CacaController : MonoBehaviour
 {
@@ -18,11 +15,19 @@ public class CacaController : MonoBehaviour
 
     public GameObject blackHole;
     public GameObject destination;
+    
+    private Vector3 lastPosition;
+    private Vector3 currentVelocity;
+    private float footstepTimer = 0f;
+
+    private EventInstance footstepEvent; 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        footstepEvent = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.playerFootsetps);
+        lastPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -35,6 +40,9 @@ public class CacaController : MonoBehaviour
 
 
         isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.x + .3f);
+        
+        Debug.DrawRay(transform.position, Vector3.down * (transform.localScale.x + .3f), Color.red);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.x + .3f);
 
         //Dash
         if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + dashCooldown)
@@ -43,13 +51,44 @@ public class CacaController : MonoBehaviour
 
             lastDashTime = Time.time;
         }
-
+        
+        UpdateSound();
+        
         move = transform.TransformDirection(move);
         transform.localPosition += move;
+        
+        currentVelocity = (transform.position - lastPosition) / Time.deltaTime;
+        lastPosition = transform.position;
+        
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
+    }
+
+    private void UpdateSound()
+    {
+        if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
+        {
+            PLAYBACK_STATE state;
+
+            footstepEvent.getPlaybackState(out state);
+
+            footstepEvent.setVolume(AudioManager.Instance.SFXVolume);
+
+            AudioManager.Instance.Set3DAttributesFromTransform(footstepEvent, transform, currentVelocity);
+
+            if (state.Equals(PLAYBACK_STATE.STOPPED))
+            {
+                footstepEvent.start();
+            }
+        }
+        else
+        {
+            footstepEvent.stop(STOP_MODE.ALLOWFADEOUT);
+        }
+        
+
     }
 }

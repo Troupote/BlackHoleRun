@@ -1,94 +1,85 @@
-using FMOD;
-using FMOD.Studio;
-using FMODUnity;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
+using FMODUnity;
+using FMOD.Studio;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager instance { get; private set; }
+    [SerializeField] public float SFXVolume;
+    [SerializeField] public float MusicVolume;
+    [SerializeField] public float MasterVolume;
 
-    private EventInstance musicEventInstance;
+    /// <summary>
+    /// Instance unique de AudioManager accessible globalement
+    /// </summary>
+    public static AudioManager Instance;
 
     private void Awake()
     {
-        if (instance != null)
+        if (Instance != null)
         {
-            Debug.LogError("There is more than one AudioManager in the scene.");
-            Destroy(gameObject);
-            return;
+            Debug.LogError("Tia tout chier debilus retire le component AudioManager de tous les objets et ne le met que sur un seul objet");
         }
-        instance = this;
+        Instance = this;
     }
 
-    private void Start()
+    /// <summary>
+    /// Joue un son une seule fois à une position spécifique
+    /// </summary>
+    /// <param name="soundReference">Référence de l'événement sonore FMOD</param>
+    /// <param name="position">Position 3D où jouer le son</param>
+    public void PlayOneShot(EventReference soundReference, Vector3 position)
     {
-        //InitializeMusic(FMODEvent.instance.Music);
-        //If needs to use audio manager uncomment this line 
+        RuntimeManager.PlayOneShot(soundReference, position);
     }
 
-    public void PlayOneShot(EventReference sound, Vector3 worldPosition)
+    /// <summary>
+    /// Crée une instance d'un événement sonore pouvant être contrôlée
+    /// </summary>
+    /// <param name="soundReference">Référence de l'événement sonore FMOD</param>
+    /// <returns>Une instance d'événement FMOD contrôlable</returns>
+    public EventInstance CreateEventInstance(EventReference soundReference)
     {
-        RuntimeManager.PlayOneShot(sound, worldPosition);
+        EventInstance eventInstance = RuntimeManager.CreateInstance(soundReference);
+        return eventInstance;
     }
 
-    private void InitializeMusic(EventReference musicEventReference)
+    /// <summary>
+    /// Configure les attributs 3D d'un événement sonore
+    /// </summary>
+    /// <param name="eventInstance">L'instance d'événement à configurer</param>
+    /// <param name="position">Position 3D du son</param>
+    /// <param name="velocity">Vitesse de l'émetteur (pour l'effet Doppler)</param>
+    public void Set3DAttributes(EventInstance eventInstance, Vector3 position, Vector3 velocity = default)
     {
-        Debug.Log("Initializing music with event: " + musicEventReference.Path);
-        musicEventInstance = CreateInstance(musicEventReference);
-        if (musicEventInstance.isValid())
-        {
-            Debug.Log("Music event instance created successfully.");
-
-            // D�finir les attributs 3D pour l'instance de musique
-            var attributes = RuntimeUtils.To3DAttributes(Vector3.zero);
-            RESULT result = musicEventInstance.set3DAttributes(attributes);
-            if (result != RESULT.OK)
-            {
-                Debug.LogError("Failed to set 3D attributes: " + result);
-                return;
-            }
-
-            result = musicEventInstance.start();
-            if (result != RESULT.OK)
-            {
-                Debug.LogError("Failed to start music event instance: " + result);
-                return;
-            }
-            Debug.Log("Music event instance started.");
-
-            // V�rifiez le volume de l'instance de musique
-            float volume;
-            result = musicEventInstance.getVolume(out volume);
-            if (result != RESULT.OK)
-            {
-                Debug.LogError("Failed to get volume: " + result);
-                return;
-            }
-            Debug.Log("Music event instance volume: " + volume);
-
-            // Assurez-vous que le volume n'est pas � z�ro
-            if (volume == 0f)
-            {
-                result = musicEventInstance.setVolume(1f);
-                if (result != RESULT.OK)
-                {
-                    Debug.LogError("Failed to set volume: " + result);
-                    return;
-                }
-                Debug.Log("Music event instance volume set to 1.");
-            }
-        }
-        else
-        {
-            Debug.LogError("Failed to create music event instance.");
-        }
+        FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
+        attributes.position = new FMOD.VECTOR { x = position.x, y = position.y, z = position.z };
+        attributes.velocity = new FMOD.VECTOR { x = velocity.x, y = velocity.y, z = velocity.z };
+        eventInstance.set3DAttributes(attributes);
     }
-
-    public EventInstance CreateInstance(EventReference eventReference)
+    
+    /// <summary>
+    /// Configure les attributs 3D d'un événement sonore à partir d'un Transform
+    /// </summary>
+    /// <param name="eventInstance">L'instance d'événement à configurer</param>
+    /// <param name="transform">Le Transform à partir duquel extraire la position</param>
+    /// <param name="velocity">Vitesse de l'émetteur (pour l'effet Doppler)</param>
+    public void Set3DAttributesFromTransform(EventInstance eventInstance, Transform transform, Vector3 velocity = default)
     {
-        EventInstance instance = RuntimeManager.CreateInstance(eventReference);
-        return instance;
+        FMOD.ATTRIBUTES_3D attributes = RuntimeUtils.To3DAttributes(transform.position);
+        attributes.velocity = new FMOD.VECTOR { x = velocity.x, y = velocity.y, z = velocity.z };
+        eventInstance.set3DAttributes(attributes);
     }
 
+    /// <summary>
+    /// Configure les attributs 3D d'un événement sonore à partir d'un GameObject
+    /// </summary>
+    /// <param name="eventInstance">L'instance d'événement à configurer</param>
+    /// <param name="gameObject">Le GameObject dont la position sera utilisée</param>
+    /// <param name="velocity">Vitesse de l'émetteur (pour l'effet Doppler)</param>
+    public void Set3DAttributesFromGameObject(EventInstance eventInstance, GameObject gameObject, Vector3 velocity = default)
+    {
+        eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject.transform.position));
+    }
+    
+    
 }
