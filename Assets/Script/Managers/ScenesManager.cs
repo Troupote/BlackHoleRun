@@ -5,14 +5,11 @@ using UnityEngine.SceneManagement;
 
 namespace BHR
 {
-    public class ScenesManager : MonoBehaviour
+    public class ScenesManager : ManagerSingleton<ScenesManager>
     {
-        public static ScenesManager Instance;
-        [SerializeField]
-        private GameObject _canvasPrefab;
-
         [SerializeField, ValidateInput("ValidateStartSceneData", "Start scene must be the same as the current scene !")]
         private SceneDataSO _startSceneData;
+        public SceneDataSO MenuScene;
 
         [ReadOnly]
         public SceneDataSO CurrentSceneData;
@@ -27,49 +24,23 @@ namespace BHR
 #endif
         #endregion
 
-        private void Awake()
+        public override void Awake()
         {
-            // Creates instance
-            if (Instance != null)
-                return;
-
-            Instance = this;
+            base.Awake();
             CurrentSceneData = _startSceneData;
-
-            DontDestroyOnLoad(gameObject);
-
-            // Set prior and unique canvas
-            ResetCanvas(true);
-            ModuleManager.Instance = null;
-            var canvas = Instantiate(_canvasPrefab);
-            Debug.Log("Creating unique Canvas");
-            DontDestroyOnLoad(canvas);
-            canvas.tag = "Untagged";
-
-            ModuleManager.Instance.Init();
-            EnableDefaultModule(CurrentSceneData);
-        }
-
-        private void ResetCanvas(bool itself = false)
-        {
-            if (GameObject.FindGameObjectsWithTag("Canvas").Length > 0)
-            {
-                Debug.LogWarning("Destroying present canvas");
-                foreach (GameObject go in GameObject.FindGameObjectsWithTag("Canvas"))
-                    if(!itself || go!=this.gameObject)
-                        Destroy(go);
-            }
         }
 
         private void Start()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
+            EnableDefaultModule(CurrentSceneData);
         }
 
         public void ChangeScene(SceneDataSO sceneData)
         {
             Debug.Log($"Changing scene from {SceneManager.GetActiveScene().name} to {sceneData.SceneName}");
             CurrentSceneData = sceneData;
+            GameManager.Instance.OnSceneChanged();
             SceneManager.LoadScene(sceneData.SceneName);
         }
 
@@ -83,23 +54,23 @@ namespace BHR
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            ResetCanvas();
+            
         }
 
         private void EnableDefaultModule(SceneDataSO sceneData)
         {
             GameObject moduleToLoad = null;
-            if (sceneData.SceneName == "MainMenu")
+            if (sceneData.SceneName == "Test" || ModuleManager.Instance.TestMode)
             {
-                moduleToLoad = ModuleManager.Instance.MainMenuDefaultModule;
+                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.TEST);
             }
-            else if (sceneData.SceneName.Contains("Level"))
+            else if (sceneData is LevelDataSO)
             {
-                moduleToLoad = ModuleManager.Instance.LevelDefaultModule;
+                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD);
             }
-            else if (sceneData.SceneName == "Test")
+            else if (sceneData.SceneName == "MainMenu")
             {
-                moduleToLoad = ModuleManager.Instance.TestDefaultModule;
+                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAIN_TITLE);
             }
             ModuleManager.Instance.ProcessModuleState(moduleToLoad, true);
         }
