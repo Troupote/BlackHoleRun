@@ -1,7 +1,8 @@
+using BHR;
 using System.Collections;
 using UnityEngine;
 
-public class CharactersManager : MonoBehaviour
+public class CharactersManager : ManagerSingleton<CharactersManager>
 {
     [SerializeField]
     private GameObject _characterPrefab;
@@ -25,18 +26,9 @@ public class CharactersManager : MonoBehaviour
 
     internal bool isSingularityThrown = false;
 
-    public static CharactersManager Instance { get; private set; }
-
-    private void Awake()
+    public override void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        SetInstance(false);
     }
 
     private void Start()
@@ -92,6 +84,8 @@ public class CharactersManager : MonoBehaviour
         _singularityObject.transform.position = oldCharacterPosition;
 
         a_characterBehavior.ImobilizeCharacter(false);
+
+        GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
     }
 
     public void ChangePlayersTurn(bool a_isEarly = false)
