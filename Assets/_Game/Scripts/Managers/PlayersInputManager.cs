@@ -12,6 +12,9 @@ namespace BHR
     {
         [SerializeField, Required] private InputActionsSO Actions;
 
+        [SerializeField, ReadOnly] private bool _canConnect; // Enable the ControllerSelection 
+        public bool CanConnect { get => _canConnect; set => _canConnect = value; }
+
         // Players managing
         private PlayerInput[] _playersInputRef = new PlayerInput[2];
         public PlayerInput[] PlayersInputRef { get => _playersInputRef; set { _playersInputRef = value; } }
@@ -20,8 +23,14 @@ namespace BHR
         [SerializeField, ReadOnly] private PlayerReadyState[] _playersReadyState;
         public PlayerReadyState[] PlayersReadyState => _playersReadyState;
 
-
-        public bool SoloPlayer => PlayersReadyState.Contains(PlayerReadyState.LOGGED_OUT) || PlayersReadyState.Contains(PlayerReadyState.NONE);
+        [SerializeField, ReadOnly]
+        private bool _soloPlayer = false;
+        public bool SoloPlayer
+        {
+            get => _soloPlayer;
+            private set => _soloPlayer = value;
+        }
+        [SerializeField, ReadOnly]
         private bool _soloModeEnabled = false;
         public bool SoloModeEnabled
         {
@@ -61,44 +70,7 @@ namespace BHR
             ModuleManager.Instance.OnModuleEnabled.AddListener(OnModuleEnabled);
         }
 
-        public void OnPlayerJoined(PlayerInput playerInput)
-        {
-            Debug.Log($"Player {playerInput.playerIndex} joined !\nController : {playerInput.devices[0]} (Scheme : {playerInput.currentControlScheme})\nAction map : {playerInput.currentActionMap.name}");
-
-            playerInput.transform.SetParent(transform);
-
-            _playersInputRef[playerInput.playerIndex] = playerInput;
-            UpdatePlayerControllerState(playerInput.playerIndex);
-            UpdatePlayerReadyState(playerInput.playerIndex, PlayerReadyState.CONNECTED);
-
-            // Resolve switch bug
-            RemoveSwitchXInput(playerInput.devices[0]);
-        }
-
-        public void OnPlayerLeft(PlayerInput playerInput)
-        {
-            // Controller disconnected
-            PlayersControllerState[playerInput.playerIndex] = PlayerControllerState.DISCONNECTED;
-            Destroy(playerInput.gameObject);
-        }
-
-        private void OnDeviceChange(InputDevice device, InputDeviceChange change)
-        {
-            if (change == InputDeviceChange.Disconnected)
-            {
-                foreach (PlayerInput playerInput in _playersInputRef)
-                {
-                    Debug.Log($"{device.name} is deconnec");
-                    if (playerInput != null && playerInput.devices.Count == 0)
-                    {
-                        Debug.Log("Disconnect");
-
-                        OnPlayerLeft(playerInput);
-                    }
-                }
-            }
-        }
-
+        #region Input management
         public void HandleInput(InputAction.CallbackContext ctx, int playerIndex)
         {
             string actionMap = ctx.action.actionMap.name;
@@ -122,7 +94,6 @@ namespace BHR
             OnInput.Invoke(ctx);
         }
 
-        #region Input events 
         public UnityEvent OnHJump, OnHDash, OnHSlide, OnHThrow, OnSJump, OnSDash, OnSUnmorph, OnPause; // Performed events
         public UnityEvent<Vector2> OnHMove, OnSMove; // Vector2 value events
         public UnityEvent<Vector2, PlayerControllerState> OnHLook, OnSLook; // Vector2 value events depending of the controller used
@@ -194,19 +165,64 @@ namespace BHR
 
         #endregion
 
+        #region Connect and disconncect gestion
+        public void OnPlayerJoined(PlayerInput playerInput)
+        {
+            Debug.Log($"Player {playerInput.playerIndex} joined !\nController : {playerInput.devices[0]} (Scheme : {playerInput.currentControlScheme})\nAction map : {playerInput.currentActionMap.name}");
+
+            playerInput.transform.SetParent(transform);
+
+            _playersInputRef[playerInput.playerIndex] = playerInput;
+            UpdatePlayerControllerState(playerInput.playerIndex);
+            UpdatePlayerReadyState(playerInput.playerIndex, PlayerReadyState.CONNECTED);
+
+            // Resolve switch bug
+            RemoveSwitchXInput(playerInput.devices[0]);
+        }
+
+        public void OnPlayerLeft(PlayerInput playerInput)
+        {
+            // Controller disconnected
+            PlayersControllerState[playerInput.playerIndex] = PlayerControllerState.DISCONNECTED;
+            Destroy(playerInput.gameObject);
+        }
+
+        private void OnDeviceChange(InputDevice device, InputDeviceChange change)
+        {
+            if (change == InputDeviceChange.Disconnected)
+            {
+                foreach (PlayerInput playerInput in _playersInputRef)
+                {
+                    Debug.Log($"{device.name} is deconnec");
+                    if (playerInput != null && playerInput.devices.Count == 0)
+                    {
+                        Debug.Log("Disconnect");
+
+                        OnPlayerLeft(playerInput);
+                    }
+                }
+            }
+        }
+        #endregion
+
+
+        #region ControllerSelection
         private void OnModuleEnabled(GameObject module, bool back)
         {
             if (ModuleManager.Instance.ModulesRef[module] == ModuleManager.ModuleType.PLAYER_SELECTION)
                 OnPlayerSelectionEnable();
         }
 
-        #region ControllerSelection
         private void OnPlayerSelectionEnable()
         {
+            CanConnect = true;
+
             // Default assignation
             for(int i=0; i < PlayersControllerState.Length; i++)
                 if(PlayersControllerState[i] != PlayerControllerState.DISCONNECTED)
                     UpdatePlayerReadyState(i, PlayerReadyState.CONNECTED);
+
+            SetSoloPlayer();
         }
 
         private void UpdatePlayerControllerState(int playerIndex)
@@ -259,8 +275,13 @@ namespace BHR
                 UpdatePlayerReadyState(playerIndex, connecting ? PlayerReadyState.CONNECTED : PlayerReadyState.READY);
             }
 
+            SetSoloPlayer();
+
             if (CheckReadyState())
+            {
+                GameManager.Instance.SoloMode = SoloModeEnabled;
                 GameManager.Instance.LaunchLevel();
+            }
         }
 
         public void OnCancelAction(int playerIndex)
@@ -271,6 +292,9 @@ namespace BHR
 
             // Cancel ready state or log out
             UpdatePlayerReadyState(playerIndex, PlayersReadyState[playerIndex] == PlayerReadyState.READY ? PlayerReadyState.CONNECTED : PlayerReadyState.LOGGED_OUT);
+
+
+            SetSoloPlayer();
 
             // Cancel SoloMode if enabled and recheck
             if (SoloModeEnabled) SoloModeEnabled = false;
@@ -291,6 +315,11 @@ namespace BHR
 
         public int PlayerReadyCount() => PlayersReadyState.Where(r => r == PlayerReadyState.READY).ToList().Count;
         public int PlayerConnectedCount() => PlayersReadyState.Where(r => r != PlayerReadyState.LOGGED_OUT && r != PlayerReadyState.NONE).ToList().Count;
+
+        public void SetSoloPlayer()
+        {
+            SoloPlayer = PlayersReadyState.Contains(PlayerReadyState.LOGGED_OUT) || PlayersReadyState.Contains(PlayerReadyState.NONE);
+        }
 
         private bool CheckReadyState()
         {
