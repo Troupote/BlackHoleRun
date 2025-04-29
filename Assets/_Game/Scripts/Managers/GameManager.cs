@@ -11,6 +11,8 @@ namespace BHR
         [SerializeField]
         private PlayerState _activePlayerState;
         public PlayerState ActivePlayerState => _activePlayerState;
+        private int _activePlayerIndex;
+        public int ActivePlayerIndex => _activePlayerIndex;
         private bool _mainPlayerIsPlayerOne = true;
         private LevelDataSO _selectedLevel = null;
         private LevelDataSO _currentLevel = null;
@@ -20,7 +22,7 @@ namespace BHR
             set => _selectedLevel = value;
         }
         public LevelDataSO CurrentLevel => _currentLevel;
-        public UnityEvent OnLaunchLevel;
+        public UnityEvent OnLaunchLevel, OnStartLevel;
         public UnityEvent<float> OnEndLevel;
 
         #region During Game Level
@@ -67,6 +69,9 @@ namespace BHR
         private void Start()
         {
             Init();
+
+            // Bind to input events
+            PlayersInputManager.Instance.OnPause.AddListener(TogglePause);
         }
 
         private void Init()
@@ -93,7 +98,7 @@ namespace BHR
 
         public void StartLevel()
         {
-            IsPlaying = true;
+            IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
         }
 
@@ -120,6 +125,7 @@ namespace BHR
 
         public void EndLevel()
         {
+            CleanInGame();
             IsPlaying = false;
             _currentLevel.SaveTime(Timer);
             ChangeMainPlayerState(PlayerState.UI, false);
@@ -130,6 +136,7 @@ namespace BHR
 
         public void QuitLevel()
         {
+            CleanInGame();
             ChangeMainPlayerState(PlayerState.UI, false);
             ScenesManager.Instance.ChangeScene(ScenesManager.Instance.MenuScene);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.LEVEL_SELECTION));
@@ -143,10 +150,10 @@ namespace BHR
             LaunchLevel();
         }
         #endregion
-        public void OnSceneChanged()
+        public void CleanInGame()
         {
             // Clean all we need to clean
-            PlayerInputReceiver.Instance?.DestroyInstance(false);
+            CharactersManager.Instance.DestroyInstance();
         }
 
         private void Update()
@@ -159,7 +166,7 @@ namespace BHR
         {
             if(switchActivePlayer) _mainPlayerIsPlayerOne = !_mainPlayerIsPlayerOne;
 
-            int activePlayerId = _mainPlayerIsPlayerOne ? 1 : 0;
+            _activePlayerIndex = _mainPlayerIsPlayerOne ? 1 : 0;
 
             _activePlayerState = state;
 
@@ -170,10 +177,10 @@ namespace BHR
             }
             else
             {
-                PlayersInputManager.Instance.PlayersInputRef[activePlayerId].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+                PlayersInputManager.Instance.PlayersInputRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
 
                 PlayerState secondPlayerState = _activePlayerState == PlayerState.UI ? PlayerState.UI : PlayerState.INACTIVE;
-                PlayersInputManager.Instance.PlayersInputRef[1-activePlayerId].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
+                PlayersInputManager.Instance.PlayersInputRef[1-_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
             }
         }
     }

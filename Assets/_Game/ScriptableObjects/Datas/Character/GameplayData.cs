@@ -33,6 +33,12 @@ public class GameplayData : ScriptableObject
 
     [Title("Camera Settings")]
     [SerializeField]
+    private Vector2 m_mouseSensitivity;
+    public Vector2 MouseSensitivity => m_mouseSensitivity;
+    [SerializeField]
+    private Vector2 m_gamepadSensitivity;
+    public Vector2 GamepadSensitivity => m_gamepadSensitivity;
+    [SerializeField]
     private float m_baseFOV = 60f;
     public float BaseFOV => m_baseFOV;
     [SerializeField]

@@ -1,3 +1,4 @@
+using BHR;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Scripting.APIUpdating;
@@ -6,9 +7,23 @@ public class SingularityController : MonoBehaviour
 {
     [SerializeField]
     private Rigidbody rb;
-    private void Start()
+    private Vector2 moveValue;
+
+    private void OnEnable()
     {
+        // Bind inputs
+        PlayersInputManager.Instance.OnSMove.AddListener(HandleSingulairtyMove);
+        // Bind toout le reste la
+
     }
+
+    private void OnDisable()
+    {
+        // Debind inputs
+        PlayersInputManager.Instance.OnSMove.RemoveListener(HandleSingulairtyMove);
+        // Debing le reste
+    }
+
     void Update()
     {
         if (!CharactersManager.Instance.isSingularityThrown) return;
@@ -20,7 +35,7 @@ public class SingularityController : MonoBehaviour
 
     private void Move()
     {
-        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveX = moveValue.x;
 
         if (moveX != 0)
         {
@@ -29,4 +44,5 @@ public class SingularityController : MonoBehaviour
         }
     }
 
+    public void HandleSingulairtyMove(Vector2 value) => moveValue = value;
 }

@@ -115,12 +115,84 @@ namespace BHR
             }
             else // In-Game action map -> PlayerInputReceiver
             {
-                PlayerInputReceiver.Instance.HandleInput(ctx);
+                SendInputEvent(ctx, playerIndex);
             }
 
             // For debug purpose or Game Manager, there's this generic input event
             OnInput.Invoke(ctx);
         }
+
+        #region Input events 
+        public UnityEvent OnHJump, OnHDash, OnHSlide, OnHThrow, OnSJump, OnSDash, OnSUnmorph, OnPause; // Performed events
+        public UnityEvent<Vector2> OnHMove, OnSMove; // Vector2 value events
+        public UnityEvent<Vector2, PlayerControllerState> OnHLook, OnSLook; // Vector2 value events depending of the controller used
+        public UnityEvent OnHAim; // Hold events
+
+        private void SendInputEvent(InputAction.CallbackContext ctx, int playerIndex)
+        {
+            // Specific global actions (no need to diferentiate players)
+            if (ctx.performed && ctx.action.name == InputActions.Pause)
+                OnPause.Invoke();
+
+            // Character actions in game (need to diferentiate players)
+
+            // If IsPlaying only -> don't know if the best is to block the input here or to block the movements everywhere else
+            if (!GameManager.Instance.IsPlaying)
+                return;
+
+            // HUMANOID
+            if (ctx.action.actionMap.name == InputActions.HumanoidActionMap)
+            {
+                if (ctx.action.name == InputActions.Look)
+                    OnHLook.Invoke(ctx.ReadValue<Vector2>(), PlayersControllerState[playerIndex]);
+
+                else if (ctx.action.name == InputActions.Move)
+                    OnHMove.Invoke(ctx.ReadValue<Vector2>());
+
+                else if (ctx.action.name == InputActions.Aim)
+                    OnHAim.Invoke();
+
+                if (ctx.performed)
+                {
+                    if (ctx.action.name == InputActions.Jump)
+                        OnHJump.Invoke();
+
+                    else if (ctx.action.name == InputActions.Dash)
+                        OnHDash.Invoke();
+
+                    else if (ctx.action.name == InputActions.Slide)
+                        OnHSlide.Invoke();
+
+                    else if (ctx.action.name == InputActions.Throw)
+                        OnHThrow.Invoke();
+                }
+            }
+
+            // SINGULARITY
+            else if (ctx.action.actionMap.name == InputActions.SingularityActionMap)
+            {
+                if (ctx.action.name == InputActions.Look)
+                    OnSLook.Invoke(ctx.ReadValue<Vector2>(), PlayersControllerState[playerIndex]); // @todo link to singularity look action
+
+                else if (ctx.action.name == InputActions.Move)
+                    OnSMove.Invoke(ctx.ReadValue<Vector2>());
+
+                if (ctx.performed)
+                {
+                    if (ctx.action.name == InputActions.Jump)
+                        OnSJump.Invoke(); // @todo link to singularity jump action
+
+                    else if (ctx.action.name == InputActions.Dash)
+                        OnSDash.Invoke(); // @todo link to singularity dash action
+
+                    else if (ctx.action.name == InputActions.Slide)
+                        OnSUnmorph.Invoke(); // @todo link to singularity unmorph action (if any)
+                }
+            }
+        }
+
+
+        #endregion
 
         private void OnModuleEnabled(GameObject module, bool back)
         {

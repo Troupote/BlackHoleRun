@@ -8,8 +8,10 @@ namespace BHR
 {
     public class DataManager : ManagerSingleton<DataManager>
     {
+        [Header("Debug")]
         public bool DebugUnlockedMode = false;
 
+        [Header("Levels Data")]
         [SerializeField, Required] private string _levelsFolderPath;
 
         private List<LevelDataSO> _levelDatas = new List<LevelDataSO>();
