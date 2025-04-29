@@ -12,6 +12,9 @@ namespace BHR
     {
         [SerializeField, Required] private InputActionsSO Actions;
 
+        [SerializeField, ReadOnly] private bool _canConnect; // Enable the ControllerSelection 
+        public bool CanConnect { get => _canConnect; set => _canConnect = value; }
+
         // Players managing
         private PlayerInput[] _playersInputRef = new PlayerInput[2];
         public PlayerInput[] PlayersInputRef { get => _playersInputRef; set { _playersInputRef = value; } }
@@ -20,8 +23,14 @@ namespace BHR
         [SerializeField, ReadOnly] private PlayerReadyState[] _playersReadyState;
         public PlayerReadyState[] PlayersReadyState => _playersReadyState;
 
-
-        public bool SoloPlayer => PlayersReadyState.Contains(PlayerReadyState.LOGGED_OUT) || PlayersReadyState.Contains(PlayerReadyState.NONE);
+        [SerializeField, ReadOnly]
+        private bool _soloPlayer = false;
+        public bool SoloPlayer
+        {
+            get => _soloPlayer;
+            private set => _soloPlayer = value;
+        }
+        [SerializeField, ReadOnly]
         private bool _soloModeEnabled = false;
         public bool SoloModeEnabled
         {
@@ -61,6 +70,102 @@ namespace BHR
             ModuleManager.Instance.OnModuleEnabled.AddListener(OnModuleEnabled);
         }
 
+        #region Input management
+        public void HandleInput(InputAction.CallbackContext ctx, int playerIndex)
+        {
+            string actionMap = ctx.action.actionMap.name;
+            //Debug.Log($"Player in {actionMap} state has {ctx.phase} {ctx.action.name} with {ctx.control.device.name}");
+
+            if (actionMap == InputActions.UIActionMap)
+            {
+                // Specific case in Player selection where while in UI we need to differenciate players, but not with the map, with the playerIndex.
+                if(ModuleManager.Instance.ModulesRef[ModuleManager.Instance.CurrentModule] == ModuleManager.ModuleType.PLAYER_SELECTION)
+                    ControllerSelectionHandleInput(ctx, playerIndex);
+                // UI input are listened by every subbed modules
+                else
+                    OnUIInput.Invoke(ctx);
+            }
+            else // In-Game action map -> PlayerInputReceiver
+            {
+                SendInputEvent(ctx, playerIndex);
+            }
+
+            // For debug purpose or Game Manager, there's this generic input event
+            OnInput.Invoke(ctx);
+        }
+
+        public UnityEvent OnHJump, OnHDash, OnHSlide, OnHThrow, OnSJump, OnSDash, OnSUnmorph, OnPause; // Performed events
+        public UnityEvent<Vector2> OnHMove, OnSMove; // Vector2 value events
+        public UnityEvent<Vector2, PlayerControllerState> OnHLook, OnSLook; // Vector2 value events depending of the controller used
+        public UnityEvent OnHAim; // Hold events
+
+        private void SendInputEvent(InputAction.CallbackContext ctx, int playerIndex)
+        {
+            // Specific global actions (no need to diferentiate players)
+            if (ctx.performed && ctx.action.name == InputActions.Pause)
+                OnPause.Invoke();
+
+            // Character actions in game (need to diferentiate players)
+
+            // If IsPlaying only -> don't know if the best is to block the input here or to block the movements everywhere else
+            if (!GameManager.Instance.IsPlaying)
+                return;
+
+            // HUMANOID
+            if (ctx.action.actionMap.name == InputActions.HumanoidActionMap)
+            {
+                if (ctx.action.name == InputActions.Look)
+                    OnHLook.Invoke(ctx.ReadValue<Vector2>(), PlayersControllerState[playerIndex]);
+
+                else if (ctx.action.name == InputActions.Move)
+                    OnHMove.Invoke(ctx.ReadValue<Vector2>());
+
+                else if (ctx.action.name == InputActions.Aim)
+                    OnHAim.Invoke();
+
+                if (ctx.performed)
+                {
+                    if (ctx.action.name == InputActions.Jump)
+                        OnHJump.Invoke();
+
+                    else if (ctx.action.name == InputActions.Dash)
+                        OnHDash.Invoke();
+
+                    else if (ctx.action.name == InputActions.Slide)
+                        OnHSlide.Invoke();
+
+                    else if (ctx.action.name == InputActions.Throw)
+                        OnHThrow.Invoke();
+                }
+            }
+
+            // SINGULARITY
+            else if (ctx.action.actionMap.name == InputActions.SingularityActionMap)
+            {
+                if (ctx.action.name == InputActions.Look)
+                    OnSLook.Invoke(ctx.ReadValue<Vector2>(), PlayersControllerState[playerIndex]); // @todo link to singularity look action
+
+                else if (ctx.action.name == InputActions.Move)
+                    OnSMove.Invoke(ctx.ReadValue<Vector2>());
+
+                if (ctx.performed)
+                {
+                    if (ctx.action.name == InputActions.Jump)
+                        OnSJump.Invoke(); // @todo link to singularity jump action
+
+                    else if (ctx.action.name == InputActions.Dash)
+                        OnSDash.Invoke(); // @todo link to singularity dash action
+
+                    else if (ctx.action.name == InputActions.Slide)
+                        OnSUnmorph.Invoke(); // @todo link to singularity unmorph action (if any)
+                }
+            }
+        }
+
+
+        #endregion
+
+        #region Connect and disconncect gestion
         public void OnPlayerJoined(PlayerInput playerInput)
         {
             Debug.Log($"Player {playerInput.playerIndex} joined !\nController : {playerInput.devices[0]} (Scheme : {playerInput.currentControlScheme})\nAction map : {playerInput.currentActionMap.name}");
@@ -98,43 +203,26 @@ namespace BHR
                 }
             }
         }
+        #endregion
 
-        public void HandleInput(InputAction.CallbackContext ctx, int playerIndex)
-        {
-            string actionMap = ctx.action.actionMap.name;
-            //Debug.Log($"Player in {actionMap} state has {ctx.phase} {ctx.action.name} with {ctx.control.device.name}");
 
-            if (actionMap == InputActions.UIActionMap)
-            {
-                // Specific case in Player selection where while in UI we need to differenciate players, but not with the map, with the playerIndex.
-                if(ModuleManager.Instance.ModulesRef[ModuleManager.Instance.CurrentModule] == ModuleManager.ModuleType.PLAYER_SELECTION)
-                    ControllerSelectionHandleInput(ctx, playerIndex);
-                // UI input are listened by every subbed modules
-                else
-                    OnUIInput.Invoke(ctx);
-            }
-            else // In-Game action map -> PlayerInputReceiver
-            {
-                PlayerInputReceiver.Instance.HandleInput(ctx);
-            }
-
-            // For debug purpose or Game Manager, there's this generic input event
-            OnInput.Invoke(ctx);
-        }
-
+        #region ControllerSelection
         private void OnModuleEnabled(GameObject module, bool back)
         {
             if (ModuleManager.Instance.ModulesRef[module] == ModuleManager.ModuleType.PLAYER_SELECTION)
                 OnPlayerSelectionEnable();
         }
 
-        #region ControllerSelection
         private void OnPlayerSelectionEnable()
         {
+            CanConnect = true;
+
             // Default assignation
             for(int i=0; i < PlayersControllerState.Length; i++)
                 if(PlayersControllerState[i] != PlayerControllerState.DISCONNECTED)
                     UpdatePlayerReadyState(i, PlayerReadyState.CONNECTED);
+
+            SetSoloPlayer();
         }
 
         private void UpdatePlayerControllerState(int playerIndex)
@@ -187,8 +275,13 @@ namespace BHR
                 UpdatePlayerReadyState(playerIndex, connecting ? PlayerReadyState.CONNECTED : PlayerReadyState.READY);
             }
 
+            SetSoloPlayer();
+
             if (CheckReadyState())
+            {
+                GameManager.Instance.SoloMode = SoloModeEnabled;
                 GameManager.Instance.LaunchLevel();
+            }
         }
 
         public void OnCancelAction(int playerIndex)
@@ -199,6 +292,9 @@ namespace BHR
 
             // Cancel ready state or log out
             UpdatePlayerReadyState(playerIndex, PlayersReadyState[playerIndex] == PlayerReadyState.READY ? PlayerReadyState.CONNECTED : PlayerReadyState.LOGGED_OUT);
+
+
+            SetSoloPlayer();
 
             // Cancel SoloMode if enabled and recheck
             if (SoloModeEnabled) SoloModeEnabled = false;
@@ -219,6 +315,11 @@ namespace BHR
 
         public int PlayerReadyCount() => PlayersReadyState.Where(r => r == PlayerReadyState.READY).ToList().Count;
         public int PlayerConnectedCount() => PlayersReadyState.Where(r => r != PlayerReadyState.LOGGED_OUT && r != PlayerReadyState.NONE).ToList().Count;
+
+        public void SetSoloPlayer()
+        {
+            SoloPlayer = PlayersReadyState.Contains(PlayerReadyState.LOGGED_OUT) || PlayersReadyState.Contains(PlayerReadyState.NONE);
+        }
 
         private bool CheckReadyState()
         {

@@ -57,7 +57,6 @@ public class StartAnimationUI : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         _blackHole.gameObject.SetActive(false);
         _counter.gameObject.SetActive(false);
-        gameObject.SetActive(false);
         GameManager.Instance.StartLevel();
     }
 
@@ -69,7 +68,6 @@ public class StartAnimationUI : MonoBehaviour
 
     public void StartAnimation()
     {
-        gameObject.SetActive(true);
         StartCoroutine(StartAnimationCoroutine());
     }
 }

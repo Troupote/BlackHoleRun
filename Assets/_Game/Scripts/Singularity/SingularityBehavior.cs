@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using BHR;
 using Cinemachine;
 using UnityEngine;
 
@@ -63,6 +64,7 @@ public class SingularityBehavior : MonoBehaviour
 
         CameraManager.Instance.SwitchCameraToSingularity();
         CharactersManager.Instance.IsSingularityThrown(true);
+        GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
     }
 
     private Vector3 GetThrowDirection()

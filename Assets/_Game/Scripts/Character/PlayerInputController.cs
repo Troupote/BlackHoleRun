@@ -27,13 +27,15 @@ public class PlayerInputController : MonoBehaviour
     IEnumerator InactiveOnJoinDelay(PlayerState state, float delay)
     {
         yield return new WaitForSeconds(delay);
-        GameManager.Instance.ChangeMainPlayerState(state, false);
+        PlayerState = state;
         LinkActions();
     }
 
     private void OnEnable()
     {
-        StartCoroutine(InactiveOnJoinDelay(GameManager.Instance.ActivePlayerState, 0.2f));
+        PlayerState state = PlayersInputManager.Instance.CanConnect ? GameManager.Instance.ActivePlayerState : PlayerState.NONE;
+        PlayersInputManager.Instance.SetSoloPlayer();
+        StartCoroutine(InactiveOnJoinDelay(state, 0.2f));
     }
     
     private void LinkActions()
@@ -72,6 +74,9 @@ public class PlayerInputController : MonoBehaviour
             case PlayerState.INACTIVE:
                 _playerInput.SwitchCurrentActionMap(InputActions.InactiveActionMap);
                 break;
+            case PlayerState.NONE:
+                _playerInput.SwitchCurrentActionMap(InputActions.EmptyActionMap);
+                    break;
         }
     }
 }

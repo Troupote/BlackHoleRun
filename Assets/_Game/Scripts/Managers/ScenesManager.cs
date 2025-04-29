@@ -40,7 +40,6 @@ namespace BHR
         {
             Debug.Log($"Changing scene from {SceneManager.GetActiveScene().name} to {sceneData.SceneName}");
             CurrentSceneData = sceneData;
-            GameManager.Instance.OnSceneChanged();
             SceneManager.LoadScene(sceneData.SceneName);
         }
 
@@ -67,10 +66,12 @@ namespace BHR
             else if (sceneData is LevelDataSO)
             {
                 moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD);
+                PlayersInputManager.Instance.CanConnect = false;
             }
             else if (sceneData.SceneName == "MainMenu")
             {
                 moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAIN_TITLE);
+                PlayersInputManager.Instance.CanConnect = true;
             }
             ModuleManager.Instance.ProcessModuleState(moduleToLoad, true);
         }

@@ -1,8 +1,9 @@
+using BHR;
 using Cinemachine;
 using System.Collections;
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour
+public class CameraManager : ManagerSingleton<CameraManager>
 {
     [field: SerializeField]
     internal CinemachineBrain MainCamBrain { get; private set; }
@@ -16,22 +17,17 @@ public class CameraManager : MonoBehaviour
     [field: SerializeField]
     internal Transform SingularityPlacementRefTransform { get; private set; }
 
-    public static CameraManager Instance { get; private set; }
-
     private float rotationX = 0f;
     private float rotationY = 0f;
     private float initialRotationY;
+    private Vector2 lookValue;
+    private Vector2 playerMoveValue;
 
-    private void Awake()
+    private PlayerControllerState currentControllerUsed = PlayerControllerState.DISCONNECTED;
+
+    public override void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        SetInstance(false);
     }
 
     void Start()
@@ -48,6 +44,20 @@ public class CameraManager : MonoBehaviour
     {
         PlayerCam.Follow = a_characterToFollow.transform;
         SingularityCam.Follow = a_singularityToFollow.transform;
+    }
+
+    private void OnEnable()
+    {
+        // Bind inputs
+        PlayersInputManager.Instance.OnHLook.AddListener(HandleLook);
+        PlayersInputManager.Instance.OnHMove.AddListener(HandlePlayerMove);
+    }
+
+    private void OnDisable()
+    {
+        // Debing inputs
+        PlayersInputManager.Instance.OnHLook.RemoveListener(HandleLook);
+        PlayersInputManager.Instance.OnHMove.RemoveListener(HandlePlayerMove);
     }
 
     internal bool IsBlending => MainCamBrain.IsBlending;
@@ -87,10 +97,12 @@ public class CameraManager : MonoBehaviour
 
     void Update()
     {
-        float moveZ = Input.GetAxisRaw("Vertical");
+        float moveZ = playerMoveValue.y;
+        Vector2 sensitivity = currentControllerUsed == PlayerControllerState.KEYBOARD ? CharactersManager.Instance.GameplayData.MouseSensitivity : CharactersManager.Instance.GameplayData.GamepadSensitivity;
+        sensitivity *= SettingsSave.LoadSensitivity(GameManager.Instance.ActivePlayerIndex);
 
-        float mouseX = Input.GetAxis("Mouse X") * 200 * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * 300 * Time.deltaTime;
+        float mouseX = lookValue.x * sensitivity.x * Time.deltaTime;
+        float mouseY = lookValue.y * sensitivity.y * Time.deltaTime;
 
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, -90, 90);
@@ -129,4 +141,11 @@ public class CameraManager : MonoBehaviour
         }
         
     }
+
+    public void HandleLook(Vector2 value, PlayerControllerState controller)
+    {
+        currentControllerUsed = controller;
+        lookValue = value;
+    }
+    public void HandlePlayerMove(Vector2 value) => playerMoveValue = value;
 }

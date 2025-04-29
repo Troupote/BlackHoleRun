@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 828efc05d7ba4504a9ad60d0c2c38ca7, type: 3}
   m_Name: LevelTest
   m_EditorClassIdentifier: 
-  SceneName: LevelTest
-  LevelName: Test
+  SceneName: InGameTest
+  LevelName: DEV_TEST
   ID: 0
   Times:
     m_Keys: 010000000200000003000000
