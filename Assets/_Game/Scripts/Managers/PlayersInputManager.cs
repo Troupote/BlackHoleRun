@@ -101,6 +101,9 @@ namespace BHR
 
         private void SendInputEvent(InputAction.CallbackContext ctx, int playerIndex)
         {
+            // Get controller type used 
+            PlayerControllerState controller = PlayersControllerState[playerIndex];
+
             // Specific global actions (no need to diferentiate players)
             if (ctx.performed && ctx.action.name == InputActions.Pause)
                 OnPause.Invoke();
@@ -115,10 +118,25 @@ namespace BHR
             if (ctx.action.actionMap.name == InputActions.HumanoidActionMap)
             {
                 if (ctx.action.name == InputActions.Look)
-                    OnHLook.Invoke(ctx.ReadValue<Vector2>(), PlayersControllerState[playerIndex]);
+                {
+                    Vector2 value = ctx.ReadValue<Vector2>();
+
+                    // Deadzone check 
+                    if(controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(playerIndex))
+                        return;
+
+                    OnHLook.Invoke(value, controller);
+                }
 
                 else if (ctx.action.name == InputActions.Move)
-                    OnHMove.Invoke(ctx.ReadValue<Vector2>());
+                {
+                    Vector2 value = ctx.ReadValue<Vector2>();
+
+                    // Deadzone check 
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadLeftStickDeadzone(playerIndex))
+                        return;
+                    OnHMove.Invoke(value);
+                }
 
                 else if (ctx.action.name == InputActions.Aim)
                     OnHAim.Invoke();
@@ -143,10 +161,26 @@ namespace BHR
             else if (ctx.action.actionMap.name == InputActions.SingularityActionMap)
             {
                 if (ctx.action.name == InputActions.Look)
-                    OnSLook.Invoke(ctx.ReadValue<Vector2>(), PlayersControllerState[playerIndex]); // @todo link to singularity look action
+                {
+                    Vector2 value = ctx.ReadValue<Vector2>();
+
+                    // Deadzone check 
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(playerIndex))
+                        return;
+
+                    OnHLook.Invoke(value, controller);
+                }
 
                 else if (ctx.action.name == InputActions.Move)
-                    OnSMove.Invoke(ctx.ReadValue<Vector2>());
+                {
+                    Vector2 value = ctx.ReadValue<Vector2>();
+
+                    // Deadzone check 
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadLeftStickDeadzone(playerIndex))
+                        return;
+
+                    OnSMove.Invoke(value);
+                }
 
                 if (ctx.performed)
                 {

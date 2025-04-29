@@ -18,8 +18,6 @@ MonoBehaviour:
   m_jumpForce: 35
   m_dashForce: 40
   m_dashCooldown: 1.5
-  m_mouseSensitivity: {x: 50, y: 50}
-  m_gamepadSensitivity: {x: 200, y: 200}
   m_baseFOV: 60
   m_MovingForwardFOV: 70
   m_MovingBackwardFOV: 50
