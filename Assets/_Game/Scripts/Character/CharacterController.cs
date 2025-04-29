@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
 
         rb.linearVelocity = Vector3.SmoothDamp(rb.linearVelocity, new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.z), ref currentVelocity, 0.1f);
 
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.y + 0.2f);
+        isGrounded = Physics.CheckSphere(new Vector3(transform.position.x, transform.position.y - transform.localScale.y, transform.position.z), .3f, LayerMask.GetMask("ground"));
     }
 
     public void HandleJump()
