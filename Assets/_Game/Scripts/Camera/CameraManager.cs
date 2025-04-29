@@ -25,6 +25,11 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     private PlayerControllerState currentControllerUsed = PlayerControllerState.DISCONNECTED;
 
+    public override void Awake()
+    {
+        SetInstance(false);
+    }
+
     void Start()
     {
         PlayerCam.Priority = 5;

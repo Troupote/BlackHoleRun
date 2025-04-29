@@ -21,6 +21,11 @@ namespace BHR
             get => _selectedLevel;
             set => _selectedLevel = value;
         }
+
+        [SerializeField, ReadOnly]
+        private bool _soloMode = true;
+        public bool SoloMode { get => _soloMode; set => _soloMode = value; }
+
         public LevelDataSO CurrentLevel => _currentLevel;
         public UnityEvent OnLaunchLevel, OnStartLevel;
         public UnityEvent<float> OnEndLevel;
@@ -84,6 +89,7 @@ namespace BHR
 
         public void LaunchLevel()
         {
+            PlayersInputManager.Instance.CanConnect = false;
             ScenesManager.Instance.ChangeScene(SelectedLevel);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
             ModuleManager.Instance.ClearNavigationHistoric();
@@ -154,6 +160,7 @@ namespace BHR
         {
             // Clean all we need to clean
             CharactersManager.Instance.DestroyInstance();
+            CameraManager.Instance.DestroyInstance();
         }
 
         private void Update()
@@ -171,7 +178,7 @@ namespace BHR
             _activePlayerState = state;
 
             // SoloMode version
-            if(PlayersInputManager.Instance.SoloPlayer)
+            if(_soloMode)
             {
                 PlayersInputManager.Instance.PlayersInputRef[0].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
             }

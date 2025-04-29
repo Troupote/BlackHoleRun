@@ -11,6 +11,7 @@ namespace BHR
         public static string SingularityActionMap;
         public static string UIActionMap;
         public static string InactiveActionMap;
+        public static string EmptyActionMap;
 
         public static string Move;
         public static string Look;
@@ -37,6 +38,7 @@ namespace BHR
             SingularityActionMap = inputActions.SingularityActionMap;
             UIActionMap = inputActions.UIActionMap;
             InactiveActionMap = inputActions.InactiveActionMap;
+            EmptyActionMap = inputActions.EmptyActionMap;
 
             Move = inputActions.Move;
             Look = inputActions.Look;

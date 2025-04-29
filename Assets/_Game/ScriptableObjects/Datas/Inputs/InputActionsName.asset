@@ -18,6 +18,7 @@ MonoBehaviour:
   SingularityActionMap: Singularity
   UIActionMap: UI
   InactiveActionMap: Inactive
+  EmptyActionMap: Empty
   Move: Move
   Look: Look
   Jump: Jump
@@ -29,3 +30,4 @@ MonoBehaviour:
   Submit: Submit
   Cancel: Cancel
   Switch: Switch
+  Rebind: 
