@@ -26,7 +26,10 @@ namespace BHR
         private void LaunchLevel()
         {
             TogglePanels(false);
-            _startAnimation.GetComponent<StartAnimationUI>().StartAnimation();
+            if(DebugManager.Instance.DisableStartAnimation)
+                GameManager.Instance.StartLevel();
+            else
+                _startAnimation.GetComponent<StartAnimationUI>().StartAnimation();
         }
         private void StartLevel()
         {
