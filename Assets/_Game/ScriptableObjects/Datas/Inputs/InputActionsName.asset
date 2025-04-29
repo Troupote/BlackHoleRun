@@ -24,6 +24,7 @@ MonoBehaviour:
   Jump: Jump
   Dash: Dash
   Slide: Slide
+  Unmorph: Unmorph
   Aim: Aim
   Throw: Throw
   Pause: Pause
