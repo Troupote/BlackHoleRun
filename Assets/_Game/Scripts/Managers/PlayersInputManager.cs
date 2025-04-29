@@ -122,8 +122,8 @@ namespace BHR
                     Vector2 value = ctx.ReadValue<Vector2>();
 
                     // Deadzone check 
-                    if(controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(playerIndex))
-                        return;
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(playerIndex))
+                        value = Vector2.zero;
 
                     OnHLook.Invoke(value, controller);
                 }
@@ -134,7 +134,8 @@ namespace BHR
 
                     // Deadzone check 
                     if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadLeftStickDeadzone(playerIndex))
-                        return;
+                        value = Vector2.zero;
+
                     OnHMove.Invoke(value);
                 }
 
