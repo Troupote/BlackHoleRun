@@ -33,14 +33,16 @@ namespace BHR
         private void Start()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
-            EnableDefaultModule(CurrentSceneData);
+            LoadDefaultSceneData(CurrentSceneData);
         }
 
         public void ChangeScene(SceneDataSO sceneData)
         {
             Debug.Log($"Changing scene from {SceneManager.GetActiveScene().name} to {sceneData.SceneName}");
             CurrentSceneData = sceneData;
-            SceneManager.LoadScene(sceneData.SceneName);
+
+            if(SceneManager.GetActiveScene().name != sceneData.SceneName)
+                SceneManager.LoadScene(sceneData.SceneName);
         }
 
         public void QuitGame()
@@ -56,7 +58,7 @@ namespace BHR
             
         }
 
-        private void EnableDefaultModule(SceneDataSO sceneData)
+        private void LoadDefaultSceneData(SceneDataSO sceneData)
         {
             GameObject moduleToLoad = null;
             if (sceneData.SceneName == "Test" || ModuleManager.Instance.TestMode)
@@ -65,8 +67,9 @@ namespace BHR
             }
             else if (sceneData is LevelDataSO)
             {
-                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD);
-                PlayersInputManager.Instance.CanConnect = false;
+                GameManager.Instance.IsPlaying = false;
+                GameManager.Instance.SaveSelectedLevel(sceneData as LevelDataSO);
+                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PLAYER_SELECTION);
             }
             else if (sceneData.SceneName == "MainMenu")
             {
