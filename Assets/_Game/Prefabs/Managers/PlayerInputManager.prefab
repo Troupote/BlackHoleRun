@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6885922237077673388}
-  - component: {fileID: 8843859586793991921}
   - component: {fileID: 6361956348708801543}
+  - component: {fileID: 7788034295671666518}
   m_Layer: 0
   m_Name: PlayerInputManager
   m_TagString: Untagged
@@ -33,29 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8843859586793991921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4452825733218269305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6551c061c1275384c941155e4d4f4907, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _playerOneState: 0
-  _playerTwoState: 0
-  OnPlayerStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnReadyStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnConfigurationSelected:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &6361956348708801543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,7 +51,19 @@ MonoBehaviour:
   m_JoinBehavior: 0
   m_PlayerJoinedEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7788034295671666518}
+        m_TargetAssemblyTypeName: BHR.PlayersInputManager, Assembly-CSharp
+        m_MethodName: OnPlayerJoined
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_PlayerLeftEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -100,3 +89,75 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &7788034295671666518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4452825733218269305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3af6b02600240b4b8b8147471290c28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Actions: {fileID: 11400000, guid: c51eb42cd694ab641a9d99a0cf871546, type: 2}
+  _canConnect: 0
+  _playersControllerState: 
+  _playersReadyState: 
+  _soloPlayer: 0
+  _soloModeEnabled: 0
+  OnUIInput:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInput:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerReadyStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSoloModeToggle:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayersSwitch:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHJump:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHDash:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHSlide:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHThrow:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSJump:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSDash:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSUnmorph:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPause:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHMove:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSMove:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHLook:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSLook:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHAim:
+    m_PersistentCalls:
+      m_Calls: []
