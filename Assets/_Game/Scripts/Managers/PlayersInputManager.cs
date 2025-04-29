@@ -156,7 +156,7 @@ namespace BHR
                     else if (ctx.action.name == InputActions.Dash)
                         OnSDash.Invoke(); // @todo link to singularity dash action
 
-                    else if (ctx.action.name == InputActions.Slide)
+                    else if (ctx.action.name == InputActions.Unmorph)
                         OnSUnmorph.Invoke(); // @todo link to singularity unmorph action (if any)
                 }
             }

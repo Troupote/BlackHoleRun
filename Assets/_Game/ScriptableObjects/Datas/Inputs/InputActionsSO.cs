@@ -21,6 +21,7 @@ public class InputActionsSO : ScriptableObject
     public string Jump;
     public string Dash;
     public string Slide;
+    public string Unmorph;
     public string Aim;
     public string Throw;
     public string Pause;
