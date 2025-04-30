@@ -18,6 +18,7 @@ namespace BHR
         public static string Jump;
         public static string Dash;
         public static string Slide;
+        public static string Unmorph;
         public static string Aim;
         public static string Throw;
         public static string Pause;
@@ -45,6 +46,7 @@ namespace BHR
             Jump = inputActions.Jump;
             Dash = inputActions.Dash;
             Slide = inputActions.Slide;
+            Unmorph = inputActions.Unmorph;
             Aim = inputActions.Aim;
             Throw = inputActions.Throw;
             Pause = inputActions.Pause;

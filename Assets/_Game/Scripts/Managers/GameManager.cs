@@ -1,5 +1,7 @@
 using Sirenix.OdinInspector;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -8,6 +10,8 @@ namespace BHR
 {
     public class GameManager : ManagerSingleton<GameManager>
     {
+        public SettingsSO GameSettings;
+
         [SerializeField]
         private PlayerState _activePlayerState;
         public PlayerState ActivePlayerState => _activePlayerState;
@@ -19,7 +23,7 @@ namespace BHR
         public LevelDataSO SelectedLevel
         {
             get => _selectedLevel;
-            set => _selectedLevel = value;
+            private set => _selectedLevel = value;
         }
 
         [SerializeField, ReadOnly]
@@ -90,7 +94,8 @@ namespace BHR
         public void LaunchLevel()
         {
             PlayersInputManager.Instance.CanConnect = false;
-            ScenesManager.Instance.ChangeScene(SelectedLevel);
+            if(SelectedLevel!=null)
+                ScenesManager.Instance.ChangeScene(SelectedLevel);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
             ModuleManager.Instance.ClearNavigationHistoric();
 
@@ -173,17 +178,17 @@ namespace BHR
         {
             if(switchActivePlayer) _mainPlayerIsPlayerOne = !_mainPlayerIsPlayerOne;
 
-            _activePlayerIndex = _mainPlayerIsPlayerOne ? 1 : 0;
-
             _activePlayerState = state;
 
             // SoloMode version
             if(_soloMode)
             {
-                PlayersInputManager.Instance.PlayersInputRef[0].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+                _activePlayerIndex = Array.IndexOf(PlayersInputManager.Instance.PlayersReadyState, PlayerReadyState.READY);
+                PlayersInputManager.Instance.PlayersInputRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
             }
             else
             {
+                _activePlayerIndex = _mainPlayerIsPlayerOne ? 0 : 1;
                 PlayersInputManager.Instance.PlayersInputRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
 
                 PlayerState secondPlayerState = _activePlayerState == PlayerState.UI ? PlayerState.UI : PlayerState.INACTIVE;

@@ -377,7 +377,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Leap",
+                    "name": "Unmorph",
                     "type": "Button",
                     "id": "05b97b46-a8f4-45b8-9b3d-cc472aea357f",
                     "expectedControlType": "",
@@ -535,7 +535,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Leap",
+                    "action": "Unmorph",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -546,7 +546,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
-                    "action": "Leap",
+                    "action": "Unmorph",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
