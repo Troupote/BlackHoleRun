@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -53,7 +54,7 @@ namespace BHR
         {
             if (ctx.performed && ctx.action.name == InputActions.Cancel)
             {
-                Back();
+                OnBack();
             }
         }
 
@@ -115,6 +116,14 @@ namespace BHR
             OnModuleEnabled.Invoke(module, _savedBackSelectable != null && back);
             if (back)
                 SelectBackSelectable();
+        }
+
+        public void OnBack()
+        {
+            if (CurrentModule.TryGetComponent<AModuleUI>(out AModuleUI moduleScript))
+                moduleScript.Back();
+            else
+                Back();
         }
 
         public void Back()
