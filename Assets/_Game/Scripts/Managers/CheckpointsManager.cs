@@ -11,6 +11,15 @@ namespace BHR
         public int CurrentPhaseId => int.Parse(_currentCheckpoint.name.Split('-')[1]);
         public int CurrentPhaseCheckpointId => int.Parse(_currentCheckpoint.name.Split('-')[2]);
 
+#if UNITY_EDITOR
+        [Button]
+        private void SetCheckpointAndRespawn(Transform checkpoint)
+        {
+            SetCheckpoint(checkpoint);
+            RespawnPlayer();
+        }
+#endif
+
         public override void Awake()
         {
             SetInstance(false);
@@ -63,7 +72,6 @@ namespace BHR
             }
         }
 
-#if UNITY_EDITOR
         private void UpdateDebugText()
         {
             if (DebugManager.Instance.CheckpointInfosTextEnabled)
@@ -71,7 +79,6 @@ namespace BHR
                 DebugManager.Instance.CheckpointHUDInfosText.text = $"Phase: {CheckpointsManager.Instance?.CurrentPhaseId.ToString("D2")} - Checkpoint: {CheckpointsManager.Instance?.CurrentPhaseCheckpointId.ToString("D2")}";
             }
         }
-#endif
 
         private void DebugSwitchCheckpoint(int move)
         {
