@@ -44,6 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fac0ec8b00d08fd4bb3473869dff19de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <playerFootsetps>k__BackingField:
+    Guid:
+      Data1: 378771528
+      Data2: 1187137504
+      Data3: -933893742
+      Data4: 480699373
+    Path: event:/FootstepsRunning
   <blackHoleTrowSfx>k__BackingField:
     Guid:
       Data1: 1465492879
@@ -96,3 +103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccb88c2acad9605428309be747639955, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SFXVolume: 1
+  MusicVolume: 1
+  MasterVolume: 1
