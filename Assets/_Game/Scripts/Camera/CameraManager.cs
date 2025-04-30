@@ -97,8 +97,9 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     void Update()
     {
+
         float moveZ = playerMoveValue.y;
-        Vector2 sensitivity = currentControllerUsed == PlayerControllerState.KEYBOARD ? CharactersManager.Instance.GameplayData.MouseSensitivity : CharactersManager.Instance.GameplayData.GamepadSensitivity;
+        Vector2 sensitivity = currentControllerUsed == PlayerControllerState.KEYBOARD ? GameManager.Instance.GameSettings.MouseSensitivity : GameManager.Instance.GameSettings.GamepadSensitivity;
         sensitivity *= SettingsSave.LoadSensitivity(GameManager.Instance.ActivePlayerIndex);
 
         float mouseX = lookValue.x * sensitivity.x * Time.deltaTime;

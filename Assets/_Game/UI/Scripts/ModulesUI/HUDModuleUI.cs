@@ -26,8 +26,10 @@ namespace BHR
         private void LaunchLevel()
         {
             TogglePanels(false);
+#if UNITY_EDITOR
             if(DebugManager.Instance.DisableStartAnimation)
                 GameManager.Instance.StartLevel();
+#endif
             else
                 _startAnimation.GetComponent<StartAnimationUI>().StartAnimation();
         }
