@@ -40,10 +40,12 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayerCam.m_Lens.FieldOfView = CharactersManager.Instance.GameplayData.BaseFOV;
     }
 
+    private bool m_hasBeenInstancied = false;
     public void SetDependencies(GameObject a_characterToFollow, GameObject a_singularityToFollow)
     {
         PlayerCam.Follow = a_characterToFollow.transform;
         SingularityCam.Follow = a_singularityToFollow.transform;
+        m_hasBeenInstancied = true;
     }
 
     private void OnEnable()
@@ -97,6 +99,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     void Update()
     {
+        if (!m_hasBeenInstancied) return;
 
         float moveZ = playerMoveValue.y;
         Vector2 sensitivity = currentControllerUsed == PlayerControllerState.KEYBOARD ? GameManager.Instance.GameSettings.MouseSensitivity : GameManager.Instance.GameSettings.GamepadSensitivity;
