@@ -13,12 +13,13 @@ namespace BHR
 
         [ReadOnly]
         public SceneDataSO CurrentSceneData;
+        public string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         #region Validate Inputs
 #if UNITY_EDITOR
         private bool ValidateStartSceneData()
         {
-            return _startSceneData?.SceneName == SceneManager.GetActiveScene().name;
+            return _startSceneData?.SceneName == SceneManager.GetActiveScene().name || _startSceneData == null;
         }
 
 #endif
@@ -61,11 +62,7 @@ namespace BHR
         private void LoadDefaultSceneData(SceneDataSO sceneData)
         {
             GameObject moduleToLoad = null;
-            if (sceneData.SceneName == "Test" || ModuleManager.Instance.TestMode)
-            {
-                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.TEST);
-            }
-            else if (sceneData is LevelDataSO)
+            if (sceneData is LevelDataSO || sceneData == null)
             {
                 GameManager.Instance.IsPlaying = false;
                 GameManager.Instance.SaveSelectedLevel(sceneData as LevelDataSO);

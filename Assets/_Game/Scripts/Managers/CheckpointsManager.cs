@@ -14,6 +14,10 @@ namespace BHR
         public override void Awake()
         {
             SetInstance(false);
+        }
+
+        private void Start()
+        {
             SetCheckpoint(_currentCheckpoint);
         }
 

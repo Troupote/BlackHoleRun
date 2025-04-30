@@ -27,9 +27,6 @@ namespace BHR
         [SerializeField, ReadOnly]
         private bool _canBack = true;
         public bool CanBack { get => _canBack; set => _canBack = value;  }
-    #if UNITY_EDITOR
-        public bool TestMode;
-    #endif
 
         [FoldoutGroup("UI Settings")] public Color HideMedalColor;
         [FoldoutGroup("UI Settings")] public Color HideMedalTextColor;

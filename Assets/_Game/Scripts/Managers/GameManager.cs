@@ -23,7 +23,7 @@ namespace BHR
         public LevelDataSO SelectedLevel
         {
             get => _selectedLevel;
-            set => _selectedLevel = value;
+            private set => _selectedLevel = value;
         }
 
         [SerializeField, ReadOnly]
@@ -94,7 +94,8 @@ namespace BHR
         public void LaunchLevel()
         {
             PlayersInputManager.Instance.CanConnect = false;
-            ScenesManager.Instance.ChangeScene(SelectedLevel);
+            if(SelectedLevel!=null)
+                ScenesManager.Instance.ChangeScene(SelectedLevel);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
             ModuleManager.Instance.ClearNavigationHistoric();
 
