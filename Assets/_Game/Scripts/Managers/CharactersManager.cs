@@ -20,6 +20,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private GameObject _singularityObject;
     private GameObject _characterObject;
+    public GameObject CharacterObject => _characterObject;
 
     private SingularityBehavior a_singularityBehavior;
     private CharacterBehavior a_characterBehavior;
@@ -33,7 +34,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private void Start()
     {
-        SpawnCharacterAtPosition(Vector3.zero + new Vector3(0, 5, 0));
+        SpawnCharacterAtPosition(CheckpointsManager.Instance.CurrentCheckpoint.position);
     }
 
     private void InstanciatePrefabsOnScene()
