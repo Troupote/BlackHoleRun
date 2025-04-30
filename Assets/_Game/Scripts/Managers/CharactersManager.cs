@@ -113,10 +113,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void TryThrowSingularity()
     {
-        Debug.Log("TryThrowSingularity");
         if (a_singularityBehavior.IsThrown && !a_singularityBehavior.AlreadyCollided)
         {
-            Debug.Log("Already Thrown");
             ChangePlayersTurn(true);
             return;
         }

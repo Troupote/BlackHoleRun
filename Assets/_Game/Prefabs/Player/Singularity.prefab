@@ -164,5 +164,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 9170475032202126854}
-  forwardSpeed: 5
-  curveStrength: 2
+  curveForce: 20
