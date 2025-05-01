@@ -52,6 +52,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
     {
         // Bind inputs
         PlayersInputManager.Instance.OnHLook.AddListener(HandleLook);
+        PlayersInputManager.Instance.OnSLook.AddListener(HandleLook);
         PlayersInputManager.Instance.OnHMove.AddListener(HandlePlayerMove);
     }
 
@@ -59,6 +60,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
     {
         // Debing inputs
         PlayersInputManager.Instance.OnHLook.RemoveListener(HandleLook);
+        PlayersInputManager.Instance.OnSLook.RemoveListener(HandleLook);
         PlayersInputManager.Instance.OnHMove.RemoveListener(HandlePlayerMove);
     }
 

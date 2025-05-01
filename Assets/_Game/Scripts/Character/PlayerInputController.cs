@@ -19,6 +19,11 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
+    [Button]
+    private void ForcePlayerState(PlayerState state) => PlayerState = state;
+#endif
+
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();

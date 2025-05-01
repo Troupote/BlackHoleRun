@@ -125,7 +125,7 @@ namespace BHR
                     if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(playerIndex))
                         value = Vector2.zero;
 
-                    OnHLook.Invoke(value, controller);
+                    OnSLook.Invoke(value, controller);
                 }
 
                 else if (ctx.action.name == InputActions.Move)
@@ -239,7 +239,6 @@ namespace BHR
             }
         }
         #endregion
-
 
         #region ControllerSelection
         private void OnModuleEnabled(GameObject module, bool back)
@@ -368,7 +367,6 @@ namespace BHR
             return PlayerReadyCount() == 2;
         }
         #endregion
-
 
         #region Hard Fix Switch twice controllers bug
         private void RemoveSwitchXInput(InputDevice device)

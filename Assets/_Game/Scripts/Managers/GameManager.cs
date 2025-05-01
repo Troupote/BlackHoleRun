@@ -46,6 +46,7 @@ namespace BHR
             }
         }
         public UnityEvent<float> OnTimerChanged;
+        [SerializeField, ReadOnly]
         private bool _isPlaying = false;
         public bool IsPlaying
         {
@@ -57,6 +58,7 @@ namespace BHR
                 _gameTimeScale = _isPlaying ? _savedGameTimeScale : 0f;
             }
         }
+        [SerializeField, ReadOnly]
         private bool _isPaused = false;
         public bool IsPaused
         {
@@ -69,6 +71,7 @@ namespace BHR
         }
         private PlayerState _savedPausedState = PlayerState.NONE;
         private float _savedGameTimeScale = 1f;
+        [SerializeField, ReadOnly]
         private float _gameTimeScale;
         public float GameTimeScale => _gameTimeScale;
         #endregion
@@ -115,7 +118,10 @@ namespace BHR
 
         public void TogglePause()
         {
-            if (!IsPaused) Pause(); else Resume();
+            if (IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE))
+                Resume(); 
+            else if(!IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD))
+                Pause();
         }
 
         private void Pause()
