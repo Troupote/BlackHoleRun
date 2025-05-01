@@ -12,12 +12,12 @@ namespace BHR.UILinkers
         private void OnEnable()
         {
             LoadSetting();
-            SettingsManager.Instance.OnResetSettings.AddListener(LoadSetting);
+            SettingsManager.Instance.OnAllDataLoaded.AddListener(LoadSetting);
         }
 
         private void OnDisable()
         {
-            SettingsManager.Instance.OnResetSettings.RemoveListener(LoadSetting);
+            SettingsManager.Instance.OnAllDataLoaded.RemoveListener(LoadSetting);
         }
     }
 }

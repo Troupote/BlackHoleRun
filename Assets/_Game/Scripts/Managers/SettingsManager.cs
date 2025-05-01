@@ -5,7 +5,12 @@ namespace BHR
 {
     public class SettingsManager : ManagerSingleton<SettingsManager>
     {
-        public UnityEvent OnResetSettings; 
+        public UnityEvent OnAllDataLoaded;
+
+        private void Start()
+        {
+            LoadAllSavedData();
+        }
 
         #region Global settings
 
@@ -39,17 +44,20 @@ namespace BHR
         {
             SettingsSave.SaveResolution();
             SettingsSave.SaveIsWindowed();
-            UpdateResolutionAndWindowed();
-
             SettingsSave.SaveLanguage();
-            UpdateLanguage();
-
             SettingsSave.SaveMasterVolume();
             SettingsSave.SaveMusicVolume();
             SettingsSave.SaveSoundsVolume();
-            UpdateVolume();
 
-            OnResetSettings?.Invoke();
+            LoadAllSavedData();
+        }
+
+        private void LoadAllSavedData()
+        {
+            UpdateLanguage();
+            UpdateResolutionAndWindowed();
+            UpdateVolume();
+            OnAllDataLoaded?.Invoke();
         }
         #endregion
     }
