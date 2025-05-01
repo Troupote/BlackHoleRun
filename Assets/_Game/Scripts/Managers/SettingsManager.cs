@@ -24,10 +24,30 @@ namespace BHR
             Screen.SetResolution(width, height, mode);
         }
 
+        public void UpdateLanguage()
+        {
+            Debug.Log(SettingsSave.LoadLanguage() + " is active");
+            // @todo Language update (not now)
+        }
+
+        public void UpdateVolume()
+        {
+            // @todo Thybault c'est ici que tu dois cook
+        }
+
         public void ResetGlobalSettings()
         {
             SettingsSave.SaveResolution();
+            SettingsSave.SaveIsWindowed();
             UpdateResolutionAndWindowed();
+
+            SettingsSave.SaveLanguage();
+            UpdateLanguage();
+
+            SettingsSave.SaveMasterVolume();
+            SettingsSave.SaveMusicVolume();
+            SettingsSave.SaveSoundsVolume();
+            UpdateVolume();
 
             OnResetSettings?.Invoke();
         }

@@ -3714,6 +3714,7 @@ GameObject:
   - component: {fileID: 7560217997005045417}
   - component: {fileID: 4141267284507737993}
   - component: {fileID: 6309529768883878603}
+  - component: {fileID: 5419314739725503937}
   m_Layer: 5
   m_Name: LanguageDropdown
   m_TagString: Untagged
@@ -3836,13 +3837,37 @@ MonoBehaviour:
     - m_Text: English
       m_Image: {fileID: 21300000, guid: 384efe93d9b8cfc49ad2bd05970e5d24, type: 3}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: French
+    - m_Text: "Fran\xE7ais"
       m_Image: {fileID: 395584724, guid: c62b7b747247cd14291fbc3e2003cc3f, type: 3}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5419314739725503937}
+        m_TargetAssemblyTypeName: BHR.UILinkers.LanguageUILinker, Assembly-CSharp
+        m_MethodName: SaveSetting
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
+--- !u!114 &5419314739725503937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547594960830403088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef35e90af490a2a40bba6b9bc0208bf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1633770348161869404
 GameObject:
   m_ObjectHideFlags: 0
@@ -5334,6 +5359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5001526041660387600}
   - component: {fileID: 768902271213494600}
+  - component: {fileID: 2085171639933734559}
   m_Layer: 5
   m_Name: SoundsVolumeSlider
   m_TagString: Untagged
@@ -5413,7 +5439,32 @@ MonoBehaviour:
   m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2085171639933734559}
+        m_TargetAssemblyTypeName: BHR.UILinkers.VolumeSliderUILinker, Assembly-CSharp
+        m_MethodName: SaveSetting
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2085171639933734559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333119398845050423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f1cdc76ad36a474eb7b9ae3df5b7f4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeType: 2
 --- !u!1 &2389136349145156900
 GameObject:
   m_ObjectHideFlags: 0
@@ -18420,6 +18471,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2815597678327441076}
   - component: {fileID: 6545345158594836181}
+  - component: {fileID: 6315569583856487698}
   m_Layer: 5
   m_Name: MusicVolumeSlider
   m_TagString: Untagged
@@ -18499,7 +18551,32 @@ MonoBehaviour:
   m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6315569583856487698}
+        m_TargetAssemblyTypeName: BHR.UILinkers.VolumeSliderUILinker, Assembly-CSharp
+        m_MethodName: SaveSetting
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6315569583856487698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5995273051627164811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f1cdc76ad36a474eb7b9ae3df5b7f4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeType: 1
 --- !u!1 &6042542397347871467
 GameObject:
   m_ObjectHideFlags: 0
@@ -20867,6 +20944,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3003835559662821735}
   - component: {fileID: 4810492871582804947}
+  - component: {fileID: 2935945323347570702}
   m_Layer: 5
   m_Name: GeneralVolumeSlider
   m_TagString: Untagged
@@ -20946,7 +21024,32 @@ MonoBehaviour:
   m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2935945323347570702}
+        m_TargetAssemblyTypeName: BHR.UILinkers.VolumeSliderUILinker, Assembly-CSharp
+        m_MethodName: SaveSetting
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2935945323347570702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6547812756488100886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f1cdc76ad36a474eb7b9ae3df5b7f4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeType: 0
 --- !u!1 &6558002456583954318
 GameObject:
   m_ObjectHideFlags: 0
@@ -27886,6 +27989,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2860478302803559465}
   - component: {fileID: 6607744653568743013}
+  - component: {fileID: 1642277838957189114}
   m_Layer: 5
   m_Name: WindowedToggle
   m_TagString: Untagged
@@ -27959,8 +28063,32 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1642277838957189114}
+        m_TargetAssemblyTypeName: BHR.UILinkers.IsWindowedUILinker, Assembly-CSharp
+        m_MethodName: SaveSetting
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
+--- !u!114 &1642277838957189114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8452620747154022975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17c4ab3040f732940b0878d11653cecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8465443046415164160
 GameObject:
   m_ObjectHideFlags: 0
