@@ -1,9 +1,12 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace BHR
 {
     public class SettingsManager : ManagerSingleton<SettingsManager>
     {
+        public UnityEvent OnResetSettings; 
+
         #region Global settings
 
         public void UpdateResolutionAndWindowed()
@@ -19,6 +22,14 @@ namespace BHR
             FullScreenMode mode = SettingsSave.LoadIsWindowed() switch { -1 => Screen.fullScreenMode, 0 => FullScreenMode.ExclusiveFullScreen, 1 => FullScreenMode.Windowed, _ => Screen.fullScreenMode };
 
             Screen.SetResolution(width, height, mode);
+        }
+
+        public void ResetGlobalSettings()
+        {
+            SettingsSave.SaveResolution();
+            UpdateResolutionAndWindowed();
+
+            OnResetSettings?.Invoke();
         }
         #endregion
     }
