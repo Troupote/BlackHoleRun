@@ -1,5 +1,6 @@
 using BHR;
 using Sirenix.OdinInspector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -207,7 +208,12 @@ namespace BHR
             // Resolve switch bug
             RemoveSwitchXInput(playerInput.devices[0]);
 
-            AssignPlayerIndex(playerInput);
+            if(PlayerConnectedCount()>=2 || !AssignPlayerIndex(playerInput)) // Max players connected at the same time
+            {
+                Destroy(playerInput.gameObject);
+                return;
+            }
+
             PlayerInputController playerInputController = playerInput.GetComponent<PlayerInputController>();
             Debug.Log($"Player {playerInputController.playerIndex} joined !\nController : {playerInput.devices[0]} (Scheme : {playerInput.currentControlScheme})\nAction map : {playerInput.currentActionMap.name}");
 
@@ -228,19 +234,31 @@ namespace BHR
             }
         }
 
-        private void AssignPlayerIndex(PlayerInput playerInput)
+        private bool AssignPlayerIndex(PlayerInput playerInput)
         {
             PlayerInputController control = playerInput.GetComponent<PlayerInputController>();
             int freeIndex = -1;
             if (PlayersInputControllerRef[0] == null) freeIndex = 0;
             else if (PlayersInputControllerRef[1] == null) freeIndex = 1;
 
+            // Override controller logged out
+            if(PlayersReadyState.Contains(PlayerReadyState.LOGGED_OUT))
+            {
+                int loggedOutIndex = Array.IndexOf(PlayersReadyState, PlayerReadyState.LOGGED_OUT);
+                Destroy(PlayersInputControllerRef[loggedOutIndex].gameObject);
+                freeIndex = loggedOutIndex;
+            }
+
             if (freeIndex == -1)
+            {
                 Debug.Log("All players index are full");
+                return false;
+            }
             else
             {
                 PlayersInputControllerRef[freeIndex] = control;
                 control.playerIndex = freeIndex;
+                return true;
             }
         }
 
