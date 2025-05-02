@@ -203,15 +203,15 @@ namespace BHR
             if(_soloMode)
             {
                 _activePlayerIndex = Array.IndexOf(PlayersInputManager.Instance.PlayersReadyState, PlayerReadyState.READY);
-                PlayersInputManager.Instance.PlayersInputRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+                PlayersInputManager.Instance.PlayersInputControllerRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
             }
             else
             {
                 _activePlayerIndex = _mainPlayerIsPlayerOne ? 0 : 1;
-                PlayersInputManager.Instance.PlayersInputRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+                PlayersInputManager.Instance.PlayersInputControllerRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
 
                 PlayerState secondPlayerState = _activePlayerState == PlayerState.UI ? PlayerState.UI : PlayerState.INACTIVE;
-                PlayersInputManager.Instance.PlayersInputRef[1-_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
+                PlayersInputManager.Instance.PlayersInputControllerRef[1-_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
             }
         }
     }
