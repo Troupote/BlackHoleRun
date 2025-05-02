@@ -169,7 +169,7 @@ namespace BHR
                     if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(playerIndex))
                         return;
 
-                    OnHLook.Invoke(value, controller);
+                    OnSLook.Invoke(value, controller);
                 }
 
                 else if (ctx.action.name == InputActions.Move)
