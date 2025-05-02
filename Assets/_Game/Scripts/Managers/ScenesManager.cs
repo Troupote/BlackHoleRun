@@ -39,11 +39,13 @@ namespace BHR
 
         public void ChangeScene(SceneDataSO sceneData)
         {
-            Debug.Log($"Changing scene from {SceneManager.GetActiveScene().name} to {sceneData.SceneName}");
             CurrentSceneData = sceneData;
 
             if(SceneManager.GetActiveScene().name != sceneData.SceneName)
+            {
+                Debug.Log($"Changing scene from {SceneManager.GetActiveScene().name} to {sceneData.SceneName}");
                 SceneManager.LoadScene(sceneData.SceneName);
+            }
         }
 
         public void QuitGame()

@@ -16,8 +16,8 @@ namespace BHR
         public bool CanConnect { get => _canConnect; set => _canConnect = value; }
 
         // Players managing
-        private PlayerInput[] _playersInputRef = new PlayerInput[2];
-        public PlayerInput[] PlayersInputRef { get => _playersInputRef; set { _playersInputRef = value; } }
+        private PlayerInputController[] _playersInputControllerRef = new PlayerInputController[2];
+        public PlayerInputController[] PlayersInputControllerRef { get => _playersInputControllerRef; set { _playersInputControllerRef = value;} }
         [SerializeField, ReadOnly] private PlayerControllerState[] _playersControllerState;
         public PlayerControllerState[] PlayersControllerState => _playersControllerState;
         [SerializeField, ReadOnly] private PlayerReadyState[] _playersReadyState;
@@ -76,6 +76,13 @@ namespace BHR
             string actionMap = ctx.action.actionMap.name;
             //Debug.Log($"Player in {actionMap} state has {ctx.phase} {ctx.action.name} with {ctx.control.device.name}");
 
+            // Specific action common to all actions maps (except Empty)
+            if (ctx.action.name == InputActions.Pause)
+            {
+                OnPause.Invoke();
+                return;
+            }
+
             if (actionMap == InputActions.UIActionMap)
             {
                 // Specific case in Player selection where while in UI we need to differenciate players, but not with the map, with the playerIndex.
@@ -103,12 +110,6 @@ namespace BHR
         {
             // Get controller type used 
             PlayerControllerState controller = PlayersControllerState[playerIndex];
-
-            // Specific global actions (no need to diferentiate players)
-            if (ctx.performed && ctx.action.name == InputActions.Pause)
-                OnPause.Invoke();
-
-            // Character actions in game (need to diferentiate players)
 
             // If IsPlaying only -> don't know if the best is to block the input here or to block the movements everywhere else
             if (!GameManager.Instance.IsPlaying)
@@ -203,40 +204,76 @@ namespace BHR
         #region Connect and disconncect gestion
         public void OnPlayerJoined(PlayerInput playerInput)
         {
-            Debug.Log($"Player {playerInput.playerIndex} joined !\nController : {playerInput.devices[0]} (Scheme : {playerInput.currentControlScheme})\nAction map : {playerInput.currentActionMap.name}");
+            AssignPlayerIndex(playerInput);
+            PlayerInputController playerInputController = playerInput.GetComponent<PlayerInputController>();
+            Debug.Log($"Player {playerInputController.playerIndex} joined !\nController : {playerInput.devices[0]} (Scheme : {playerInput.currentControlScheme})\nAction map : {playerInput.currentActionMap.name}");
 
-            playerInput.transform.SetParent(transform);
+            playerInputController.transform.SetParent(transform);
 
-            _playersInputRef[playerInput.playerIndex] = playerInput;
-            UpdatePlayerControllerState(playerInput.playerIndex);
-            UpdatePlayerReadyState(playerInput.playerIndex, PlayerReadyState.CONNECTED);
+            UpdatePlayerControllerState(playerInputController.playerIndex);
+            UpdatePlayerReadyState(playerInputController.playerIndex, PlayerReadyState.CONNECTED);
+
+
+            SetSoloPlayer();
+            SoloModeEnabled = false;
 
             // Resolve switch bug
             RemoveSwitchXInput(playerInput.devices[0]);
+
+            if(GameManager.Instance.SoloMode && ( GameManager.Instance.IsPlaying || GameManager.Instance.IsPaused))
+            {
+                // if player was playing alone but a second device's connected, re open the player selection (for coop mode if wanted)
+                GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PLAYER_SELECTION));
+            }
         }
 
-        public void OnPlayerLeft(PlayerInput playerInput)
+        private void AssignPlayerIndex(PlayerInput playerInput)
         {
-            // Controller disconnected
-            PlayersControllerState[playerInput.playerIndex] = PlayerControllerState.DISCONNECTED;
-            Destroy(playerInput.gameObject);
+            PlayerInputController control = playerInput.GetComponent<PlayerInputController>();
+            int freeIndex = -1;
+            if (PlayersInputControllerRef[0] == null) freeIndex = 0;
+            else if (PlayersInputControllerRef[1] == null) freeIndex = 1;
+
+            if (freeIndex == -1)
+                Debug.Log("All players index are full");
+            else
+            {
+                PlayersInputControllerRef[freeIndex] = control;
+                control.playerIndex = freeIndex;
+            }
         }
 
         private void OnDeviceChange(InputDevice device, InputDeviceChange change)
         {
             if (change == InputDeviceChange.Disconnected)
             {
-                foreach (PlayerInput playerInput in _playersInputRef)
+                Debug.Log(device.name + " is disconnecting");
+                foreach (PlayerInputController playerInputController in PlayersInputControllerRef)
                 {
-                    Debug.Log($"{device.name} is deconnec");
-                    if (playerInput != null && playerInput.devices.Count == 0)
+                    if (playerInputController != null && playerInputController.GetComponent<PlayerInput>().devices.Count == 0) // Found the player ref that disconnected
                     {
-                        Debug.Log("Disconnect");
-
-                        OnPlayerLeft(playerInput);
+                        OnPlayerDisconnecting(playerInputController);
                     }
                 }
             }
+        }
+
+        private void OnPlayerDisconnecting(PlayerInputController playerInputController)
+        {
+            // Check if player was playing
+            if(PlayersReadyState[playerInputController.playerIndex] == PlayerReadyState.READY && GameManager.Instance.IsPlaying)
+            {
+                GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PLAYER_SELECTION));
+            }
+
+            UpdatePlayerControllerState(playerInputController.playerIndex);
+            UpdatePlayerReadyState(playerInputController.playerIndex, PlayerReadyState.NONE);
+            PlayersInputControllerRef[playerInputController.playerIndex] = null;
+            SetSoloPlayer();
+            CheckReadyState();
+            Debug.Log($"Player {playerInputController.playerIndex} is disconnecting");
+            Destroy(playerInputController.gameObject);
+
         }
         #endregion
 
@@ -262,10 +299,13 @@ namespace BHR
         private void UpdatePlayerControllerState(int playerIndex)
         {
             PlayerControllerState state = PlayerControllerState.DISCONNECTED;
-            if (_playersInputRef[playerIndex].currentControlScheme == InputActions.KeyboardScheme)
-                state = PlayerControllerState.KEYBOARD;
-            else if(_playersInputRef[playerIndex].currentControlScheme == InputActions.GamepadScheme)
-                state = PlayerControllerState.GAMEPAD;
+            if (PlayersInputControllerRef[playerIndex].GetComponent<PlayerInput>().devices.Count > 0)
+            {
+                if (PlayersInputControllerRef[playerIndex].GetComponent<PlayerInput>().currentControlScheme == InputActions.KeyboardScheme)
+                    state = PlayerControllerState.KEYBOARD;
+                else if(PlayersInputControllerRef[playerIndex].GetComponent<PlayerInput>().currentControlScheme == InputActions.GamepadScheme)
+                    state = PlayerControllerState.GAMEPAD;
+            }
 
             PlayersControllerState[playerIndex] = state;
         }
