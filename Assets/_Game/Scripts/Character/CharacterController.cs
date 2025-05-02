@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
 
     private GameplayData m_gameplayData;
 
+    private TimeControl timeController;
+
+    private int aimCallCount = 0;
+
     [SerializeField] private float fallMultiplier = 3f;
     [SerializeField] private float lowJumpMultiplier = 2f;
 
@@ -19,6 +23,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         m_gameplayData = CharactersManager.Instance.GameplayData;
         rb.freezeRotation = true;
+
+        timeController = GameManager.Instance.gameObject.GetComponent<TimeControl>();
     }
 
     private void OnEnable()
@@ -28,7 +34,7 @@ public class PlayerController : MonoBehaviour
         PlayersInputManager.Instance.OnHJump.AddListener(HandleJump);
         PlayersInputManager.Instance.OnHDash.AddListener(HandleDash);
         PlayersInputManager.Instance.OnHThrow.AddListener(HandleThrowSingularity);
-        //PlayersInputManager.Instance.OnHAim.AddListener();
+        PlayersInputManager.Instance.OnHAim.AddListener(HandleAim);
         //PlayersInputManager.Instance.OnHSlide.AddListener();
 
     }
@@ -40,7 +46,7 @@ public class PlayerController : MonoBehaviour
         PlayersInputManager.Instance.OnHJump.RemoveListener(HandleJump);
         PlayersInputManager.Instance.OnHDash.RemoveListener(HandleDash);
         PlayersInputManager.Instance.OnHThrow.RemoveListener(HandleThrowSingularity);
-        //PlayersInputManager.Instance.OnHAim.RemoveListener();
+        PlayersInputManager.Instance.OnHAim.RemoveListener(HandleAim);
         //PlayersInputManager.Instance.OnHSlide.RemoveListener();
     }
 
@@ -127,6 +133,34 @@ public class PlayerController : MonoBehaviour
 
     public void HandleThrowSingularity()
     {
+        if (!timeController.isFinished)
+        {
+            timeController.isSlowed = false;
+        }
          CharactersManager.Instance.TryThrowSingularity();
+    }
+
+    public void HandleAim()
+    {
+        if (aimCallCount == 0)
+        {
+            aimCallCount++;
+
+            StartCoroutine(timeController.SlowmotionSequence());
+            timeController.isStarted = true;
+
+        }
+        else if (aimCallCount == 3)
+        {
+            timeController.isStarted = false;
+            timeController.isSlowed = false;
+
+            aimCallCount = 0;
+        }
+        else
+        {
+            aimCallCount++;
+        }
+
     }
 }

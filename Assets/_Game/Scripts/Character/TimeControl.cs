@@ -3,43 +3,27 @@ using System.Collections;
 
 public class TimeControl : MonoBehaviour
 {
-    private Coroutine timeCoroutine;
-    public float aimTime = 2f;
+    public bool isSlowed = true;
+    public bool isFinished = false;
+    public bool isStarted = false;
 
-    private bool isInSlowmo = false;
-
-    void Update()
+    public IEnumerator SlowmotionSequence()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (!isStarted)
         {
-            if (timeCoroutine != null)
-            {
-                StopCoroutine(timeCoroutine);
-            }
+            isStarted = true;
+            isSlowed = true;
+            isFinished = false;
 
-            if (!isInSlowmo)
-            {
-                timeCoroutine = StartCoroutine(SlowmotionSequence());
-            }
-            else
-            {
-                timeCoroutine = StartCoroutine(ChangeTimeScale(Time.timeScale, 1f, 1f));
-                isInSlowmo = false;
-            }
+            StartCoroutine(ChangeTimeScale(1f, 0.1f, 0.6f));
+
+            //Wait until isSlowed becomes false
+            yield return new WaitUntil(() => isSlowed == false);
+
+            StartCoroutine(ChangeTimeScale(Time.timeScale, 1f, 0.6f));
+
+            isFinished = true;
         }
-    }
-
-    IEnumerator SlowmotionSequence()
-    {
-        isInSlowmo = true;
-
-        yield return StartCoroutine(ChangeTimeScale(1f, 0.1f, .6f));
-
-        yield return new WaitForSecondsRealtime(aimTime);
-
-        yield return StartCoroutine(ChangeTimeScale(Time.timeScale, 1f, .6f));
-
-        isInSlowmo = false;
     }
 
     IEnumerator ChangeTimeScale(float start, float end, float duration)
