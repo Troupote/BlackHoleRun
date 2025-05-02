@@ -204,6 +204,9 @@ namespace BHR
         #region Connect and disconncect gestion
         public void OnPlayerJoined(PlayerInput playerInput)
         {
+            // Resolve switch bug
+            RemoveSwitchXInput(playerInput.devices[0]);
+
             AssignPlayerIndex(playerInput);
             PlayerInputController playerInputController = playerInput.GetComponent<PlayerInputController>();
             Debug.Log($"Player {playerInputController.playerIndex} joined !\nController : {playerInput.devices[0]} (Scheme : {playerInput.currentControlScheme})\nAction map : {playerInput.currentActionMap.name}");
@@ -217,8 +220,6 @@ namespace BHR
             SetSoloPlayer();
             SoloModeEnabled = false;
 
-            // Resolve switch bug
-            RemoveSwitchXInput(playerInput.devices[0]);
 
             if(GameManager.Instance.SoloMode && ( GameManager.Instance.IsPlaying || GameManager.Instance.IsPaused))
             {
@@ -411,16 +412,16 @@ namespace BHR
         #region Hard Fix Switch twice controllers bug
         private void RemoveSwitchXInput(InputDevice device)
         {
-            if (device is Gamepad gamepad && IsUnwantedXInput(gamepad))
+            if (IsUnwantedXInput(device))
             {
                 Debug.LogWarning($"Removing duplicate XInput device: {device.displayName}");
                 InputSystem.RemoveDevice(device);
             }
         }
 
-        bool IsUnwantedXInput(Gamepad gamepad)
+        bool IsUnwantedXInput(InputDevice device)
         {
-            var desc = gamepad.description;
+            var desc = device.description;
             return desc.interfaceName == "XInput" &&
                    !desc.product.ToLower().Contains("xbox");
         }
