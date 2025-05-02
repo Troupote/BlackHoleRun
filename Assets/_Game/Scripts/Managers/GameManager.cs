@@ -86,6 +86,11 @@ namespace BHR
             PlayersInputManager.Instance.OnPause.AddListener(TogglePause);
         }
 
+        private void Update()
+        {
+            Chrono();
+        }
+
         private void Init()
         {
             _activePlayerState = PlayerState.UI;
@@ -126,6 +131,7 @@ namespace BHR
 
         private void Pause()
         {
+            Cursor.lockState = CursorLockMode.None;
             _savedGameTimeScale = GameTimeScale;
             _savedPausedState = ActivePlayerState;
             IsPaused = true;
@@ -135,6 +141,7 @@ namespace BHR
 
         public void Resume()
         {
+            Cursor.lockState = CursorLockMode.Locked;
             IsPaused = false;
             //ChangeMainPlayerState(_savedPausedState, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
@@ -174,10 +181,16 @@ namespace BHR
             CameraManager.Instance.DestroyInstance();
         }
 
-        private void Update()
+        private void Chrono()
         {
             if (IsPlaying)
                 Timer += Time.deltaTime * GameTimeScale;
+        }
+
+        private const float _outerWildsEasterEggBonus = -0.22f;
+        public void ILoveOuterWidls()
+        {
+            Timer += _outerWildsEasterEggBonus;
         }
 
         public void ChangeMainPlayerState(PlayerState state, bool switchActivePlayer)

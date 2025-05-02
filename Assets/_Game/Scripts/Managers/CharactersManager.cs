@@ -91,6 +91,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void ChangePlayersTurn(bool a_isEarly = false)
     {
+        GameManager.Instance.ILoveOuterWidls();
         StartCoroutine(WaitForBlendingAndSwitch(a_isEarly));
     }
 

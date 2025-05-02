@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BHR.UILinkers
 {
-    public class ResolutionUILinker : SettingsUILinker<int>
+    public class ResolutionUILinker : ASettingsUILinker<int>
     {
         public override void SaveSetting(int choice)
         {
