@@ -126,17 +126,20 @@ namespace BHR
             if (IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE))
                 Resume(); 
             else if(!IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD))
-                Pause();
+                Pause(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE));
         }
 
-        private void Pause()
+        public void Pause(GameObject moduleToLoad)
         {
             Cursor.lockState = CursorLockMode.None;
-            _savedGameTimeScale = GameTimeScale;
-            _savedPausedState = ActivePlayerState;
-            IsPaused = true;
-            ChangeMainPlayerState(PlayerState.UI, false);
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE));
+            if(!IsPaused)
+            {
+                _savedGameTimeScale = GameTimeScale;
+                _savedPausedState = ActivePlayerState;
+                IsPaused = true;
+                ChangeMainPlayerState(PlayerState.UI, false);
+            }
+            ModuleManager.Instance.OnModuleEnable(moduleToLoad);
         }
 
         public void Resume()

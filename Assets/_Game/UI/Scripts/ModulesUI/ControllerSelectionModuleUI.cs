@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace BHR
 {
-    public class ControllerSelectionModuleUI : MonoBehaviour
+    public class ControllerSelectionModuleUI : AModuleUI
     {
         [SerializeField, Required, FoldoutGroup("Refs")] GameObject[] _inputJoinTexts;
         [SerializeField, Required, FoldoutGroup("Refs")] GameObject[] _inputReconnectIcons;
@@ -38,6 +38,14 @@ namespace BHR
             UpdateSoloModePanel(false);
             for (int i = 0; i < 2; i++)
                 _readyPanel.transform.GetChild(i).GetComponent<Image>().color = _notReadyColor;
+        }
+
+        public override void Back()
+        {
+            if(GameManager.Instance.IsPaused)
+                GameManager.Instance.Resume();
+            else
+                base.Back();
         }
 
         private void UpdatePlayerStatePanels(PlayerReadyState state, int playerIndex)

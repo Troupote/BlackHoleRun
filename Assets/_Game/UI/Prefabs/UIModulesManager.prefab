@@ -9346,8 +9346,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7213708363707084646}
-        m_TargetAssemblyTypeName: ModuleManager, Assembly-CSharp
+      - m_Target: {fileID: 2932533650595201908}
+        m_TargetAssemblyTypeName: BHR.ControllerSelectionModuleUI, Assembly-CSharp
         m_MethodName: Back
         m_Mode: 1
         m_Arguments:
@@ -17314,7 +17314,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &357880426646025198
 RectTransform:
   m_ObjectHideFlags: 0

@@ -219,6 +219,12 @@ namespace BHR
 
             // Resolve switch bug
             RemoveSwitchXInput(playerInput.devices[0]);
+
+            if(GameManager.Instance.SoloMode && ( GameManager.Instance.IsPlaying || GameManager.Instance.IsPaused))
+            {
+                // if player was playing alone but a second device's connected, re open the player selection (for coop mode if wanted)
+                GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PLAYER_SELECTION));
+            }
         }
 
         private void AssignPlayerIndex(PlayerInput playerInput)
@@ -241,20 +247,33 @@ namespace BHR
         {
             if (change == InputDeviceChange.Disconnected)
             {
+                Debug.Log(device.name + " is disconnecting");
                 foreach (PlayerInputController playerInputController in PlayersInputControllerRef)
                 {
-                    if (playerInputController != null && playerInputController.GetComponent<PlayerInput>().devices.Count == 0)
+                    if (playerInputController != null && playerInputController.GetComponent<PlayerInput>().devices.Count == 0) // Found the player ref that disconnected
                     {
-                        UpdatePlayerControllerState(playerInputController.playerIndex);
-                        UpdatePlayerReadyState(playerInputController.playerIndex, PlayerReadyState.NONE);
-                        PlayersInputControllerRef[playerInputController.playerIndex] = null;
-                        SetSoloPlayer();
-                        CheckReadyState();
-                        Debug.Log($"Player {playerInputController.playerIndex} is deconnecting because his {device.name} controller deconnected");
-                        Destroy(playerInputController.gameObject);
+                        OnPlayerDisconnecting(playerInputController);
                     }
                 }
             }
+        }
+
+        private void OnPlayerDisconnecting(PlayerInputController playerInputController)
+        {
+            // Check if player was playing
+            if(PlayersReadyState[playerInputController.playerIndex] == PlayerReadyState.READY && GameManager.Instance.IsPlaying)
+            {
+                GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PLAYER_SELECTION));
+            }
+
+            UpdatePlayerControllerState(playerInputController.playerIndex);
+            UpdatePlayerReadyState(playerInputController.playerIndex, PlayerReadyState.NONE);
+            PlayersInputControllerRef[playerInputController.playerIndex] = null;
+            SetSoloPlayer();
+            CheckReadyState();
+            Debug.Log($"Player {playerInputController.playerIndex} is disconnecting");
+            Destroy(playerInputController.gameObject);
+
         }
         #endregion
 
