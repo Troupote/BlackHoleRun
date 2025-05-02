@@ -164,4 +164,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 9170475032202126854}
+  curveForce: 20
   curveForce: 0.001

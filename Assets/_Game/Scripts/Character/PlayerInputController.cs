@@ -6,6 +6,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
+    [ReadOnly]
+    public int playerIndex = -1;
+
     private PlayerInput _playerInput;
     [SerializeField, ReadOnly]
     private PlayerState _playerState;
@@ -18,6 +21,11 @@ public class PlayerInputController : MonoBehaviour
             PlayerStateChanged(_playerState);
         }
     }
+
+#if UNITY_EDITOR
+    [Button]
+    private void ForcePlayerState(PlayerState state) => PlayerState = state;
+#endif
 
     private void Awake()
     {
@@ -54,7 +62,7 @@ public class PlayerInputController : MonoBehaviour
     private void HandleInput(InputAction.CallbackContext ctx)
     {
         if(ctx.action.actionMap == _playerInput.currentActionMap)
-            PlayersInputManager.Instance.HandleInput(ctx, _playerInput.playerIndex);
+            PlayersInputManager.Instance.HandleInput(ctx, playerIndex);
     }
 
     private void PlayerStateChanged(PlayerState state)

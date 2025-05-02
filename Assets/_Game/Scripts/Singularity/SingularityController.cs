@@ -26,24 +26,21 @@ public class SingularityController : MonoBehaviour
         // Debing le reste
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (!CharactersManager.Instance.isSingularityThrown) return;
-
         Move();
     }
-
-    [SerializeField] private float curveForce = 0.001f;
 
     private void Move()
     {
         float moveX = moveValue.x;
 
-        if (moveX != 0)
-        {
-            Vector3 curveDirection = transform.right * moveX;
-            rb.AddForce(curveDirection * curveForce, ForceMode.Force);
-        }
+        if (moveValue.x == 0 && moveValue.y == 0) return;
+
+        Vector3 curveDirection = transform.right * moveX;
+
+        rb.AddForce(curveDirection.normalized * CharactersManager.Instance.GameplayData.MovingCurveForce, ForceMode.Force);
     }
 
     public void HandleSingulairtyMove(Vector2 value) => moveValue = value;

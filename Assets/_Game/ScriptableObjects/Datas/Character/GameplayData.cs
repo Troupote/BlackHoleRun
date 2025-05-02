@@ -14,6 +14,10 @@ public class GameplayData : ScriptableObject
     private float m_throwForce = 30f;
     public float ThrowForce => m_throwForce;
 
+    [SerializeField]
+    private float m_movingCurveForce = 15f;
+    public float MovingCurveForce => m_movingCurveForce;
+
     [Title("Character Settings")]
     [SerializeField]
     private float m_playerSpeed = 30f;

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class LevelSelectionUI : MonoBehaviour
+public class LevelSelectionUI : AModuleUI
 {
     [SerializeField, Required] private GameObject _levelSelectionPanel;
     [SerializeField, Required] private GameObject _levelSelectedPanel;
@@ -29,13 +29,6 @@ public class LevelSelectionUI : MonoBehaviour
     {
         LoadLevelsSelection();
         UnloadLevel();
-
-        PlayersInputManager.Instance.OnUIInput.AddListener(HandleInput);
-    }
-
-    private void OnDisable()
-    {
-        PlayersInputManager.Instance.OnUIInput.RemoveListener(HandleInput);
     }
     private void UnloadLevel()
     {
@@ -89,13 +82,13 @@ public class LevelSelectionUI : MonoBehaviour
         _levelSelectedPanel.SetActive(true);
     }
 
-    private void HandleInput(InputAction.CallbackContext ctx)
-    {
-        if (ctx.performed && ctx.action.name == InputActions.Cancel)
-            Back();
-    }
+    //private void HandleInput(InputAction.CallbackContext ctx)
+    //{
+    //    if (ctx.performed && ctx.action.name == InputActions.Cancel)
+    //        Back();
+    //}
 
-    public void Back()
+    public override void Back()
     {
         if(_levelSelectedPanel.activeSelf)
         {

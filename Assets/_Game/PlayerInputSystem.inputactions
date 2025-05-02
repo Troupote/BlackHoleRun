@@ -359,6 +359,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Look",
+                    "type": "Value",
+                    "id": "c5f67a97-fd04-4aa1-a687-239d1e68f4ab",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Jump",
                     "type": "Button",
                     "id": "857d60a0-c108-4255-9cb5-e8f874edcc39",
@@ -530,6 +539,28 @@
                 },
                 {
                     "name": "",
+                    "id": "15ca11ed-924f-4fc8-ae42-666c28152c81",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d8f4c89-d843-42bb-99cf-970562d2bc4c",
+                    "path": "<Pointer>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch;KeyboardMouse",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "d7bf448d-efe1-4bad-a6a5-cc7e97053113",
                     "path": "<Gamepad>/buttonWest",
                     "interactions": "",
@@ -631,6 +662,15 @@
                     "name": "Switch",
                     "type": "Button",
                     "id": "f8c92ad6-c657-40c2-b3c0-57012d3a2178",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "0c4b0d29-671e-448e-a6c2-74e1c89a31c7",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -964,6 +1004,28 @@
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "b436fb5a-4f1e-430f-a561-8963efa5b294",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardMouse",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4ba627a8-a1d9-4f14-9a8f-b0d66a94e411",
+                    "path": "*/{Menu}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",

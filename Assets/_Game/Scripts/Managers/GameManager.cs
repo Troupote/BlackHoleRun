@@ -46,6 +46,7 @@ namespace BHR
             }
         }
         public UnityEvent<float> OnTimerChanged;
+        [SerializeField, ReadOnly]
         private bool _isPlaying = false;
         public bool IsPlaying
         {
@@ -57,6 +58,7 @@ namespace BHR
                 _gameTimeScale = _isPlaying ? _savedGameTimeScale : 0f;
             }
         }
+        [SerializeField, ReadOnly]
         private bool _isPaused = false;
         public bool IsPaused
         {
@@ -69,6 +71,7 @@ namespace BHR
         }
         private PlayerState _savedPausedState = PlayerState.NONE;
         private float _savedGameTimeScale = 1f;
+        [SerializeField, ReadOnly]
         private float _gameTimeScale;
         public float GameTimeScale => _gameTimeScale;
         #endregion
@@ -81,6 +84,11 @@ namespace BHR
 
             // Bind to input events
             PlayersInputManager.Instance.OnPause.AddListener(TogglePause);
+        }
+
+        private void Update()
+        {
+            Chrono();
         }
 
         private void Init()
@@ -115,22 +123,30 @@ namespace BHR
 
         public void TogglePause()
         {
-            if (!IsPaused) Pause(); else Resume();
+            if (IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE))
+                Resume(); 
+            else if(!IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD))
+                Pause(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE));
         }
 
-        private void Pause()
+        public void Pause(GameObject moduleToLoad)
         {
-            _savedGameTimeScale = GameTimeScale;
-            _savedPausedState = ActivePlayerState;
-            IsPaused = true;
-            //ChangeMainPlayerState(PlayerState.UI, false);
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE));
+            Cursor.lockState = CursorLockMode.None;
+            if(!IsPaused)
+            {
+                _savedGameTimeScale = GameTimeScale;
+                _savedPausedState = ActivePlayerState;
+                IsPaused = true;
+                ChangeMainPlayerState(PlayerState.UI, false);
+            }
+            ModuleManager.Instance.OnModuleEnable(moduleToLoad);
         }
 
         public void Resume()
         {
+            Cursor.lockState = CursorLockMode.Locked;
             IsPaused = false;
-            //ChangeMainPlayerState(_savedPausedState, false);
+            ChangeMainPlayerState(_savedPausedState, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
         }
 
@@ -168,10 +184,16 @@ namespace BHR
             CameraManager.Instance.DestroyInstance();
         }
 
-        private void Update()
+        private void Chrono()
         {
             if (IsPlaying)
                 Timer += Time.deltaTime * GameTimeScale;
+        }
+
+        private const float _outerWildsEasterEggBonus = -0.22f;
+        public void ILoveOuterWidls()
+        {
+            Timer += _outerWildsEasterEggBonus;
         }
 
         public void ChangeMainPlayerState(PlayerState state, bool switchActivePlayer)
@@ -184,15 +206,15 @@ namespace BHR
             if(_soloMode)
             {
                 _activePlayerIndex = Array.IndexOf(PlayersInputManager.Instance.PlayersReadyState, PlayerReadyState.READY);
-                PlayersInputManager.Instance.PlayersInputRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+                PlayersInputManager.Instance.PlayersInputControllerRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
             }
             else
             {
                 _activePlayerIndex = _mainPlayerIsPlayerOne ? 0 : 1;
-                PlayersInputManager.Instance.PlayersInputRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+                PlayersInputManager.Instance.PlayersInputControllerRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
 
                 PlayerState secondPlayerState = _activePlayerState == PlayerState.UI ? PlayerState.UI : PlayerState.INACTIVE;
-                PlayersInputManager.Instance.PlayersInputRef[1-_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
+                PlayersInputManager.Instance.PlayersInputControllerRef[1-_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
             }
         }
     }
