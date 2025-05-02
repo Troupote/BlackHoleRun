@@ -131,9 +131,6 @@ namespace BHR
             rightReadyImage.color = leftColor;
         }
 
-        public void DisconnectAction(int playerIndex) => PlayersInputManager.Instance.OnCancelAction(playerIndex);
-        public void RebindAction(int playerIndex) => PlayersInputManager.Instance.OnRebindAction(playerIndex);
-
         private int PlayerIndexUI(int trueIndex) => PlayersInputManager.Instance.IsSwitched ? 1-trueIndex : trueIndex;
     }
 

@@ -135,7 +135,7 @@ namespace BHR
             _savedGameTimeScale = GameTimeScale;
             _savedPausedState = ActivePlayerState;
             IsPaused = true;
-            //ChangeMainPlayerState(PlayerState.UI, false);
+            ChangeMainPlayerState(PlayerState.UI, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE));
         }
 
@@ -143,7 +143,7 @@ namespace BHR
         {
             Cursor.lockState = CursorLockMode.Locked;
             IsPaused = false;
-            //ChangeMainPlayerState(_savedPausedState, false);
+            ChangeMainPlayerState(_savedPausedState, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
         }
 

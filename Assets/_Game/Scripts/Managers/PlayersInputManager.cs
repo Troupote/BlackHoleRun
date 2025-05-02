@@ -76,6 +76,13 @@ namespace BHR
             string actionMap = ctx.action.actionMap.name;
             //Debug.Log($"Player in {actionMap} state has {ctx.phase} {ctx.action.name} with {ctx.control.device.name}");
 
+            // Specific action common to all actions maps (except Empty)
+            if (ctx.action.name == InputActions.Pause)
+            {
+                OnPause.Invoke();
+                return;
+            }
+
             if (actionMap == InputActions.UIActionMap)
             {
                 // Specific case in Player selection where while in UI we need to differenciate players, but not with the map, with the playerIndex.
@@ -103,12 +110,6 @@ namespace BHR
         {
             // Get controller type used 
             PlayerControllerState controller = PlayersControllerState[playerIndex];
-
-            // Specific global actions (no need to diferentiate players)
-            if (ctx.performed && ctx.action.name == InputActions.Pause)
-                OnPause.Invoke();
-
-            // Character actions in game (need to diferentiate players)
 
             // If IsPlaying only -> don't know if the best is to block the input here or to block the movements everywhere else
             if (!GameManager.Instance.IsPlaying)
