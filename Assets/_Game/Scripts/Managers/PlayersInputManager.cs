@@ -125,7 +125,7 @@ namespace BHR
                     if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(playerIndex))
                         value = Vector2.zero;
 
-                    OnSLook.Invoke(value, controller);
+                    OnHLook.Invoke(value, controller);
                 }
 
                 else if (ctx.action.name == InputActions.Move)
