@@ -17314,7 +17314,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &357880426646025198
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17347,13 +17347,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d13768dac420021418ff773b801a2cc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inputJoinTexts: []
-  _inputReconnectIcons:
-  - {fileID: 7577700345784975569}
-  - {fileID: 6546634433496158223}
-  - {fileID: 3785339946995057531}
-  - {fileID: 1036497092256057964}
-  _readyPanel: {fileID: 3729007385302996053}
   _playerStatePanels:
   - {fileID: 1758670983991074572}
   - {fileID: 6394270482891134883}
@@ -17363,6 +17356,12 @@ MonoBehaviour:
   - {fileID: 5894254454248589897}
   - {fileID: 3571316569749169319}
   - {fileID: 3160319281722588781}
+  _readyPanel: {fileID: 3729007385302996053}
+  _inputReconnectIcons:
+  - {fileID: 7577700345784975569}
+  - {fileID: 6546634433496158223}
+  - {fileID: 3785339946995057531}
+  - {fileID: 1036497092256057964}
   _keyboardSwitchIcon: {fileID: 7027168953101821372}
   _gamepadSwitchIcon: {fileID: 8477539166762770006}
   _soloConfirmPanel: {fileID: 3984510174587701444}
