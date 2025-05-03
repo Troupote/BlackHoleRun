@@ -228,6 +228,38 @@ namespace BHR
             #endregion
         }
 
+        private void SetAllowedInput(int playerIndex, bool disconnecting)
+        {
+            if (ModuleManager.Instance.CurrentModule != ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAP_REBINDING))
+            {
+                if(PlayerConnectedCount() == 0)
+                    CurrentAllowedInput = AllowedPlayerInput.NONE;
+                else if (PlayerConnectedCount() == 1)
+                    CurrentAllowedInput = playerIndex == 0 || disconnecting ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.SECOND_PLAYER;
+                else if (PlayerConnectedCount() == 2)
+                    CurrentAllowedInput = AllowedPlayerInput.BOTH;
+            }
+        }
+
+        public void AllowOnlyOnePlayerUIInputs(bool enable)
+        {
+            if(enable)
+            {
+                CurrentAllowedInput = LastPlayerIndexUIInput == 0 || PlayersInputControllerRef.Length <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.SECOND_PLAYER;
+            }
+            else
+            {
+                CurrentAllowedInput = PlayersInputControllerRef.Length <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.BOTH;
+            }
+        }
+
+        public void ToggleCurrentAllowedInput()
+        {
+            if (CurrentAllowedInput == AllowedPlayerInput.NONE || CurrentAllowedInput == AllowedPlayerInput.BOTH)
+                return;
+
+            CurrentAllowedInput = CurrentAllowedInput == AllowedPlayerInput.FIRST_PLAYER ? AllowedPlayerInput.SECOND_PLAYER : AllowedPlayerInput.FIRST_PLAYER;
+        }
 
         #endregion
 
@@ -255,11 +287,7 @@ namespace BHR
             SetSoloPlayer();
             SoloModeEnabled = false;
 
-            // Allowed UI event inputs
-            if (PlayerConnectedCount() == 1)
-                CurrentAllowedInput = playerInputController.playerIndex == 0 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.SECOND_PLAYER;
-            else if(PlayerConnectedCount() == 2)
-                CurrentAllowedInput = AllowedPlayerInput.BOTH;
+            SetAllowedInput(playerInputController.playerIndex, false);
 
             if(GameManager.Instance.SoloMode && ( GameManager.Instance.IsPlaying || GameManager.Instance.IsPaused))
             {
@@ -325,12 +353,7 @@ namespace BHR
             SetSoloPlayer();
             CheckReadyState();
 
-            if(PlayerConnectedCount() == 0)
-                CurrentAllowedInput = AllowedPlayerInput.NONE;
-            if (PlayerConnectedCount() == 1)
-                CurrentAllowedInput = AllowedPlayerInput.FIRST_PLAYER;
-            else if (PlayerConnectedCount() == 2)
-                CurrentAllowedInput = AllowedPlayerInput.BOTH;
+            SetAllowedInput(playerInputController.playerIndex, true);
 
             Debug.Log($"Player {playerInputController.playerIndex} is disconnecting");
             Destroy(playerInputController.gameObject);
@@ -438,8 +461,8 @@ namespace BHR
 
         public void OnRebindAction(int playerIndex)
         {
-            Debug.Log("Rebind stuff");
-            //@todo Rebinding
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAP_REBINDING));
+            AllowOnlyOnePlayerUIInputs(true);
         }
 
         private void OnSwitchAction()

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6885922237077673388}
   - component: {fileID: 6361956348708801543}
   - component: {fileID: 7788034295671666518}
+  - component: {fileID: 4517479487410348685}
   m_Layer: 0
   m_Name: PlayerInputManager
   m_TagString: Untagged
@@ -103,10 +104,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Actions: {fileID: 11400000, guid: c51eb42cd694ab641a9d99a0cf871546, type: 2}
   _canConnect: 0
+  _currentAllowedInput: 3
+  LastPlayerIndexUIInput: 0
   _playersControllerState: 
   _playersReadyState: 
   _soloPlayer: 0
   _soloModeEnabled: 0
+  OnAllowedInputChanged:
+    m_PersistentCalls:
+      m_Calls: []
   OnUIInput:
     m_PersistentCalls:
       m_Calls: []
@@ -161,3 +167,18 @@ MonoBehaviour:
   OnHAim:
     m_PersistentCalls:
       m_Calls: []
+  OnRestart:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4517479487410348685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4452825733218269305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 640edff8bbd25a84b91a038be2bcd4b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
