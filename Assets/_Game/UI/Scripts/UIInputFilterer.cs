@@ -17,9 +17,8 @@ namespace BHR
 
         private void OnEnable()
         {
-            PlayersInputManager.Instance.OnAllowedInputChanged.AddListener(ChangeAllowedPlayerInput);
-            ChangeAllowedPlayerInput(PlayersInputManager.Instance.CurrentAllowedInput);
             InputSystem.onEvent += OnInputEvent;
+            PlayersInputManager.Instance.OnAllowedInputChanged.AddListener(ChangeAllowedPlayerInput);
         }
 
         private void OnDisable()
@@ -33,10 +32,16 @@ namespace BHR
             _allowedInput = new PlayerInput[2];
             _allowedDevices.Clear();
 
-            if ((newAllowed & AllowedPlayerInput.FIRST_PLAYER) != 0)
-                _allowedInput[0] = PlayersInputManager.Instance.PlayersInputControllerRef[0].GetComponent<PlayerInput>();
-            if ((newAllowed & AllowedPlayerInput.SECOND_PLAYER) != 0)
-                _allowedInput[1] = PlayersInputManager.Instance.PlayersInputControllerRef[1].GetComponent<PlayerInput>();
+            PlayerInputController[] picr = PlayersInputManager.Instance.PlayersInputControllerRef;
+            PlayerInput[] pir = new PlayerInput[] { picr[0]?.GetComponent<PlayerInput>(),picr[1]?.GetComponent<PlayerInput>() };
+
+            _allowedInput = newAllowed switch
+            {
+                AllowedPlayerInput.FIRST_PLAYER => new PlayerInput[] { pir[0]},
+                AllowedPlayerInput.SECOND_PLAYER => new PlayerInput[] { pir[1] },
+                AllowedPlayerInput.BOTH => pir,
+                _ => new PlayerInput[] { null, null }
+            };
 
             foreach (PlayerInput playerInputController in _allowedInput)
                 if(playerInputController != null)
@@ -49,7 +54,10 @@ namespace BHR
             if (!_allowedDevices.Contains(device))
             {
                 eventPtr.handled = true; // Bloque l’event
+                return;
             }
+
+            PlayersInputManager.Instance.LastPlayerIndexUIInput = _allowedInput.First(i => i.GetComponent<PlayerInput>().devices.Contains(device)).playerIndex;
         }
     }
 }

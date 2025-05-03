@@ -20,6 +20,7 @@ namespace BHR
         private PlayerInputController[] _playersInputControllerRef = new PlayerInputController[2];
         public PlayerInputController[] PlayersInputControllerRef { get => _playersInputControllerRef; set { _playersInputControllerRef = value;} }
 
+        [SerializeField, ReadOnly]
         private AllowedPlayerInput _currentAllowedInput = AllowedPlayerInput.BOTH;
         public AllowedPlayerInput CurrentAllowedInput
         {
@@ -30,6 +31,12 @@ namespace BHR
                 OnAllowedInputChanged.Invoke(_currentAllowedInput);
             }
         }
+
+#if UNITY_EDITOR
+        [Button] private void ForceAllowedInputState(AllowedPlayerInput state) => CurrentAllowedInput = state;
+#endif
+
+        public int LastPlayerIndexUIInput;
 
         [SerializeField, ReadOnly] private PlayerControllerState[] _playersControllerState;
         public PlayerControllerState[] PlayersControllerState => _playersControllerState;
@@ -231,15 +238,20 @@ namespace BHR
             PlayerInputController playerInputController = playerInput.GetComponent<PlayerInputController>();
             Debug.Log($"Player {playerInputController.playerIndex} joined !\nController : {playerInput.devices[0]} (Scheme : {playerInput.currentControlScheme})\nAction map : {playerInput.currentActionMap.name}");
 
+
             playerInputController.transform.SetParent(transform);
 
             UpdatePlayerControllerState(playerInputController.playerIndex);
             UpdatePlayerReadyState(playerInputController.playerIndex, PlayerReadyState.CONNECTED);
 
-
             SetSoloPlayer();
             SoloModeEnabled = false;
 
+            // Allowed UI event inputs
+            if (PlayerConnectedCount() == 1)
+                CurrentAllowedInput = playerInputController.playerIndex == 0 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.SECOND_PLAYER;
+            else if(PlayerConnectedCount() == 2)
+                CurrentAllowedInput = AllowedPlayerInput.BOTH;
 
             if(GameManager.Instance.SoloMode && ( GameManager.Instance.IsPlaying || GameManager.Instance.IsPaused))
             {
@@ -304,6 +316,14 @@ namespace BHR
             PlayersInputControllerRef[playerInputController.playerIndex] = null;
             SetSoloPlayer();
             CheckReadyState();
+
+            if(PlayerConnectedCount() == 0)
+                CurrentAllowedInput = AllowedPlayerInput.NONE;
+            if (PlayerConnectedCount() == 1)
+                CurrentAllowedInput = AllowedPlayerInput.FIRST_PLAYER;
+            else if (PlayerConnectedCount() == 2)
+                CurrentAllowedInput = AllowedPlayerInput.BOTH;
+
             Debug.Log($"Player {playerInputController.playerIndex} is disconnecting");
             Destroy(playerInputController.gameObject);
 
