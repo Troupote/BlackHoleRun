@@ -48,6 +48,15 @@ namespace BHR
             }
         }
 
+        public void ReloadScene()
+        {
+            if(CurrentSceneData != null)
+            {
+                Debug.Log($"Reloading {CurrentSceneData.SceneName} scene");
+                SceneManager.LoadScene(CurrentSceneData.SceneName);
+            }
+        }
+
         public void QuitGame()
         {
 #if UNITY_EDITOR

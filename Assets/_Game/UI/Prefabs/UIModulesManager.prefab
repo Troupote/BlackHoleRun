@@ -13040,31 +13040,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1052964888699945126}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7213708363707084646}
-        m_TargetAssemblyTypeName: BHR.ModuleManager, Assembly-CSharp
-        m_MethodName: OnModuleEnable
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 7785376865808398953}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 7213708363707084646}
-        m_TargetAssemblyTypeName: BHR.ModuleManager, Assembly-CSharp
-        m_MethodName: ClearNavigationHistoric
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1552020915830369986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24015,33 +23991,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7213708363707084646}
-        m_TargetAssemblyTypeName: ModuleManager, Assembly-CSharp
-        m_MethodName: ReloadScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Restart
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 7213708363707084646}
-        m_TargetAssemblyTypeName: ModuleManager, Assembly-CSharp
-        m_MethodName: OnModuleEnable
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 7785376865808398953}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 7213708363707084646}
-        m_TargetAssemblyTypeName: ModuleManager, Assembly-CSharp
-        m_MethodName: ClearHistoric
+      - m_Target: {fileID: 3218528094187124961}
+        m_TargetAssemblyTypeName: EndLevelModuleUI, Assembly-CSharp
+        m_MethodName: RestartLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -24049,7 +24001,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &7624967209004095037
 GameObject:

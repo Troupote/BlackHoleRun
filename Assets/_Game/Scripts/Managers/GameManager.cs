@@ -18,7 +18,9 @@ namespace BHR
         private int _activePlayerIndex;
         public int ActivePlayerIndex => _activePlayerIndex;
         private bool _mainPlayerIsPlayerOne = true;
+        [SerializeField, ReadOnly]
         private LevelDataSO _selectedLevel = null;
+        [SerializeField, ReadOnly]
         private LevelDataSO _currentLevel = null;
         public LevelDataSO SelectedLevel
         {
@@ -103,7 +105,17 @@ namespace BHR
         {
             PlayersInputManager.Instance.CanConnect = false;
             if(SelectedLevel!=null)
-                ScenesManager.Instance.ChangeScene(SelectedLevel);
+            {
+                if(SelectedLevel != CurrentLevel)
+                    ScenesManager.Instance.ChangeScene(SelectedLevel);
+                else
+                    ScenesManager.Instance.ReloadScene();
+            }
+            else
+            {
+                Debug.LogError("No selected level !");
+                return;
+            }
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
             ModuleManager.Instance.ClearNavigationHistoric();
 

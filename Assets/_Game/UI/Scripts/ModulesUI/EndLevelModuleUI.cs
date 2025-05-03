@@ -153,12 +153,15 @@ public class EndLevelModuleUI : MonoBehaviour
     {
         if (_currentLevel.ID <= DataManager.Instance.GetLastLevelCompletedID() && _currentLevel.ID != DataManager.Instance.LevelDatas.Last().ID)
         {
-            GameManager.Instance.SaveSelectedLevel(DataManager.Instance.LevelDatas[_currentLevel.ID + 1]);
-            _nextLevelPanel.GetComponentInChildren<Button>().onClick.RemoveListener(GameManager.Instance.LaunchLevel);
+            _nextLevelPanel.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+            _nextLevelPanel.GetComponentInChildren<Button>().onClick.AddListener(() => GameManager.Instance.SaveSelectedLevel(DataManager.Instance.LevelDatas[_currentLevel.ID + 1]));
             _nextLevelPanel.GetComponentInChildren<Button>().onClick.AddListener(GameManager.Instance.LaunchLevel);
             _nextLevelPanel.SetActive(true);
         }
         else
             _nextLevelPanel.SetActive(false);
     }
+
+    public void RestartLevel() => GameManager.Instance.RestartLevel();
+
 }
