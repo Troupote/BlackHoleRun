@@ -19,6 +19,18 @@ namespace BHR
         // Players managing
         private PlayerInputController[] _playersInputControllerRef = new PlayerInputController[2];
         public PlayerInputController[] PlayersInputControllerRef { get => _playersInputControllerRef; set { _playersInputControllerRef = value;} }
+
+        private AllowedPlayerInput _currentAllowedInput = AllowedPlayerInput.BOTH;
+        public AllowedPlayerInput CurrentAllowedInput
+        {
+            get => _currentAllowedInput;
+            set
+            {
+                _currentAllowedInput = value;
+                OnAllowedInputChanged.Invoke(_currentAllowedInput);
+            }
+        }
+
         [SerializeField, ReadOnly] private PlayerControllerState[] _playersControllerState;
         public PlayerControllerState[] PlayersControllerState => _playersControllerState;
         [SerializeField, ReadOnly] private PlayerReadyState[] _playersReadyState;
@@ -44,6 +56,8 @@ namespace BHR
             get => _isSwitched;
             private set { _isSwitched = value; OnPlayersSwitch.Invoke(IsSwitched); }
         }
+
+        public UnityEvent<AllowedPlayerInput> OnAllowedInputChanged;
 
         public UnityEvent<InputAction.CallbackContext> OnUIInput;
         public UnityEvent<InputAction.CallbackContext> OnInput;
