@@ -60,21 +60,21 @@ public class EndLevelModuleUI : MonoBehaviour
         GameManager.Instance.OnEndLevel.RemoveListener(OnEndLevel);
     }
 
-    private void OnEndLevel(float endTime)
+    private void OnEndLevel(float endTime, bool newBest)
     {
         _currentLevel = GameManager.Instance.CurrentLevel;
         _endTimer = endTime;
-        UpdateRunInfos();
+        UpdateRunInfos(newBest);
         CreateMedals();
         CheckIfNextLevel();
     }
 
     #region Run infos UI
-    private void UpdateRunInfos()
+    private void UpdateRunInfos(bool newBest)
     {
         _levelNameText.text = $"Level {_currentLevel.ID.ToString("D2")} - {_currentLevel.LevelName}";
         _currentTimeText.text = "TIME : " + UtilitiesFunctions.TimeFormat(_endTimer);
-        _bestTimeText.text = "BEST : " + UtilitiesFunctions.TimeFormat(_currentLevel.BestTime());
+        _bestTimeText.text = newBest ? "NEW BEST TIME !" : "BEST : " + UtilitiesFunctions.TimeFormat(_currentLevel.BestTime());
     }
     #endregion
 

@@ -55,7 +55,7 @@ public class LevelSelectionUI : AModuleUI
             {
                 button.onClick.AddListener(() => ModuleManager.Instance.CanBack = false);
                 button.onClick.AddListener(() => ModuleManager.Instance.SaveBackSelectable(button));
-                button.onClick.AddListener(() => _playMenuButton.Select());
+                button.onClick.AddListener(() => _playButton.Select());
                 button.onClick.AddListener(() => LoadLevel(data));
                 text.text = $"{data.LevelName}\n{data.ID.ToString("D2")}";
 

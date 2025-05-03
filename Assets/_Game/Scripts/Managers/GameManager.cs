@@ -32,7 +32,7 @@ namespace BHR
 
         public LevelDataSO CurrentLevel => _currentLevel;
         public UnityEvent OnLaunchLevel, OnStartLevel;
-        public UnityEvent<float> OnEndLevel;
+        public UnityEvent<float, bool> OnEndLevel;
 
         #region During Game Level
         private float _timer;
@@ -154,11 +154,11 @@ namespace BHR
         {
             CleanInGame();
             IsPlaying = false;
-            _currentLevel.SaveTime(Timer);
+            bool newBestTime = _currentLevel.SaveTime(Timer);
             ChangeMainPlayerState(PlayerState.UI, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.END_LEVEL));
             ModuleManager.Instance.ClearNavigationHistoric();
-            OnEndLevel.Invoke(Timer);
+            OnEndLevel.Invoke(Timer, newBestTime);
         }
 
         public void QuitLevel()
