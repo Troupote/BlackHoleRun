@@ -21,6 +21,7 @@ namespace BHR
         public static string Unmorph;
         public static string Aim;
         public static string Throw;
+        public static string Restart;
         public static string Pause;
 
         public static string Submit;
@@ -49,6 +50,7 @@ namespace BHR
             Unmorph = inputActions.Unmorph;
             Aim = inputActions.Aim;
             Throw = inputActions.Throw;
+            Restart = inputActions.Restart;
             Pause = inputActions.Pause;
 
             Submit = inputActions.Submit;

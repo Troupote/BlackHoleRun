@@ -86,6 +86,7 @@ namespace BHR
 
             // Bind to input events
             PlayersInputManager.Instance.OnPause.AddListener(TogglePause);
+            PlayersInputManager.Instance.OnRestart.AddListener(RestartLevel);
         }
 
         private void Update()

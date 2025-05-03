@@ -127,6 +127,7 @@ namespace BHR
         public UnityEvent<Vector2> OnHMove, OnSMove; // Vector2 value events
         public UnityEvent<Vector2, PlayerControllerState> OnHLook, OnSLook; // Vector2 value events depending of the controller used
         public UnityEvent OnHAim; // Hold events
+        public UnityEvent OnRestart; // Interactions performed events
 
         private void SendInputEvent(InputAction.CallbackContext ctx, int playerIndex)
         {
@@ -137,6 +138,12 @@ namespace BHR
             if (!GameManager.Instance.IsPlaying)
                 return;
 
+            #region Common at all player states
+            if (ctx.action.name == InputActions.Restart && ctx.performed)
+                OnRestart.Invoke();
+            #endregion
+
+            #region Specific player state
             // HUMANOID
             if (ctx.action.actionMap.name == InputActions.HumanoidActionMap)
             {
@@ -218,6 +225,7 @@ namespace BHR
                         OnSUnmorph.Invoke(); // @todo link to singularity unmorph action (if any)
                 }
             }
+            #endregion
         }
 
 

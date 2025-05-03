@@ -24,6 +24,7 @@ public class InputActionsSO : ScriptableObject
     public string Unmorph;
     public string Aim;
     public string Throw;
+    public string Restart;
     public string Pause;
 
     [Header("UI")]
