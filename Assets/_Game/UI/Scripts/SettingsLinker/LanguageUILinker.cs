@@ -13,20 +13,21 @@ namespace BHR.UILinkers
             SettingsManager.Instance.UpdateLanguage();
         }
 
-        protected override void LoadSetting()
+        protected override int LoadSetting()
         {
             TMP_Dropdown dropdown = GetComponent<TMP_Dropdown>();
 
             TMP_Dropdown.OptionData currentLanguage = dropdown.options.FirstOrDefault(o => o.text == SettingsSave.LoadLanguage());
-            if(currentLanguage == null)
+            if (currentLanguage == null)
             {
                 Debug.LogError(currentLanguage.text + " isn't supported.");
 
-                SettingsSave.LoadLanguage();
+                SettingsSave.LoadLanguage(); // Reset language
                 currentLanguage = dropdown.options.FirstOrDefault(o => o.text == SettingsSave.LoadLanguage());
             }
-
-            dropdown.value = dropdown.options.IndexOf(currentLanguage);
+            return dropdown.options.IndexOf(currentLanguage);
         }
+
+        protected override void UpdateUI() => GetComponent<TMP_Dropdown>().value = LoadSetting();
     }
 }

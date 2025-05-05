@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace BHR
 {
@@ -14,9 +15,11 @@ namespace BHR
         #endregion
 
         #region Users settings keys and default values
-        private const string SENSITIVITY_KEY = "Sensitivity"; private const float DEFAULT_SENSITIVITY = 1f;
-        private const string LEFT_STICK_DEADZONE_KEY = "LSDeadzone"; private const float DEFAULT_LEFT_STICK_DEADZONE = 0f;
-        private const string RIGHT_STICK_DEADZONE_KEY = "RSDeadzone"; private const float DEFAULT_RIGHT_STICK_DEADZONE = 0.15f;
+        private const string SENSITIVITY_X_KEY = "SensitivityX/"; private const float DEFAULT_SENSITIVITY_X = 1f;
+        private const string SENSITIVITY_Y_KEY = "SensitivityY/"; private const float DEFAULT_SENSITIVITY_Y = 1f;
+        private const string INVERT_AXE_Y_KEY = "InvertAxeY/"; private const int DEFAULT_INVERT_AXE_Y = 0;
+        private const string LEFT_STICK_DEADZONE_KEY = "LSDeadzone/"; private const float DEFAULT_LEFT_STICK_DEADZONE = 0f;
+        private const string RIGHT_STICK_DEADZONE_KEY = "RSDeadzone/"; private const float DEFAULT_RIGHT_STICK_DEADZONE = 0.15f;
         #endregion
 
         #region Global settings save and load
@@ -39,13 +42,28 @@ namespace BHR
         #endregion
 
         #region User settings save and load
-        public static void SaveSensitivity(float value, int playerId) => PlayerPrefs.SetFloat(SENSITIVITY_KEY + playerId, value);
-        public static float LoadSensitivity(int playerId) => PlayerPrefs.GetFloat(SENSITIVITY_KEY + playerId, DEFAULT_SENSITIVITY);
+        public static string GetControllerKey(InputDevice controller)
+        {
+            string controllerKey = "Not-referenced";
+            if (controller is Mouse || controller is Keyboard)
+                controllerKey = "KeyboardMouse";
+            else if (controller is Gamepad)
+                controllerKey = $"{controller.device.description.manufacturer}_{controller.device.description.product}_{controller.device.description.serial}";
+            return controllerKey;
+        }
 
-        public static void SaveLeftStickDeadzone(float value, int playerId) => PlayerPrefs.SetFloat(LEFT_STICK_DEADZONE_KEY + playerId, value);
-        public static float LoadLeftStickDeadzone(int playerId) => PlayerPrefs.GetFloat(LEFT_STICK_DEADZONE_KEY + playerId, DEFAULT_LEFT_STICK_DEADZONE);
-        public static void SaveRightStickDeadzone(float value, int playerId) => PlayerPrefs.SetFloat(RIGHT_STICK_DEADZONE_KEY + playerId, value);
-        public static float LoadRightStickDeadzone(int playerId) => PlayerPrefs.GetFloat(RIGHT_STICK_DEADZONE_KEY + playerId, DEFAULT_RIGHT_STICK_DEADZONE);
+        public static void SaveSensitivityX(InputDevice controller, float value = DEFAULT_SENSITIVITY_X) => PlayerPrefs.SetFloat(SENSITIVITY_X_KEY + GetControllerKey(controller), value);
+        public static float LoadSensitivityX(InputDevice controller) => PlayerPrefs.GetFloat(SENSITIVITY_X_KEY + GetControllerKey(controller), DEFAULT_SENSITIVITY_X);
+        public static void SaveSensitivityY(InputDevice controller, float value = DEFAULT_SENSITIVITY_Y) => PlayerPrefs.SetFloat(SENSITIVITY_Y_KEY + GetControllerKey(controller), value);
+        public static float LoadSensitivityY(InputDevice controller) => PlayerPrefs.GetFloat(SENSITIVITY_Y_KEY + GetControllerKey(controller), DEFAULT_SENSITIVITY_Y);
+
+        public static void SaveInvertAxeY(InputDevice controller, int value = DEFAULT_INVERT_AXE_Y) => PlayerPrefs.SetInt(INVERT_AXE_Y_KEY + GetControllerKey(controller), value);
+        public static bool LoadInvertAxeY(InputDevice controller) => PlayerPrefs.GetInt(INVERT_AXE_Y_KEY + GetControllerKey(controller), DEFAULT_INVERT_AXE_Y) == 1;
+
+        public static void SaveLeftStickDeadzone(InputDevice controller, float value = DEFAULT_LEFT_STICK_DEADZONE) => PlayerPrefs.SetFloat(LEFT_STICK_DEADZONE_KEY + GetControllerKey(controller), value);
+        public static float LoadLeftStickDeadzone(InputDevice controller) => PlayerPrefs.GetFloat(LEFT_STICK_DEADZONE_KEY + GetControllerKey(controller), DEFAULT_LEFT_STICK_DEADZONE);
+        public static void SaveRightStickDeadzone(InputDevice controller, float value = DEFAULT_RIGHT_STICK_DEADZONE) => PlayerPrefs.SetFloat(RIGHT_STICK_DEADZONE_KEY + GetControllerKey(controller), value);
+        public static float LoadRightStickDeadzone(InputDevice controller) => PlayerPrefs.GetFloat(RIGHT_STICK_DEADZONE_KEY + GetControllerKey(controller), DEFAULT_RIGHT_STICK_DEADZONE);
         #endregion
     }
 }

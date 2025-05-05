@@ -32,6 +32,15 @@ namespace BHR
             }
         }
 
+        public InputDevice CurrentAllowedDevice => CurrentAllowedInput switch
+        {
+            AllowedPlayerInput.FIRST_PLAYER => PlayersInputControllerRef[0].GetComponent<PlayerInput>().devices[0],
+            AllowedPlayerInput.SECOND_PLAYER => PlayersInputControllerRef[1].GetComponent<PlayerInput>().devices[0],
+            _ => null
+        };
+
+        public InputDevice CurrentActivePlayerDevice => PlayersInputControllerRef[GameManager.Instance.ActivePlayerIndex].GetComponent<PlayerInput>().devices[0];
+
 #if UNITY_EDITOR
         [Button] private void ForceAllowedInputState(AllowedPlayerInput state) => CurrentAllowedInput = state;
 #endif
@@ -69,6 +78,8 @@ namespace BHR
         public UnityEvent<InputAction.CallbackContext> OnUIInput;
         public UnityEvent<InputAction.CallbackContext> OnInput;
 
+        public UnityEvent<int> OnPlayerHasJoined;
+        public UnityEvent<int> OnPlayerDisconnected;
         public UnityEvent<PlayerReadyState, int> OnPlayerReadyStateChanged;
         public UnityEvent<bool> OnSoloModeToggle;
         public UnityEvent<bool> OnPlayersSwitch;
@@ -152,7 +163,7 @@ namespace BHR
                     Vector2 value = ctx.ReadValue<Vector2>();
 
                     // Deadzone check 
-                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(playerIndex))
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(CurrentActivePlayerDevice))
                         value = Vector2.zero;
 
                     OnHLook.Invoke(value, controller);
@@ -163,7 +174,7 @@ namespace BHR
                     Vector2 value = ctx.ReadValue<Vector2>();
 
                     // Deadzone check 
-                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadLeftStickDeadzone(playerIndex))
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadLeftStickDeadzone(CurrentActivePlayerDevice))
                         value = Vector2.zero;
 
                     OnHMove.Invoke(value);
@@ -196,7 +207,7 @@ namespace BHR
                     Vector2 value = ctx.ReadValue<Vector2>();
 
                     // Deadzone check 
-                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(playerIndex))
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(CurrentActivePlayerDevice))
                         return;
 
                     OnSLook.Invoke(value, controller);
@@ -207,7 +218,7 @@ namespace BHR
                     Vector2 value = ctx.ReadValue<Vector2>();
 
                     // Deadzone check 
-                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadLeftStickDeadzone(playerIndex))
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadLeftStickDeadzone(CurrentActivePlayerDevice))
                         return;
 
                     OnSMove.Invoke(value);
@@ -294,6 +305,8 @@ namespace BHR
                 // if player was playing alone but a second device's connected, re open the player selection (for coop mode if wanted)
                 GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PLAYER_SELECTION));
             }
+
+            OnPlayerHasJoined.Invoke(playerInputController.playerIndex);
         }
 
         private bool AssignPlayerIndex(PlayerInput playerInput)
@@ -356,6 +369,7 @@ namespace BHR
             SetAllowedInput(playerInputController.playerIndex, true);
 
             Debug.Log($"Player {playerInputController.playerIndex} is disconnecting");
+            OnPlayerDisconnected.Invoke(playerInputController.playerIndex);
             Destroy(playerInputController.gameObject);
 
         }
@@ -472,7 +486,7 @@ namespace BHR
         }
 
         public int PlayerReadyCount() => PlayersReadyState.Where(r => r == PlayerReadyState.READY).ToList().Count;
-        public int PlayerConnectedCount() => PlayersReadyState.Where(r => r != PlayerReadyState.LOGGED_OUT && r != PlayerReadyState.NONE).ToList().Count;
+        public int PlayerConnectedCount() => PlayersReadyState.Where(r => r == PlayerReadyState.CONNECTED).ToList().Count + PlayerReadyCount();
 
         public void SetSoloPlayer()
         {
