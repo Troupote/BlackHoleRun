@@ -39,8 +39,11 @@ namespace BHR
         /// </summary>
         private void ApplySetting()
         {
-            SaveSetting(_savedValue);
-            _registered = false;
+            if(_registered)
+            {
+                SaveSetting(_savedValue);
+                _registered = false;
+            }
         }
 
         /// <summary>

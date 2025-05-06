@@ -166,6 +166,10 @@ namespace BHR
                     if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(CurrentActivePlayerDevice))
                         value = Vector2.zero;
 
+                    // Invert axe Y check
+                    if (SettingsSave.LoadInvertAxeY(CurrentActivePlayerDevice))
+                        value = new Vector2(value.x, -value.y);
+
                     OnHLook.Invoke(value, controller);
                 }
 
@@ -209,6 +213,10 @@ namespace BHR
                     // Deadzone check 
                     if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(CurrentActivePlayerDevice))
                         return;
+
+                    // Invert axe Y check
+                    if (SettingsSave.LoadInvertAxeY(CurrentActivePlayerDevice))
+                        value = new Vector2(value.x, -value.y);
 
                     OnSLook.Invoke(value, controller);
                 }
