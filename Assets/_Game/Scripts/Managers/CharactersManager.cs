@@ -79,6 +79,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         }
 
         a_characterBehavior.ResetVelocity();
+        a_singularityBehavior.ResetVelocity();
 
         Vector3 oldCharacterPosition = _characterObject.transform.position;
         _characterObject.transform.position = singularityPosition;
@@ -140,6 +141,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         }
         else
         {
+            if (GameManager.Instance.GameTimeScale == 0) return;
+
             timeElasped += Time.deltaTime;
 
             if (timeElasped >= m_gameplayData.SecondsBeforeSpawningCharacterBackIfNoCollision)

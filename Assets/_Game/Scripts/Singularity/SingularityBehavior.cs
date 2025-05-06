@@ -80,6 +80,12 @@ public class SingularityBehavior : MonoBehaviour
         rb.AddForce(direction.normalized * gameplayData.ThrowForce, ForceMode.Impulse);
     }
 
+    public void ResetVelocity()
+    {
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (!isThrown || AlreadyCollided || collision == null) return;
