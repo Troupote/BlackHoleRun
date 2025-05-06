@@ -137,7 +137,7 @@ namespace BHR
         public UnityEvent OnHJump, OnHDash, OnHSlide, OnHThrow, OnSJump, OnSDash, OnSUnmorph, OnPause; // Performed events
         public UnityEvent<Vector2> OnHMove, OnSMove; // Vector2 value events
         public UnityEvent<Vector2, PlayerControllerState> OnHLook, OnSLook; // Vector2 value events depending of the controller used
-        public UnityEvent OnHAim; // Hold events
+        public UnityEvent OnHAim; // Multiple callbacks events (Hold throw, Hold/toggle aim)
         public UnityEvent OnRestart; // Interactions performed events
 
         private void SendInputEvent(InputAction.CallbackContext ctx, int playerIndex)
@@ -458,10 +458,7 @@ namespace BHR
             SetSoloPlayer();
 
             if (CheckReadyState())
-            {
-                GameManager.Instance.SoloMode = SoloModeEnabled;
                 GameManager.Instance.LaunchLevel();
-            }
         }
 
         public void OnCancelAction(int playerIndex)

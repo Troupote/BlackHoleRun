@@ -5900,7 +5900,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Are you sure you want to play alone ?\n\nBLACK HOLE RUN is for 2 players,
-    but you can enjoy it alone as well ! \n"
+    but you can enjoy it alone as well ! \n\n(However, you can't complete a level
+    in solo mode)\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 027e53bf063d2d74badb31b42b7a24c1, type: 2}
   m_sharedMaterial: {fileID: -1700728973679544269, guid: 027e53bf063d2d74badb31b42b7a24c1, type: 2}
@@ -5927,8 +5928,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 21
+  m_fontSizeBase: 21
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -5939,7 +5940,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -29.08
+  m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: -51.1
   m_charWidthMaxAdj: 0
@@ -7347,6 +7348,7 @@ MonoBehaviour:
   _switchDuration: 0.1
   _successLevelText: STAR OBTAINED
   _failedLevelText: OBTAIN EARTH TO ACCESS NEXT LEVEL
+  _soloModeLevelEndText: 'PLAY IN COOP TO RECORD YOUR TIME '
 --- !u!1 &2469763391381552108
 GameObject:
   m_ObjectHideFlags: 0
@@ -11768,7 +11770,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 242.62006, y: 49.41632}
-  m_SizeDelta: {x: 485.24, y: 98.8327}
+  m_SizeDelta: {x: 600, y: 98.8327}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &670284661815830027
 CanvasRenderer:
@@ -11798,7 +11800,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: OBTAIN EARTH TO ACCESS NEXT LEVEL
+  m_text: PLAY IN COOP TO SAVE YOUR TIME
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 027e53bf063d2d74badb31b42b7a24c1, type: 2}
   m_sharedMaterial: {fileID: -1700728973679544269, guid: 027e53bf063d2d74badb31b42b7a24c1, type: 2}
@@ -16181,7 +16183,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _selectedByDefault: 1
   _selectedOnEnable: 0
-  _selectedOnDisable: 0
+  _selectedOnDisable: 1
   _onlyIfSelected: 1
   _selectedObject: {fileID: 1190680225383178637}
 --- !u!114 &4042824800058399274
@@ -16357,7 +16359,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -580.67163, y: -34.25177}
+  m_AnchoredPosition: {x: -514, y: -34.252}
   m_SizeDelta: {x: 530, y: 154.253}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1196496270679533205
@@ -21930,9 +21932,9 @@ RectTransform:
   - {fileID: 8017471692644086517}
   m_Father: {fileID: 425745127581310073}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1075.1437, y: -444.35916}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 213.4, y: 68.5044}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3112225083015473890
@@ -22186,7 +22188,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _selectedByDefault: 1
   _selectedOnEnable: 0
-  _selectedOnDisable: 0
+  _selectedOnDisable: 1
   _onlyIfSelected: 1
   _selectedObject: {fileID: 3207778967796539479}
 --- !u!1 &6078047428335410441

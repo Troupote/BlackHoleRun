@@ -26,7 +26,7 @@ namespace BHR
 
         private void TogglePlayerRebinding()
         {
-            // @todo save/cancel popup ? or auto choice (save?)
+            SettingsManager.Instance.ApplyUserSettings();
             PlayersInputManager.Instance.ToggleCurrentAllowedInput();
         }
     }

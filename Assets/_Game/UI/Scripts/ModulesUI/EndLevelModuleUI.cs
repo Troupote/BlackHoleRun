@@ -34,6 +34,7 @@ public class EndLevelModuleUI : MonoBehaviour
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _switchDuration;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private string _successLevelText;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private string _failedLevelText;
+    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private string _soloModeLevelEndText;
     private int _medalObtainedId;
     private int _currentMedalDisplayed;
 
@@ -60,12 +61,13 @@ public class EndLevelModuleUI : MonoBehaviour
         GameManager.Instance.OnEndLevel.RemoveListener(OnEndLevel);
     }
 
-    private void OnEndLevel(float endTime, bool newBest)
+    private void OnEndLevel(float endTime, bool newBest, bool hasPlayedSolo)
     {
         _currentLevel = GameManager.Instance.CurrentLevel;
         _endTimer = endTime;
         UpdateRunInfos(newBest);
         CreateMedals();
+        UpdateEndLevelInfosText(hasPlayedSolo);
         CheckIfNextLevel();
     }
 
@@ -74,7 +76,7 @@ public class EndLevelModuleUI : MonoBehaviour
     {
         _levelNameText.text = $"Level {_currentLevel.ID.ToString("D2")} - {_currentLevel.LevelName}";
         _currentTimeText.text = "TIME : " + UtilitiesFunctions.TimeFormat(_endTimer);
-        _bestTimeText.text = newBest ? "NEW BEST TIME !" : "BEST : " + UtilitiesFunctions.TimeFormat(_currentLevel.BestTime());
+        _bestTimeText.text = newBest ? "NEW BEST TIME !" : "BEST : " + (_currentLevel.BestTime()==float.MaxValue ? "Not completed" : UtilitiesFunctions.TimeFormat(_currentLevel.BestTime()));
     }
     #endregion
 
@@ -107,6 +109,14 @@ public class EndLevelModuleUI : MonoBehaviour
         CheckButtons();
     }
 
+    private void UpdateEndLevelInfosText(bool hasPlayedInSolo)
+    {
+        string endTextInfos = MedalObtainedId == 0 ? _failedLevelText : _successLevelText;
+        if (hasPlayedInSolo)
+            endTextInfos = _soloModeLevelEndText;
+        _endLevelText.text = endTextInfos;
+    }
+
     public void ChangeMedal(int move)
     {
         _currentMedalDisplayed += move;
@@ -126,8 +136,6 @@ public class EndLevelModuleUI : MonoBehaviour
 
     private void DisplayData()
     {
-        _endLevelText.text = MedalObtainedId == 0 ? _failedLevelText : _successLevelText;
-
         MedalsType currentMedal = (MedalsType)_currentMedalDisplayed;
         _medalNameText.text = currentMedal.ToString();
 

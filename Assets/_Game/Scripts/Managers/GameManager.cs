@@ -30,11 +30,16 @@ namespace BHR
 
         [SerializeField, ReadOnly]
         private bool _soloMode = true;
-        public bool SoloMode { get => _soloMode; set => _soloMode = value; }
+        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) _hasPlayedInSolo = true; } }
+        private bool _hasPlayedInSolo = false;
+        public bool HasPlayedInSolo => _hasPlayedInSolo;
 
         public LevelDataSO CurrentLevel => _currentLevel;
         public UnityEvent OnLaunchLevel, OnStartLevel;
-        public UnityEvent<float, bool> OnEndLevel;
+        /// <summary>
+        /// Float End timer, bool HasHitNewBestTime, bool HasPlayedSolo
+        /// </summary>
+        public UnityEvent<float, bool, bool> OnEndLevel;
 
         #region During Game Level
         private float _timer;
@@ -104,6 +109,7 @@ namespace BHR
 
         public void LaunchLevel()
         {
+            SoloMode = PlayersInputManager.Instance.SoloModeEnabled;
             PlayersInputManager.Instance.CanConnect = false;
             if(SelectedLevel!=null)
             {
@@ -165,13 +171,16 @@ namespace BHR
 
         public void EndLevel()
         {
+            bool hasPlayedInSolo = HasPlayedInSolo;
             CleanInGame();
             IsPlaying = false;
-            bool newBestTime = _currentLevel.SaveTime(Timer);
+            bool newBestTime = false;
+            if (!hasPlayedInSolo)
+                newBestTime = CurrentLevel.SaveTime(Timer);
             ChangeMainPlayerState(PlayerState.UI, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.END_LEVEL));
             ModuleManager.Instance.ClearNavigationHistoric();
-            OnEndLevel.Invoke(Timer, newBestTime);
+            OnEndLevel.Invoke(Timer, newBestTime, hasPlayedInSolo);
         }
 
         public void QuitLevel()
@@ -195,6 +204,7 @@ namespace BHR
             // Clean all we need to clean
             CharactersManager.Instance.DestroyInstance();
             CameraManager.Instance.DestroyInstance();
+            _hasPlayedInSolo = false;
         }
 
         private void Chrono()
