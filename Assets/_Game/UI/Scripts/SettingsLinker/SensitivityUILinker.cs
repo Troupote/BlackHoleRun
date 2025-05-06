@@ -4,12 +4,10 @@ using UnityEngine.UI;
 
 namespace BHR.UILinkers
 {
-    public class SensitivityUILinker : ASettingsUILinker<float>
+    public class SensitivityUILinker : AUserSettingsUILinker<float>
     {
         [SerializeField]
         private Axes _axe;
-
-        public void RegisterSettings(float value) => _savedValue = value;
 
         public override void SaveSetting(float value)
         {
@@ -20,6 +18,7 @@ namespace BHR.UILinkers
                 case Axes.Y: SettingsSave.SaveSensitivityY(controller, value); break;
                 default: Debug.LogError($"Please choose a correct axe for {gameObject.name}"); break;
             }
+            _registered = false;
         }
 
         protected override float LoadSetting()
@@ -35,12 +34,13 @@ namespace BHR.UILinkers
 
         protected override void UpdateUI()
         {
-            if(LoadSetting() == -1f)
+            float value = _registered ? _savedValue : LoadSetting();
+            if(value == -1f)
             {
                 Debug.LogError("Please enter a correct axe (X or Y) for {gameObject.name}");
                 return;
             }
-            GetComponent<Slider>().SetValueWithoutNotify(LoadSetting());
+            GetComponent<Slider>().SetValueWithoutNotify(value);
         }
     }
 }
