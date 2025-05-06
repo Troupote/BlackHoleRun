@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!GameManager.Instance.IsPlaying) return;
+
         ApplyBetterGravity();
 
         if (CharactersManager.Instance.isSingularityThrown) return;
@@ -55,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (CharactersManager.Instance.isSingularityThrown) return;
+        if (!GameManager.Instance.IsPlaying || CharactersManager.Instance.isSingularityThrown) return;
     }
 
     private void ApplyBetterGravity()

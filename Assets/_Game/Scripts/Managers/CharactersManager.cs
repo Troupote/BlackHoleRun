@@ -152,7 +152,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private void FixedUpdate()
     {
-        if (!AreObjectsInstancied()) return;
+        if (!AreObjectsInstancied() || !GameManager.Instance.IsPlaying) return;
 
         if (!a_singularityBehavior.IsThrown)
         {

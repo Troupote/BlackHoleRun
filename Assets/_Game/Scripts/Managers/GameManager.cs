@@ -136,6 +136,7 @@ namespace BHR
 
         public void StartLevel()
         {
+            Cursor.lockState = CursorLockMode.Locked;
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
         }

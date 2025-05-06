@@ -35,7 +35,6 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayerCam.Priority = 5;
         SingularityCam.Priority = 0;
         SingularityCam.gameObject.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
 
         PlayerCam.m_Lens.FieldOfView = CharactersManager.Instance.GameplayData.BaseFOV;
     }
@@ -101,7 +100,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     void Update()
     {
-        if (!m_hasBeenInstancied) return;
+        if (!m_hasBeenInstancied || !GameManager.Instance.IsPlaying) return;
 
         float moveZ = playerMoveValue.y;
         Vector2 baseSensitivity = currentControllerUsed == PlayerControllerState.KEYBOARD ? GameManager.Instance.GameSettings.MouseSensitivity : GameManager.Instance.GameSettings.GamepadSensitivity;
