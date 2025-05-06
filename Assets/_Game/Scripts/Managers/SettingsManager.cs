@@ -67,6 +67,7 @@ namespace BHR
             SettingsSave.SaveInvertAxeY(controller);
             SettingsSave.SaveLeftStickDeadzone(controller);
             SettingsSave.SaveRightStickDeadzone(controller);
+            SettingsSave.SaveToggleAim(controller);
 
             LoadUserData(controller);
         }

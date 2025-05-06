@@ -184,7 +184,7 @@ namespace BHR
                     OnHMove.Invoke(value);
                 }
 
-                else if (ctx.action.name == InputActions.Aim)
+                else if (ctx.action.name == InputActions.Aim && (ctx.performed || ctx.canceled && SettingsSave.LoadToggleAim(CurrentActivePlayerDevice)==0) || ctx.action.name == InputActions.Throw && ctx.canceled)
                     OnHAim.Invoke();
 
                 if (ctx.performed)

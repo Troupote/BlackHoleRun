@@ -20,6 +20,7 @@ namespace BHR
         private const string INVERT_AXE_Y_KEY = "InvertAxeY/"; private const int DEFAULT_INVERT_AXE_Y = 0;
         private const string LEFT_STICK_DEADZONE_KEY = "LSDeadzone/"; private const float DEFAULT_LEFT_STICK_DEADZONE = 0f;
         private const string RIGHT_STICK_DEADZONE_KEY = "RSDeadzone/"; private const float DEFAULT_RIGHT_STICK_DEADZONE = 0.15f;
+        private const string TOGGLE_AIM_KEY = "HoldOrToggleAim/"; private const int DEFAULT_TOGGLE_AIM = 0; // 0 : Hold | 1 : Toggle
         #endregion
 
         #region Global settings save and load
@@ -64,6 +65,14 @@ namespace BHR
         public static float LoadLeftStickDeadzone(InputDevice controller) => PlayerPrefs.GetFloat(LEFT_STICK_DEADZONE_KEY + GetControllerKey(controller), DEFAULT_LEFT_STICK_DEADZONE);
         public static void SaveRightStickDeadzone(InputDevice controller, float value = DEFAULT_RIGHT_STICK_DEADZONE) => PlayerPrefs.SetFloat(RIGHT_STICK_DEADZONE_KEY + GetControllerKey(controller), value);
         public static float LoadRightStickDeadzone(InputDevice controller) => PlayerPrefs.GetFloat(RIGHT_STICK_DEADZONE_KEY + GetControllerKey(controller), DEFAULT_RIGHT_STICK_DEADZONE);
+
+        public static void SaveToggleAim(InputDevice controller, int value = DEFAULT_TOGGLE_AIM) => PlayerPrefs.SetInt(TOGGLE_AIM_KEY + GetControllerKey(controller), value);
+        /// <summary>
+        /// 0 : Hold | 1 : Toggle
+        /// </summary>
+        /// <param name="controller"></param>
+        /// <returns></returns>
+        public static int LoadToggleAim(InputDevice controller) => PlayerPrefs.GetInt(TOGGLE_AIM_KEY + GetControllerKey(controller), DEFAULT_TOGGLE_AIM);
         #endregion
     }
 }
