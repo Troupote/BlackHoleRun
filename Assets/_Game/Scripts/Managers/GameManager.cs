@@ -18,7 +18,9 @@ namespace BHR
         private int _activePlayerIndex;
         public int ActivePlayerIndex => _activePlayerIndex;
         private bool _mainPlayerIsPlayerOne = true;
+        [SerializeField, ReadOnly]
         private LevelDataSO _selectedLevel = null;
+        [SerializeField, ReadOnly]
         private LevelDataSO _currentLevel = null;
         public LevelDataSO SelectedLevel
         {
@@ -28,11 +30,16 @@ namespace BHR
 
         [SerializeField, ReadOnly]
         private bool _soloMode = true;
-        public bool SoloMode { get => _soloMode; set => _soloMode = value; }
+        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) _hasPlayedInSolo = true; } }
+        private bool _hasPlayedInSolo = false;
+        public bool HasPlayedInSolo => _hasPlayedInSolo;
 
         public LevelDataSO CurrentLevel => _currentLevel;
         public UnityEvent OnLaunchLevel, OnStartLevel;
-        public UnityEvent<float> OnEndLevel;
+        /// <summary>
+        /// Float End timer, bool HasHitNewBestTime, bool HasPlayedSolo
+        /// </summary>
+        public UnityEvent<float, bool, bool> OnEndLevel;
 
         #region During Game Level
         private float _timer;
@@ -84,6 +91,7 @@ namespace BHR
 
             // Bind to input events
             PlayersInputManager.Instance.OnPause.AddListener(TogglePause);
+            PlayersInputManager.Instance.OnRestart.AddListener(RestartLevel);
         }
 
         private void Update()
@@ -101,9 +109,20 @@ namespace BHR
 
         public void LaunchLevel()
         {
+            SoloMode = PlayersInputManager.Instance.SoloModeEnabled;
             PlayersInputManager.Instance.CanConnect = false;
             if(SelectedLevel!=null)
-                ScenesManager.Instance.ChangeScene(SelectedLevel);
+            {
+                if(SelectedLevel != CurrentLevel)
+                    ScenesManager.Instance.ChangeScene(SelectedLevel);
+                else
+                    ScenesManager.Instance.ReloadScene();
+            }
+            else
+            {
+                Debug.LogError("No selected level !");
+                return;
+            }
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
             ModuleManager.Instance.ClearNavigationHistoric();
 
@@ -152,13 +171,16 @@ namespace BHR
 
         public void EndLevel()
         {
+            bool hasPlayedInSolo = HasPlayedInSolo;
             CleanInGame();
             IsPlaying = false;
-            _currentLevel.SaveTime(Timer);
+            bool newBestTime = false;
+            if (!hasPlayedInSolo)
+                newBestTime = CurrentLevel.SaveTime(Timer);
             ChangeMainPlayerState(PlayerState.UI, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.END_LEVEL));
             ModuleManager.Instance.ClearNavigationHistoric();
-            OnEndLevel.Invoke(Timer);
+            OnEndLevel.Invoke(Timer, newBestTime, hasPlayedInSolo);
         }
 
         public void QuitLevel()
@@ -182,6 +204,7 @@ namespace BHR
             // Clean all we need to clean
             CharactersManager.Instance.DestroyInstance();
             CameraManager.Instance.DestroyInstance();
+            _hasPlayedInSolo = false;
         }
 
         private void Chrono()

@@ -19,15 +19,19 @@ namespace BHR.UILinkers
             SettingsManager.Instance.UpdateVolume();
         }
 
-        protected override void LoadSetting()
+        protected override float LoadSetting()
         {
-            Slider slider = GetComponent<Slider>();
+            float value = 0f;
             switch(volumeType)
             {
-                case VolumeType.MASTER: slider.value = SettingsSave.LoadMasterVolume(); break;
-                case VolumeType.MUSIC: slider.value = SettingsSave.LoadMusicVolume(); break;
-                case VolumeType.SOUNDS: slider.value = SettingsSave.LoadSoundsVolume(); break;
+                case VolumeType.MASTER: value = SettingsSave.LoadMasterVolume(); break;
+                case VolumeType.MUSIC: value = SettingsSave.LoadMusicVolume(); break;
+                case VolumeType.SOUNDS: value = SettingsSave.LoadSoundsVolume(); break;
             }
+
+            return value;
         }
+
+        protected override void UpdateUI() => GetComponent<Slider>().SetValueWithoutNotify(LoadSetting());
     }
 }

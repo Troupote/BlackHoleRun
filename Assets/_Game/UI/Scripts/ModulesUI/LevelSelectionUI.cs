@@ -50,16 +50,18 @@ public class LevelSelectionUI : AModuleUI
             Image moonMedal = _levelTransform[i].GetChild(3).GetComponent<Image>();
             Image sunMedal = _levelTransform[i].GetChild(4).GetComponent<Image>();
 
+            button.onClick.RemoveAllListeners();
             if (unlocked) 
             {
-                button.onClick.RemoveListener(() => LoadLevel(data));
+                button.onClick.AddListener(() => ModuleManager.Instance.CanBack = false);
+                button.onClick.AddListener(() => ModuleManager.Instance.SaveBackSelectable(button));
+                button.onClick.AddListener(() => _playButton.Select());
                 button.onClick.AddListener(() => LoadLevel(data));
                 text.text = $"{data.LevelName}\n{data.ID.ToString("D2")}";
 
                 UtilitiesFunctions.DisplayMedals((int)data.MedalObtained(), data, new Image[] { earthMedal, moonMedal, sunMedal });
             }
 
-            button.enabled = unlocked;
             earthMedal.gameObject.SetActive(unlocked);
             moonMedal.gameObject.SetActive(unlocked);
             sunMedal.gameObject.SetActive(unlocked);

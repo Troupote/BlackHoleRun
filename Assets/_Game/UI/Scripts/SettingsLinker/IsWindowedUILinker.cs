@@ -12,9 +12,11 @@ namespace BHR.UILinkers
             SettingsManager.Instance.UpdateResolutionAndWindowed();
         }
 
-        protected override void LoadSetting()
+        protected override bool LoadSetting() => SettingsSave.LoadIsWindowed() switch { 1 => true, 0 => false, _ => !Screen.fullScreen };
+
+        protected override void UpdateUI()
         {
-            GetComponent<Toggle>().isOn = SettingsSave.LoadIsWindowed() switch {1 => true, 0 => false, _ => !Screen.fullScreen};
+            GetComponent<Toggle>().isOn = LoadSetting();
         }
     }
 }
