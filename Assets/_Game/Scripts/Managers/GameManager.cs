@@ -10,7 +10,8 @@ namespace BHR
 {
     public class GameManager : ManagerSingleton<GameManager>
     {
-        public SettingsSO GameSettings;
+        [Required]
+        public GameSettingsSO GameSettings;
 
         [SerializeField]
         private PlayerState _activePlayerState;

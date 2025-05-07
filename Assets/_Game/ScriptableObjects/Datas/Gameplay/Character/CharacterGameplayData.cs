@@ -2,8 +2,8 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Rendering;
 
-[CreateAssetMenu(fileName = "GameplayData", menuName = "Scriptable Objects/GameplayData")]
-public class GameplayData : ScriptableObject
+[CreateAssetMenu(fileName = "GameplayData", menuName = "Gameplay/CharacterGameplayData")]
+public class CharacterGameplayData : ScriptableObject
 {
     [Title("Singularity Settings")]
     [SerializeField]

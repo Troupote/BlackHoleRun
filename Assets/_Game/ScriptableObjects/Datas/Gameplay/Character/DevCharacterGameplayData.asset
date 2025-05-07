@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: beda91f5e784f894aa9f28a42b90336a, type: 3}
-  m_Name: GameplayData
+  m_Name: DevCharacterGameplayData
   m_EditorClassIdentifier: 
   m_secondsBeforeSpawningCharacterBackIfNoCollision: 5
   m_throwForce: 30

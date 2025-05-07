@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private float lastDashTime = 0f;
 
-    private GameplayData m_gameplayData;
+    private CharacterGameplayData m_gameplayData;
 
     private TimeControl timeController;
 

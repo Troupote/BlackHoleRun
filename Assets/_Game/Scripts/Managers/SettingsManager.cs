@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -6,6 +7,9 @@ namespace BHR
 {
     public class SettingsManager : ManagerSingleton<SettingsManager>
     {
+        [Required]
+        public SettingsSO BaseSettings;
+
         public UnityEvent OnGlobalDatasLoaded;
         public UnityEvent OnUserDatasLoaded;
 

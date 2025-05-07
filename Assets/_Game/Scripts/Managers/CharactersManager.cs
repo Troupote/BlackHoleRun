@@ -11,9 +11,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     private GameObject _singularityPrefab;
 
     [SerializeField]
-    private GameplayData m_gameplayData;
+    private CharacterGameplayData m_gameplayData;
 
-    internal GameplayData GameplayData => m_gameplayData;
+    internal CharacterGameplayData GameplayData => m_gameplayData;
 
     [SerializeField]
     private LayerMask groundLayer;
