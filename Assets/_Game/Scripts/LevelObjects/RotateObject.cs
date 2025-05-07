@@ -16,9 +16,9 @@ namespace BHR
         [SerializeField, ShowIf(nameof(ShowYCoef)), Tooltip("Specific coef applying to the speed for Y axe")] private float _yCoef = 1f;
         [SerializeField, ShowIf(nameof(ShowZCoef)), Tooltip("Specific coef applying to the speed for Z axe")] private float _zCoef = 1f;
 
-        [SerializeField, ShowIf(nameof(ShowXFork)), Tooltip("Random X force will be between the fork (inclusive)")] private Vector2 _xFork = Vector2.up;
-        [SerializeField, ShowIf(nameof(ShowYFork)), Tooltip("Random Y force will be between the fork (inclusive)")] private Vector2 _yFork = Vector2.up;
-        [SerializeField, ShowIf(nameof(ShowZFork)), Tooltip("Random Z force will be between the fork (inclusive)")] private Vector2 _zFork = Vector2.up;
+        [SerializeField, ShowIf(nameof(ShowXFork)), Tooltip("Random X force will be between the fork (inclusive)")] private Vector2 _xFork = new Vector2(-1, 1);
+        [SerializeField, ShowIf(nameof(ShowYFork)), Tooltip("Random Y force will be between the fork (inclusive)")] private Vector2 _yFork = new Vector2(-1, 1);
+        [SerializeField, ShowIf(nameof(ShowZFork)), Tooltip("Random Z force will be between the fork (inclusive)")] private Vector2 _zFork = new Vector2(-1, 1);
 
         [SerializeField, ReadOnly]
         private Vector3 _direction;
