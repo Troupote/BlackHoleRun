@@ -11,14 +11,17 @@ namespace BHR
         public static string SingularityActionMap;
         public static string UIActionMap;
         public static string InactiveActionMap;
+        public static string EmptyActionMap;
 
         public static string Move;
         public static string Look;
         public static string Jump;
         public static string Dash;
         public static string Slide;
+        public static string Unmorph;
         public static string Aim;
         public static string Throw;
+        public static string Restart;
         public static string Pause;
 
         public static string Submit;
@@ -37,14 +40,17 @@ namespace BHR
             SingularityActionMap = inputActions.SingularityActionMap;
             UIActionMap = inputActions.UIActionMap;
             InactiveActionMap = inputActions.InactiveActionMap;
+            EmptyActionMap = inputActions.EmptyActionMap;
 
             Move = inputActions.Move;
             Look = inputActions.Look;
             Jump = inputActions.Jump;
             Dash = inputActions.Dash;
             Slide = inputActions.Slide;
+            Unmorph = inputActions.Unmorph;
             Aim = inputActions.Aim;
             Throw = inputActions.Throw;
+            Restart = inputActions.Restart;
             Pause = inputActions.Pause;
 
             Submit = inputActions.Submit;

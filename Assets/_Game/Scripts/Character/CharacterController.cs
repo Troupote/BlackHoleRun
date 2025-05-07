@@ -1,9 +1,11 @@
+using BHR;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody rb;
     private Vector3 currentVelocity;
+    private Vector2 moveValue;
     private bool isGrounded;
     private float lastDashTime = 0f;
 
@@ -19,8 +21,33 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
     }
 
+    private void OnEnable()
+    {
+        // Bind inputs 
+        PlayersInputManager.Instance.OnHMove.AddListener(HandleMove);
+        PlayersInputManager.Instance.OnHJump.AddListener(HandleJump);
+        PlayersInputManager.Instance.OnHDash.AddListener(HandleDash);
+        PlayersInputManager.Instance.OnHThrow.AddListener(HandleThrowSingularity);
+        //PlayersInputManager.Instance.OnHAim.AddListener();
+        //PlayersInputManager.Instance.OnHSlide.AddListener();
+
+    }
+
+    private void OnDisable()
+    {
+        // Debind inputs
+        PlayersInputManager.Instance.OnHMove.RemoveListener(HandleMove);
+        PlayersInputManager.Instance.OnHJump.RemoveListener(HandleJump);
+        PlayersInputManager.Instance.OnHDash.RemoveListener(HandleDash);
+        PlayersInputManager.Instance.OnHThrow.RemoveListener(HandleThrowSingularity);
+        //PlayersInputManager.Instance.OnHAim.RemoveListener();
+        //PlayersInputManager.Instance.OnHSlide.RemoveListener();
+    }
+
     void FixedUpdate()
     {
+        if (!GameManager.Instance.IsPlaying) return;
+
         ApplyBetterGravity();
 
         if (CharactersManager.Instance.isSingularityThrown) return;
@@ -30,11 +57,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (CharactersManager.Instance.isSingularityThrown) return;
-
-        HandleJump();
-        HandleDash();
-        HandleSingularity();
+        if (!GameManager.Instance.IsPlaying || CharactersManager.Instance.isSingularityThrown) return;
     }
 
     private void ApplyBetterGravity()
@@ -49,10 +72,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Move()
+    public void HandleMove(Vector2 value)
     {
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveZ = Input.GetAxisRaw("Vertical");
+        moveValue = value;
+    }
+
+    public void Move()
+    {
+        float moveX = moveValue.x;
+        float moveZ = moveValue.y;
 
         Transform cam = CharactersManager.Instance.isSingularityThrown
             ? CameraManager.Instance.SingularityCam.transform
@@ -73,18 +101,18 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.y + 0.2f);
     }
 
-    private void HandleJump()
+    public void HandleJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (isGrounded)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
         }
     }
 
-    private void HandleDash()
+    public void HandleDash()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + m_gameplayData.DashCooldown)
+        if (Time.time >= lastDashTime + m_gameplayData.DashCooldown)
         {
             Transform cam = CharactersManager.Instance.isSingularityThrown
                 ? CameraManager.Instance.SingularityCam.transform
@@ -99,11 +127,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void HandleSingularity()
+    public void HandleThrowSingularity()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            CharactersManager.Instance.TryThrowSingularity();
-        }
+         CharactersManager.Instance.TryThrowSingularity();
     }
 }

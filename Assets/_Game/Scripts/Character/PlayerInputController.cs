@@ -6,6 +6,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
+    [ReadOnly]
+    public int playerIndex = -1;
+
     private PlayerInput _playerInput;
     [SerializeField, ReadOnly]
     private PlayerState _playerState;
@@ -19,6 +22,11 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
+    [Button]
+    private void ForcePlayerState(PlayerState state) => PlayerState = state;
+#endif
+
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
@@ -27,13 +35,15 @@ public class PlayerInputController : MonoBehaviour
     IEnumerator InactiveOnJoinDelay(PlayerState state, float delay)
     {
         yield return new WaitForSeconds(delay);
-        GameManager.Instance.ChangeMainPlayerState(state, false);
+        PlayerState = state;
         LinkActions();
     }
 
     private void OnEnable()
     {
-        StartCoroutine(InactiveOnJoinDelay(GameManager.Instance.ActivePlayerState, 0.2f));
+        PlayerState state = PlayersInputManager.Instance.CanConnect ? GameManager.Instance.ActivePlayerState : PlayerState.NONE;
+        PlayersInputManager.Instance.SetSoloPlayer();
+        StartCoroutine(InactiveOnJoinDelay(state, 0.2f));
     }
     
     private void LinkActions()
@@ -52,7 +62,7 @@ public class PlayerInputController : MonoBehaviour
     private void HandleInput(InputAction.CallbackContext ctx)
     {
         if(ctx.action.actionMap == _playerInput.currentActionMap)
-            PlayersInputManager.Instance.HandleInput(ctx, _playerInput.playerIndex);
+            PlayersInputManager.Instance.HandleInput(ctx, playerIndex);
     }
 
     private void PlayerStateChanged(PlayerState state)
@@ -72,6 +82,9 @@ public class PlayerInputController : MonoBehaviour
             case PlayerState.INACTIVE:
                 _playerInput.SwitchCurrentActionMap(InputActions.InactiveActionMap);
                 break;
+            case PlayerState.NONE:
+                _playerInput.SwitchCurrentActionMap(InputActions.EmptyActionMap);
+                    break;
         }
     }
 }

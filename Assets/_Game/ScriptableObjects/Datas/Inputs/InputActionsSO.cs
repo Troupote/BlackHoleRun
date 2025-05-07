@@ -13,6 +13,7 @@ public class InputActionsSO : ScriptableObject
     public string SingularityActionMap;
     public string UIActionMap;
     public string InactiveActionMap;
+    public string EmptyActionMap;
 
     [Header("Humanoid/Singularity")]
     public string Move;
@@ -20,8 +21,10 @@ public class InputActionsSO : ScriptableObject
     public string Jump;
     public string Dash;
     public string Slide;
+    public string Unmorph;
     public string Aim;
     public string Throw;
+    public string Restart;
     public string Pause;
 
     [Header("UI")]

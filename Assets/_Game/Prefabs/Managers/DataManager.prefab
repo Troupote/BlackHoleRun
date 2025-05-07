@@ -45,4 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DebugUnlockedMode: 1
-  _levelsFolderPath: Assets/ScriptableObject/Scenes/Levels
+  _levelsFolderPath: Assets/_Game/ScriptableObjects/Datas/ScenesLevels/Levels/Dev

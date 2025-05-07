@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class LevelSelectionUI : MonoBehaviour
+public class LevelSelectionUI : AModuleUI
 {
     [SerializeField, Required] private GameObject _levelSelectionPanel;
     [SerializeField, Required] private GameObject _levelSelectedPanel;
@@ -29,13 +29,6 @@ public class LevelSelectionUI : MonoBehaviour
     {
         LoadLevelsSelection();
         UnloadLevel();
-
-        PlayersInputManager.Instance.OnUIInput.AddListener(HandleInput);
-    }
-
-    private void OnDisable()
-    {
-        PlayersInputManager.Instance.OnUIInput.RemoveListener(HandleInput);
     }
     private void UnloadLevel()
     {
@@ -57,16 +50,18 @@ public class LevelSelectionUI : MonoBehaviour
             Image moonMedal = _levelTransform[i].GetChild(3).GetComponent<Image>();
             Image sunMedal = _levelTransform[i].GetChild(4).GetComponent<Image>();
 
+            button.onClick.RemoveAllListeners();
             if (unlocked) 
             {
-                button.onClick.RemoveListener(() => LoadLevel(data));
+                button.onClick.AddListener(() => ModuleManager.Instance.CanBack = false);
+                button.onClick.AddListener(() => ModuleManager.Instance.SaveBackSelectable(button));
+                button.onClick.AddListener(() => _playButton.Select());
                 button.onClick.AddListener(() => LoadLevel(data));
                 text.text = $"{data.LevelName}\n{data.ID.ToString("D2")}";
 
                 UtilitiesFunctions.DisplayMedals((int)data.MedalObtained(), data, new Image[] { earthMedal, moonMedal, sunMedal });
             }
 
-            button.enabled = unlocked;
             earthMedal.gameObject.SetActive(unlocked);
             moonMedal.gameObject.SetActive(unlocked);
             sunMedal.gameObject.SetActive(unlocked);
@@ -89,13 +84,13 @@ public class LevelSelectionUI : MonoBehaviour
         _levelSelectedPanel.SetActive(true);
     }
 
-    private void HandleInput(InputAction.CallbackContext ctx)
-    {
-        if (ctx.performed && ctx.action.name == InputActions.Cancel)
-            Back();
-    }
+    //private void HandleInput(InputAction.CallbackContext ctx)
+    //{
+    //    if (ctx.performed && ctx.action.name == InputActions.Cancel)
+    //        Back();
+    //}
 
-    public void Back()
+    public override void Back()
     {
         if(_levelSelectedPanel.activeSelf)
         {
@@ -103,7 +98,7 @@ public class LevelSelectionUI : MonoBehaviour
         }
         else
         {
-            ModuleManager.Instance.ProcessModuleState(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAIN_TITLE), false, true);
+            ModuleManager.Instance.ProcessModuleState(ModuleManager.Instance.GetModule(ModuleType.MAIN_TITLE), false, true);
             ModuleManager.Instance.SaveBackSelectable(_playMenuButton);
 
         }

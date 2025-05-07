@@ -1,6 +1,8 @@
 using BHR;
 using Sirenix.OdinInspector;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace BHR
@@ -13,12 +15,15 @@ namespace BHR
 
         [ReadOnly]
         public SceneDataSO CurrentSceneData;
+        public string ActiveSceneName => SceneManager.GetActiveScene().name;
+
+        public UnityEvent<string> OnSceneSuccessfulyLoaded;
 
         #region Validate Inputs
 #if UNITY_EDITOR
         private bool ValidateStartSceneData()
         {
-            return _startSceneData?.SceneName == SceneManager.GetActiveScene().name;
+            return _startSceneData?.SceneName == SceneManager.GetActiveScene().name || _startSceneData == null;
         }
 
 #endif
@@ -33,15 +38,30 @@ namespace BHR
         private void Start()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
-            EnableDefaultModule(CurrentSceneData);
+            LoadDefaultSceneData(CurrentSceneData);
         }
 
-        public void ChangeScene(SceneDataSO sceneData)
+        public void ChangeScene(SceneDataSO sceneData, bool withEndTransition = true)
         {
-            Debug.Log($"Changing scene from {SceneManager.GetActiveScene().name} to {sceneData.SceneName}");
             CurrentSceneData = sceneData;
-            GameManager.Instance.OnSceneChanged();
-            SceneManager.LoadScene(sceneData.SceneName);
+
+            if(SceneManager.GetActiveScene().name != sceneData.SceneName)
+            {
+                Debug.Log($"Changing scene from {SceneManager.GetActiveScene().name} to {sceneData.SceneName}");
+                LoadSceneWithTransition(sceneData.SceneName, withEndTransition);
+            }
+        }
+
+        public void ReloadScene(bool withTransition = false)
+        {
+            if(CurrentSceneData != null)
+            {
+                Debug.Log($"Reloading {CurrentSceneData.SceneName} scene");
+                if (withTransition)
+                    LoadSceneWithTransition(CurrentSceneData.SceneName, false);
+                else
+                    LoadScene(CurrentSceneData.SceneName);
+            }
         }
 
         public void QuitGame()
@@ -54,25 +74,50 @@ namespace BHR
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            
+            OnSceneSuccessfulyLoaded?.Invoke(scene.name);
         }
 
-        private void EnableDefaultModule(SceneDataSO sceneData)
+        private void LoadDefaultSceneData(SceneDataSO sceneData)
         {
             GameObject moduleToLoad = null;
-            if (sceneData.SceneName == "Test" || ModuleManager.Instance.TestMode)
+            if (sceneData is LevelDataSO || sceneData == null)
             {
-                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.TEST);
-            }
-            else if (sceneData is LevelDataSO)
-            {
-                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD);
+                GameManager.Instance.IsPlaying = false;
+                GameManager.Instance.SaveSelectedLevel(sceneData as LevelDataSO);
+                moduleToLoad = ModuleManager.Instance.GetModule(ModuleType.PLAYER_SELECTION);
             }
             else if (sceneData.SceneName == "MainMenu")
             {
-                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAIN_TITLE);
+                moduleToLoad = ModuleManager.Instance.GetModule(ModuleType.MAIN_TITLE);
+                PlayersInputManager.Instance.CanConnect = true;
             }
             ModuleManager.Instance.ProcessModuleState(moduleToLoad, true);
+        }
+
+       private void LoadSceneWithTransition(string sceneName, bool withEndTransition = true) => StartCoroutine(LoadSceneAsync(sceneName, withEndTransition));
+       private void LoadScene(string sceneName) => SceneManager.LoadScene(sceneName);
+        
+       IEnumerator LoadSceneAsync(string sceneName, bool withEndTransition = true)
+        {
+            // Start transition animation
+            ModuleManager.Instance.LaunchTransitionAnimation(true);
+            yield return new WaitForSeconds(ModuleManager.Instance.TransitionDuration);
+
+            // Scene loading
+            AsyncOperation loading = SceneManager.LoadSceneAsync(sceneName);
+            while (!loading.isDone) { yield return null; }
+
+            // End transition animation
+            if(withEndTransition)
+            {
+                ModuleManager.Instance.LaunchTransitionAnimation(false);
+                yield return new WaitForSeconds(ModuleManager.Instance.TransitionDuration);
+            }
+            else
+            {
+                ModuleManager.Instance.SceneTransitionHasFinished = true;
+                ModuleManager.Instance.CheckStartAnimationLaunchConditions();
+            }
         }
     }
 }

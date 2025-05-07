@@ -18,14 +18,18 @@ MonoBehaviour:
   SingularityActionMap: Singularity
   UIActionMap: UI
   InactiveActionMap: Inactive
+  EmptyActionMap: Empty
   Move: Move
   Look: Look
   Jump: Jump
   Dash: Dash
   Slide: Slide
+  Unmorph: Unmorph
   Aim: Aim
   Throw: Throw
+  Restart: Restart
   Pause: Pause
   Submit: Submit
   Cancel: Cancel
   Switch: Switch
+  Rebind: Rebind

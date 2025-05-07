@@ -7,12 +7,11 @@ using UnityEngine.UI;
 
 namespace BHR
 {
-    public class ControllerSelectionModuleUI : MonoBehaviour
+    public class ControllerSelectionModuleUI : AModuleUI
     {
-        [SerializeField, Required, FoldoutGroup("Refs")] GameObject[] _inputJoinTexts;
-        [SerializeField, Required, FoldoutGroup("Refs")] GameObject[] _inputReconnectIcons;
-        [SerializeField, Required, FoldoutGroup("Refs")] GameObject _readyPanel;
         [SerializeField, Required, FoldoutGroup("Refs")] GameObject[] _playerStatePanels;
+        [SerializeField, Required, FoldoutGroup("Refs")] GameObject _readyPanel;
+        [SerializeField, Required, FoldoutGroup("Refs")] GameObject[] _inputReconnectIcons;
         [SerializeField, Required, FoldoutGroup("Refs")] GameObject _keyboardSwitchIcon;
         [SerializeField, Required, FoldoutGroup("Refs")] GameObject _gamepadSwitchIcon;
         [SerializeField, Required, FoldoutGroup("Refs")] GameObject _soloConfirmPanel;
@@ -40,6 +39,14 @@ namespace BHR
                 _readyPanel.transform.GetChild(i).GetComponent<Image>().color = _notReadyColor;
         }
 
+        public override void Back()
+        {
+            if(GameManager.Instance.IsPaused)
+                GameManager.Instance.Resume();
+            else
+                base.Back();
+        }
+
         private void UpdatePlayerStatePanels(PlayerReadyState state, int playerIndex)
         {
             int index = PlayerIndexUI(playerIndex);
@@ -48,7 +55,7 @@ namespace BHR
             int targetPanel = 0;
             switch(state)
             {
-                case PlayerReadyState.LOGGED_OUT: targetPanel = 1; UpdateReconnectIcons(index); break;
+                case PlayerReadyState.LOGGED_OUT: targetPanel = 1; UpdateReconnectIcons(playerIndex, index); break;
                 case PlayerReadyState.NONE: break;
                 case PlayerReadyState.READY:
                 case PlayerReadyState.CONNECTED: targetPanel = 2 + (PlayersInputManager.Instance.PlayersControllerState[playerIndex] == PlayerControllerState.GAMEPAD ? 1 : 0); break;
@@ -85,10 +92,10 @@ namespace BHR
             UpdatePlayerStatePanels(PlayersInputManager.Instance.PlayersReadyState[1-id], 1);
         }
 
-        private void UpdateReconnectIcons(int index)
+        private void UpdateReconnectIcons(int trueIndex, int UIindex)
         {
-            bool tkt = PlayersInputManager.Instance.PlayersControllerState[Array.IndexOf(PlayersInputManager.Instance.PlayersReadyState, PlayersInputManager.Instance.PlayersReadyState.First(p => p == PlayerReadyState.LOGGED_OUT))] == PlayerControllerState.GAMEPAD;
-            UpdateGameObjectInArray(_inputReconnectIcons, tkt, index*2);
+            bool tkt = PlayersInputManager.Instance.PlayersControllerState[trueIndex] == PlayerControllerState.GAMEPAD;
+            UpdateGameObjectInArray(_inputReconnectIcons, tkt, UIindex*2);
         }
 
         private void UpdateGameObjectInArray(GameObject[] array, bool enableGamepad, int start = 0)
@@ -117,9 +124,9 @@ namespace BHR
                 _playerStatePanels[i].SetActive(i== _playerStatePanels.Length / 2 + savedLeftPanel || i== savedRightPanel - _playerStatePanels.Length / 2);
 
             if(savedLeftPanel==1)
-                UpdateReconnectIcons(1);
+                UpdateReconnectIcons(PlayerIndexUI(1),1);
             if(savedRightPanel==5)
-                UpdateReconnectIcons(0);
+                UpdateReconnectIcons(PlayerIndexUI(0),0);
 
             // Switch ready state
             Image leftReadyImage = _readyPanel.transform.GetChild(0).GetComponent<Image>();
@@ -130,9 +137,6 @@ namespace BHR
             leftReadyImage.color = rightColor;
             rightReadyImage.color = leftColor;
         }
-
-        public void DisconnectAction(int playerIndex) => PlayersInputManager.Instance.OnCancelAction(playerIndex);
-        public void RebindAction(int playerIndex) => PlayersInputManager.Instance.OnRebindAction(playerIndex);
 
         private int PlayerIndexUI(int trueIndex) => PlayersInputManager.Instance.IsSwitched ? 1-trueIndex : trueIndex;
     }

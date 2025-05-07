@@ -1,5 +1,7 @@
 using Sirenix.OdinInspector;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -8,20 +10,37 @@ namespace BHR
 {
     public class GameManager : ManagerSingleton<GameManager>
     {
+        public SettingsSO GameSettings;
+
         [SerializeField]
         private PlayerState _activePlayerState;
         public PlayerState ActivePlayerState => _activePlayerState;
+        private int _activePlayerIndex;
+        public int ActivePlayerIndex => _activePlayerIndex;
         private bool _mainPlayerIsPlayerOne = true;
+        [SerializeField, ReadOnly]
         private LevelDataSO _selectedLevel = null;
+        [SerializeField, ReadOnly]
         private LevelDataSO _currentLevel = null;
         public LevelDataSO SelectedLevel
         {
             get => _selectedLevel;
-            set => _selectedLevel = value;
+            private set => _selectedLevel = value;
         }
+
+        [SerializeField, ReadOnly]
+        private bool _soloMode = true;
+        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) _hasPlayedInSolo = true; } }
+        private bool _hasPlayedInSolo = false;
+        public bool HasPlayedInSolo => _hasPlayedInSolo;
+
         public LevelDataSO CurrentLevel => _currentLevel;
-        public UnityEvent OnLaunchLevel;
-        public UnityEvent<float> OnEndLevel;
+        public UnityEvent<bool> OnLaunchLevel;
+        public UnityEvent OnStartLevel;
+        /// <summary>
+        /// Float End timer, bool HasHitNewBestTime, bool HasPlayedSolo
+        /// </summary>
+        public UnityEvent<float, bool, bool> OnEndLevel;
 
         #region During Game Level
         private float _timer;
@@ -35,6 +54,7 @@ namespace BHR
             }
         }
         public UnityEvent<float> OnTimerChanged;
+        [SerializeField, ReadOnly]
         private bool _isPlaying = false;
         public bool IsPlaying
         {
@@ -42,10 +62,12 @@ namespace BHR
             set
             {
                 _isPlaying = value;
-                _isPaused = !_isPlaying;
+                if (_isPlaying)
+                    IsPaused = false;
                 _gameTimeScale = _isPlaying ? _savedGameTimeScale : 0f;
             }
         }
+        [SerializeField, ReadOnly]
         private bool _isPaused = false;
         public bool IsPaused
         {
@@ -53,11 +75,13 @@ namespace BHR
             private set
             {
                 _isPaused = value;
-                IsPlaying = !_isPaused;
+                if(_isPaused)
+                    IsPlaying = false;
             }
         }
         private PlayerState _savedPausedState = PlayerState.NONE;
         private float _savedGameTimeScale = 1f;
+        [SerializeField, ReadOnly]
         private float _gameTimeScale;
         public float GameTimeScale => _gameTimeScale;
         #endregion
@@ -67,6 +91,15 @@ namespace BHR
         private void Start()
         {
             Init();
+
+            // Bind to input events
+            PlayersInputManager.Instance.OnPause.AddListener(TogglePause);
+            PlayersInputManager.Instance.OnRestart.AddListener(() => RestartLevel(false));
+        }
+
+        private void Update()
+        {
+            Chrono();
         }
 
         private void Init()
@@ -77,10 +110,26 @@ namespace BHR
         #region Level gestion
         public void SaveSelectedLevel(LevelDataSO data) => SelectedLevel = data;
 
-        public void LaunchLevel()
+        public void LaunchLevel(bool firstStart = true)
         {
-            ScenesManager.Instance.ChangeScene(SelectedLevel);
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
+            SoloMode = PlayersInputManager.Instance.SoloModeEnabled;
+            PlayersInputManager.Instance.CanConnect = false;
+            ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleType.HUD));
+
+            if(SelectedLevel!=null)
+            {
+                if(SelectedLevel != CurrentLevel)
+                    ScenesManager.Instance.ChangeScene(SelectedLevel, false);
+                else
+                    ScenesManager.Instance.ReloadScene(firstStart);
+            }
+            else
+            {
+                Debug.LogError("No selected level !");
+                return;
+            }
+
+
             ModuleManager.Instance.ClearNavigationHistoric();
 
             _currentLevel = SelectedLevel;
@@ -88,92 +137,123 @@ namespace BHR
 
             Timer = 0f;
             IsPlaying = false;
-            OnLaunchLevel.Invoke();
+            OnLaunchLevel.Invoke(firstStart);
+            if(!firstStart) StartLevel();
         }
 
         public void StartLevel()
         {
-            IsPlaying = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
         }
 
         public void TogglePause()
         {
-            if (!IsPaused) Pause(); else Resume();
+            if (IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleType.PAUSE))
+                Resume(); 
+            else if(!IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleType.HUD))
+                Pause(ModuleManager.Instance.GetModule(ModuleType.PAUSE));
         }
 
-        private void Pause()
+        public void Pause(GameObject moduleToLoad)
         {
-            _savedGameTimeScale = GameTimeScale;
-            _savedPausedState = ActivePlayerState;
-            IsPaused = true;
-            //ChangeMainPlayerState(PlayerState.UI, false);
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE));
+            Cursor.lockState = CursorLockMode.None;
+            if(!IsPaused)
+            {
+                _savedGameTimeScale = GameTimeScale;
+                _savedPausedState = ActivePlayerState;
+                IsPaused = true;
+                ChangeMainPlayerState(PlayerState.UI, false);
+            }
+            ModuleManager.Instance.OnModuleEnable(moduleToLoad);
         }
 
         public void Resume()
         {
-            IsPaused = false;
-            //ChangeMainPlayerState(_savedPausedState, false);
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
+            IsPlaying = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            ChangeMainPlayerState(_savedPausedState, false);
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.HUD));
         }
 
         public void EndLevel()
         {
+            CleanInGame(false);
             IsPlaying = false;
-            _currentLevel.SaveTime(Timer);
+            bool newBestTime = false;
+            if (_hasPlayedInSolo)
+                newBestTime = CurrentLevel.SaveTime(Timer);
             ChangeMainPlayerState(PlayerState.UI, false);
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.END_LEVEL));
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.END_LEVEL));
             ModuleManager.Instance.ClearNavigationHistoric();
-            OnEndLevel.Invoke(Timer);
+            OnEndLevel.Invoke(Timer, newBestTime, _hasPlayedInSolo);
         }
 
         public void QuitLevel()
         {
+            CleanInGame(false);
+            IsPaused = false;
             ChangeMainPlayerState(PlayerState.UI, false);
+            ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleType.LEVEL_SELECTION));
             ScenesManager.Instance.ChangeScene(ScenesManager.Instance.MenuScene);
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.LEVEL_SELECTION));
             ModuleManager.Instance.ClearNavigationHistoric();
+            CleanInGame(true);
         }
 
-        public void RestartLevel()
+        public void RestartLevel(bool withStartAnimation = false)
         {
             Resume();
             ChangeMainPlayerState(PlayerState.UI, false);
-            LaunchLevel();
+            LaunchLevel(withStartAnimation);
         }
         #endregion
-        public void OnSceneChanged()
+        public void CleanInGame(bool late)
         {
-            // Clean all we need to clean
-            PlayerInputReceiver.Instance?.DestroyInstance(false);
+            if(!late)
+            {
+                // Clean all we need to clean immediatly
+                CharactersManager.Instance.DestroyInstance();
+                CameraManager.Instance.DestroyInstance();
+            }
+            else // Cleann all we need to clean after end level gestion
+            {
+                _hasPlayedInSolo = false;
+                _currentLevel = null;
+            }
         }
 
-        private void Update()
+        private void Chrono()
         {
             if (IsPlaying)
                 Timer += Time.deltaTime * GameTimeScale;
+        }
+
+        private const float _outerWildsEasterEggBonus = -0.22f;
+        public void ILoveOuterWidls()
+        {
+            Timer += _outerWildsEasterEggBonus;
         }
 
         public void ChangeMainPlayerState(PlayerState state, bool switchActivePlayer)
         {
             if(switchActivePlayer) _mainPlayerIsPlayerOne = !_mainPlayerIsPlayerOne;
 
-            int activePlayerId = _mainPlayerIsPlayerOne ? 1 : 0;
-
             _activePlayerState = state;
 
             // SoloMode version
-            if(PlayersInputManager.Instance.SoloPlayer)
+            if(_soloMode)
             {
-                PlayersInputManager.Instance.PlayersInputRef[0].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+                _activePlayerIndex = Array.IndexOf(PlayersInputManager.Instance.PlayersReadyState, PlayerReadyState.READY);
+                PlayersInputManager.Instance.PlayersInputControllerRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
             }
             else
             {
-                PlayersInputManager.Instance.PlayersInputRef[activePlayerId].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+                _activePlayerIndex = _mainPlayerIsPlayerOne ? 0 : 1;
+                PlayersInputManager.Instance.PlayersInputControllerRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
 
                 PlayerState secondPlayerState = _activePlayerState == PlayerState.UI ? PlayerState.UI : PlayerState.INACTIVE;
-                PlayersInputManager.Instance.PlayersInputRef[1-activePlayerId].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
+                PlayersInputManager.Instance.PlayersInputControllerRef[1-_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
             }
         }
     }

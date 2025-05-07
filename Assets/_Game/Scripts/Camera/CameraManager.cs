@@ -1,8 +1,9 @@
+using BHR;
 using Cinemachine;
 using System.Collections;
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour
+public class CameraManager : ManagerSingleton<CameraManager>
 {
     [field: SerializeField]
     internal CinemachineBrain MainCamBrain { get; private set; }
@@ -16,22 +17,17 @@ public class CameraManager : MonoBehaviour
     [field: SerializeField]
     internal Transform SingularityPlacementRefTransform { get; private set; }
 
-    public static CameraManager Instance { get; private set; }
-
     private float rotationX = 0f;
     private float rotationY = 0f;
     private float initialRotationY;
+    private Vector2 lookValue;
+    private Vector2 playerMoveValue;
 
-    private void Awake()
+    private PlayerControllerState currentControllerUsed = PlayerControllerState.DISCONNECTED;
+
+    public override void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        SetInstance(false);
     }
 
     void Start()
@@ -39,15 +35,32 @@ public class CameraManager : MonoBehaviour
         PlayerCam.Priority = 5;
         SingularityCam.Priority = 0;
         SingularityCam.gameObject.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
 
         PlayerCam.m_Lens.FieldOfView = CharactersManager.Instance.GameplayData.BaseFOV;
     }
 
+    private bool m_hasBeenInstancied = false;
     public void SetDependencies(GameObject a_characterToFollow, GameObject a_singularityToFollow)
     {
         PlayerCam.Follow = a_characterToFollow.transform;
         SingularityCam.Follow = a_singularityToFollow.transform;
+        m_hasBeenInstancied = true;
+    }
+
+    private void OnEnable()
+    {
+        // Bind inputs
+        PlayersInputManager.Instance.OnHLook.AddListener(HandleLook);
+        PlayersInputManager.Instance.OnSLook.AddListener(HandleLook);
+        PlayersInputManager.Instance.OnHMove.AddListener(HandlePlayerMove);
+    }
+
+    private void OnDisable()
+    {
+        // Debing inputs
+        PlayersInputManager.Instance.OnHLook.RemoveListener(HandleLook);
+        PlayersInputManager.Instance.OnSLook.RemoveListener(HandleLook);
+        PlayersInputManager.Instance.OnHMove.RemoveListener(HandlePlayerMove);
     }
 
     internal bool IsBlending => MainCamBrain.IsBlending;
@@ -87,10 +100,13 @@ public class CameraManager : MonoBehaviour
 
     void Update()
     {
-        float moveZ = Input.GetAxisRaw("Vertical");
+        if (!m_hasBeenInstancied || !GameManager.Instance.IsPlaying) return;
 
-        float mouseX = Input.GetAxis("Mouse X") * 200 * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * 300 * Time.deltaTime;
+        float moveZ = playerMoveValue.y;
+        Vector2 baseSensitivity = currentControllerUsed == PlayerControllerState.KEYBOARD ? GameManager.Instance.GameSettings.MouseSensitivity : GameManager.Instance.GameSettings.GamepadSensitivity;
+
+        float mouseX = lookValue.x * baseSensitivity.x * SettingsSave.LoadSensitivityX(PlayersInputManager.Instance.CurrentActivePlayerDevice) * Time.deltaTime * GameManager.Instance.GameTimeScale;
+        float mouseY = lookValue.y * baseSensitivity.y * SettingsSave.LoadSensitivityY(PlayersInputManager.Instance.CurrentActivePlayerDevice) * Time.deltaTime * GameManager.Instance.GameTimeScale;
 
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, -90, 90);
@@ -129,4 +145,11 @@ public class CameraManager : MonoBehaviour
         }
         
     }
+
+    public void HandleLook(Vector2 value, PlayerControllerState controller)
+    {
+        currentControllerUsed = controller;
+        lookValue = value;
+    }
+    public void HandlePlayerMove(Vector2 value) => playerMoveValue = value;
 }

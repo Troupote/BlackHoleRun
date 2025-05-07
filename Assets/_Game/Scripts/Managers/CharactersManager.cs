@@ -1,7 +1,8 @@
+using BHR;
 using System.Collections;
 using UnityEngine;
 
-public class CharactersManager : MonoBehaviour
+public class CharactersManager : ManagerSingleton<CharactersManager>
 {
     [SerializeField]
     private GameObject _characterPrefab;
@@ -19,29 +20,21 @@ public class CharactersManager : MonoBehaviour
 
     private GameObject _singularityObject;
     private GameObject _characterObject;
+    public GameObject CharacterObject => _characterObject;
 
     private SingularityBehavior a_singularityBehavior;
     private CharacterBehavior a_characterBehavior;
 
     internal bool isSingularityThrown = false;
 
-    public static CharactersManager Instance { get; private set; }
-
-    private void Awake()
+    public override void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        SetInstance(false);
     }
 
     private void Start()
     {
-        SpawnCharacterAtPosition(Vector3.zero + new Vector3(0, 5, 0));
+        SpawnCharacterAtPosition(CheckpointsManager.Instance.CurrentCheckpoint.position);
     }
 
     private void InstanciatePrefabsOnScene()
@@ -92,10 +85,13 @@ public class CharactersManager : MonoBehaviour
         _singularityObject.transform.position = oldCharacterPosition;
 
         a_characterBehavior.ImobilizeCharacter(false);
+
+        GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
     }
 
     public void ChangePlayersTurn(bool a_isEarly = false)
     {
+        GameManager.Instance.ILoveOuterWidls();
         StartCoroutine(WaitForBlendingAndSwitch(a_isEarly));
     }
 
@@ -156,7 +152,7 @@ public class CharactersManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!AreObjectsInstancied()) return;
+        if (!AreObjectsInstancied() || !GameManager.Instance.IsPlaying) return;
 
         if (!a_singularityBehavior.IsThrown)
         {
