@@ -20,7 +20,7 @@ public class TimeControl : MonoBehaviour
             //Wait until isSlowed becomes false
             yield return new WaitUntil(() => isSlowed == false);
 
-            StartCoroutine(ChangeTimeScale(Time.timeScale, 1f, 0.6f));
+            StartCoroutine(ChangeTimeScale(Time.timeScale, 1f, 0.6f));// GameManager.Instance.GameTimeScale
 
             isFinished = true;
         }
@@ -32,13 +32,12 @@ public class TimeControl : MonoBehaviour
 
         while (elapsed < duration)
         {
-            Time.timeScale = Mathf.Lerp(start, end, elapsed / duration);
-            Time.fixedDeltaTime = Time.timeScale * 0.02f;
+            Time.timeScale = Mathf.Lerp(start, end, elapsed / duration);// GameManager.Instance.GameTimeScale
+            Time.fixedDeltaTime = Time.timeScale * 0.02f;// ? que faire
             elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
 
         Time.timeScale = end;
-        Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 }

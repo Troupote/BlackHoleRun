@@ -137,7 +137,13 @@ public class PlayerController : MonoBehaviour
         {
             timeController.isSlowed = false;
         }
-         CharactersManager.Instance.TryThrowSingularity();
+
+        timeController.isStarted = false;
+        timeController.isSlowed = false;
+
+        aimCallCount = 0;
+
+        CharactersManager.Instance.TryThrowSingularity();
     }
 
     public void HandleAim()
@@ -150,16 +156,12 @@ public class PlayerController : MonoBehaviour
             timeController.isStarted = true;
 
         }
-        else if (aimCallCount == 3)
+        else if (aimCallCount == 1)
         {
             timeController.isStarted = false;
             timeController.isSlowed = false;
 
             aimCallCount = 0;
-        }
-        else
-        {
-            aimCallCount++;
         }
 
     }
