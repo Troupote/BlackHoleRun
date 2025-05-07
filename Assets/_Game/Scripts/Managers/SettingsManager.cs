@@ -36,7 +36,6 @@ namespace BHR
 
         public void UpdateLanguage()
         {
-            Debug.Log(SettingsSave.LoadLanguage() + " is active");
             // @todo Language update (not now)
         }
 

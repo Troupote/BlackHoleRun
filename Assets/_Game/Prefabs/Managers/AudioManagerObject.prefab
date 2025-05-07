@@ -44,6 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fac0ec8b00d08fd4bb3473869dff19de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <playerFootsetps>k__BackingField:
+    Guid:
+      Data1: 378771528
+      Data2: 1187137504
+      Data3: -933893742
+      Data4: 480699373
+    Path: event:/FootstepsRunning
   <blackHoleTrowSfx>k__BackingField:
     Guid:
       Data1: 1465492879
@@ -51,6 +58,41 @@ MonoBehaviour:
       Data3: 931037870
       Data4: -2108033795
     Path: event:/SendBlackhole
+  <levelStart>k__BackingField:
+    Guid:
+      Data1: 779699857
+      Data2: 1104327085
+      Data3: 2107420296
+      Data4: 271629981
+    Path: event:/StartLevel
+  <exitSingularity>k__BackingField:
+    Guid:
+      Data1: 134481193
+      Data2: 1087745235
+      Data3: 337486757
+      Data4: 496839982
+    Path: event:/ExitSingularity
+  <standbySingularity>k__BackingField:
+    Guid:
+      Data1: -834204294
+      Data2: 1307304861
+      Data3: 428545711
+      Data4: 416473508
+    Path: event:/SingularityStandby
+  <jump>k__BackingField:
+    Guid:
+      Data1: 2138630273
+      Data2: 1109428306
+      Data3: 1093741245
+      Data4: 482093966
+    Path: event:/jump
+  <dash>k__BackingField:
+    Guid:
+      Data1: -1119705734
+      Data2: 1074229887
+      Data3: -687674495
+      Data4: 49901630
+    Path: event:/dash
 --- !u!1 &5058785138657031254
 GameObject:
   m_ObjectHideFlags: 0
@@ -96,3 +138,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccb88c2acad9605428309be747639955, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SFXVolume: 1
+  MusicVolume: 1
+  MasterVolume: 1

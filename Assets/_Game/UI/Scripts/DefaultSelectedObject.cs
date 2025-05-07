@@ -40,7 +40,7 @@ namespace BHR
             if (withBack)
                 return;
 
-            _selectedObject.Select();
+            GetComponent<Selectable>().Select();
         }
     }
 

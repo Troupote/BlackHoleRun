@@ -1,0 +1,6 @@
+using UnityEngine;
+
+namespace BHR
+{
+    public enum ModuleType { MAIN_TITLE, LEVEL_SELECTION, CREDITS, PLAYER_SELECTION, MAP_REBINDING, SETTINGS, END_LEVEL, HUD, PAUSE, TEST }
+}

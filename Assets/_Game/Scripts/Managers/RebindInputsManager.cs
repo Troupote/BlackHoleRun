@@ -18,7 +18,7 @@ namespace BHR
 
         private void HandleInput(InputAction.CallbackContext ctx)
         {
-            if(ctx.performed && ctx.action.name == InputActions.Switch && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAP_REBINDING))
+            if(ctx.performed && ctx.action.name == InputActions.Switch && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleType.MAP_REBINDING))
             {
                 TogglePlayerRebinding();
             }
