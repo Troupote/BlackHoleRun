@@ -19,13 +19,11 @@ namespace BHR
         private bool _haveToLaunchStartAnim = false; 
         public bool SceneTransitionHasFinished;
 
-        [Serializable]
-        public enum ModuleType { MAIN_TITLE, LEVEL_SELECTION, CREDITS, PLAYER_SELECTION, MAP_REBINDING, SETTINGS, END_LEVEL, HUD, PAUSE, TEST}
         [SerializeField]
         public SerializedDictionary<GameObject, ModuleType> ModulesRef;
         public GameObject GetModule(ModuleType type) => ModulesRef.First(m => m.Value == type).Key;
         [ReadOnly] public GameObject CurrentModule = null;
-        [SerializeField, ReadOnly] private GameObject _moduleToLoadOnSceneLoaded;
+        [SerializeField, ReadOnly] private GameObject _savedModuleToLoad;
         public UnityEvent<GameObject, bool> OnModuleEnabled;
         [SerializeField, ReadOnly] private Stack<GameObject> _historic = new Stack<GameObject>();
         private Selectable _savedBackSelectable;
@@ -54,7 +52,7 @@ namespace BHR
             _historic = new Stack<GameObject>();
 
             PlayersInputManager.Instance.OnUIInput.AddListener(HandleUIInput);
-            ScenesManager.Instance.OnSceneSuccessfulyLoaded.AddListener(LoadModuleOnSceneLoaded);
+            ScenesManager.Instance.OnSceneSuccessfulyLoaded.AddListener(LoadSavedModule);
             GameManager.Instance.OnLaunchLevel.AddListener((startAnimation) => 
             {
                 _haveToLaunchStartAnim = startAnimation;
@@ -79,14 +77,14 @@ namespace BHR
             }
         }
 
-        public void SetModuleToLoad(GameObject moduleGO) => _moduleToLoadOnSceneLoaded = moduleGO;
+        public void SetModuleToLoad(GameObject moduleGO) => _savedModuleToLoad = moduleGO;
         public void OnModuleEnable(GameObject moduleGO) => ProcessModuleState(moduleGO);
 
-        private void LoadModuleOnSceneLoaded(string sceneName)
+        private void LoadSavedModule(string sceneName)
         {
-            if (_moduleToLoadOnSceneLoaded == null) return;
-            ProcessModuleState(_moduleToLoadOnSceneLoaded);
-            _moduleToLoadOnSceneLoaded = null;
+            if (_savedModuleToLoad == null) return;
+            ProcessModuleState(_savedModuleToLoad);
+            _savedModuleToLoad = null;
         }
 
         public void SaveBackSelectable(Selectable selectable)

@@ -84,11 +84,11 @@ namespace BHR
             {
                 GameManager.Instance.IsPlaying = false;
                 GameManager.Instance.SaveSelectedLevel(sceneData as LevelDataSO);
-                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PLAYER_SELECTION);
+                moduleToLoad = ModuleManager.Instance.GetModule(ModuleType.PLAYER_SELECTION);
             }
             else if (sceneData.SceneName == "MainMenu")
             {
-                moduleToLoad = ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAIN_TITLE);
+                moduleToLoad = ModuleManager.Instance.GetModule(ModuleType.MAIN_TITLE);
                 PlayersInputManager.Instance.CanConnect = true;
             }
             ModuleManager.Instance.ProcessModuleState(moduleToLoad, true);

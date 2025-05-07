@@ -114,7 +114,7 @@ namespace BHR
         {
             SoloMode = PlayersInputManager.Instance.SoloModeEnabled;
             PlayersInputManager.Instance.CanConnect = false;
-            ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
+            ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleType.HUD));
 
             if(SelectedLevel!=null)
             {
@@ -150,10 +150,10 @@ namespace BHR
 
         public void TogglePause()
         {
-            if (IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE))
+            if (IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleType.PAUSE))
                 Resume(); 
-            else if(!IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD))
-                Pause(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PAUSE));
+            else if(!IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleType.HUD))
+                Pause(ModuleManager.Instance.GetModule(ModuleType.PAUSE));
         }
 
         public void Pause(GameObject moduleToLoad)
@@ -174,7 +174,7 @@ namespace BHR
             IsPlaying = true;
             Cursor.lockState = CursorLockMode.Locked;
             ChangeMainPlayerState(_savedPausedState, false);
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.HUD));
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.HUD));
         }
 
         public void EndLevel()
@@ -185,7 +185,7 @@ namespace BHR
             if (_hasPlayedInSolo)
                 newBestTime = CurrentLevel.SaveTime(Timer);
             ChangeMainPlayerState(PlayerState.UI, false);
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.END_LEVEL));
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.END_LEVEL));
             ModuleManager.Instance.ClearNavigationHistoric();
             OnEndLevel.Invoke(Timer, newBestTime, _hasPlayedInSolo);
         }
@@ -195,7 +195,7 @@ namespace BHR
             CleanInGame(false);
             IsPaused = false;
             ChangeMainPlayerState(PlayerState.UI, false);
-            ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.LEVEL_SELECTION));
+            ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleType.LEVEL_SELECTION));
             ScenesManager.Instance.ChangeScene(ScenesManager.Instance.MenuScene);
             ModuleManager.Instance.ClearNavigationHistoric();
             CleanInGame(true);

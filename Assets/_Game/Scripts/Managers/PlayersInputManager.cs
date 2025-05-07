@@ -119,7 +119,7 @@ namespace BHR
             if (actionMap == InputActions.UIActionMap)
             {
                 // Specific case in Player selection where while in UI we need to differenciate players, but not with the map, with the playerIndex.
-                if(ModuleManager.Instance.ModulesRef[ModuleManager.Instance.CurrentModule] == ModuleManager.ModuleType.PLAYER_SELECTION)
+                if(ModuleManager.Instance.ModulesRef[ModuleManager.Instance.CurrentModule] == ModuleType.PLAYER_SELECTION)
                     ControllerSelectionHandleInput(ctx, playerIndex);
                 // UI input are listened by every subbed modules
                 else
@@ -249,7 +249,7 @@ namespace BHR
 
         private void SetAllowedInput(int playerIndex, bool disconnecting)
         {
-            if (ModuleManager.Instance.CurrentModule != ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAP_REBINDING))
+            if (ModuleManager.Instance.CurrentModule != ModuleManager.Instance.GetModule(ModuleType.MAP_REBINDING))
             {
                 if(PlayerConnectedCount() == 0)
                     CurrentAllowedInput = AllowedPlayerInput.NONE;
@@ -311,7 +311,7 @@ namespace BHR
             if(GameManager.Instance.SoloMode && ( GameManager.Instance.IsPlaying || GameManager.Instance.IsPaused))
             {
                 // if player was playing alone but a second device's connected, re open the player selection (for coop mode if wanted)
-                GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PLAYER_SELECTION));
+                GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleType.PLAYER_SELECTION));
             }
 
             OnPlayerHasJoined.Invoke(playerInputController.playerIndex);
@@ -365,7 +365,7 @@ namespace BHR
             // Check if player was playing
             if(PlayersReadyState[playerInputController.playerIndex] == PlayerReadyState.READY && GameManager.Instance.IsPlaying)
             {
-                GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.PLAYER_SELECTION));
+                GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleType.PLAYER_SELECTION));
             }
 
             UpdatePlayerControllerState(playerInputController.playerIndex);
@@ -386,7 +386,7 @@ namespace BHR
         #region ControllerSelection
         private void OnModuleEnabled(GameObject module, bool back)
         {
-            if (ModuleManager.Instance.ModulesRef[module] == ModuleManager.ModuleType.PLAYER_SELECTION)
+            if (ModuleManager.Instance.ModulesRef[module] == ModuleType.PLAYER_SELECTION)
                 OnPlayerSelectionEnable();
         }
 
@@ -480,7 +480,7 @@ namespace BHR
 
         public void OnRebindAction(int playerIndex)
         {
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAP_REBINDING));
+            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.MAP_REBINDING));
             AllowOnlyOnePlayerUIInputs(true);
         }
 

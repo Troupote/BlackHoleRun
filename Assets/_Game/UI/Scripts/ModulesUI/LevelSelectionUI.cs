@@ -98,7 +98,7 @@ public class LevelSelectionUI : AModuleUI
         }
         else
         {
-            ModuleManager.Instance.ProcessModuleState(ModuleManager.Instance.GetModule(ModuleManager.ModuleType.MAIN_TITLE), false, true);
+            ModuleManager.Instance.ProcessModuleState(ModuleManager.Instance.GetModule(ModuleType.MAIN_TITLE), false, true);
             ModuleManager.Instance.SaveBackSelectable(_playMenuButton);
 
         }
