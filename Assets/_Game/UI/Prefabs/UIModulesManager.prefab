@@ -2426,7 +2426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _savedValue: 0
-  _axe: 0
+  _axe: 1
 --- !u!114 &4027767424034638965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3613,7 +3613,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _savedValue: 0
-  _axe: 1
+  _axe: 2
 --- !u!1 &1152599351423205546
 GameObject:
   m_ObjectHideFlags: 0
@@ -17000,7 +17000,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _transition: {fileID: 6031868792184965614}
-  TransitionDuration: 0.6
+  DefaultTransitionDuration: 0
   SceneTransitionHasFinished: 0
   ModulesRef:
     m_Keys:
