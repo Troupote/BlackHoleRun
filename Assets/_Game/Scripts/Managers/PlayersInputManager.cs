@@ -458,7 +458,7 @@ namespace BHR
             SetSoloPlayer();
 
             if (CheckReadyState())
-                GameManager.Instance.LaunchLevel();
+                GameManager.Instance.LaunchLevel(!GameManager.Instance.IsPaused);
         }
 
         public void OnCancelAction(int playerIndex)

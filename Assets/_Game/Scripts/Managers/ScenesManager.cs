@@ -1,6 +1,8 @@
 using BHR;
 using Sirenix.OdinInspector;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace BHR
@@ -14,6 +16,8 @@ namespace BHR
         [ReadOnly]
         public SceneDataSO CurrentSceneData;
         public string ActiveSceneName => SceneManager.GetActiveScene().name;
+
+        public UnityEvent<string> OnSceneSuccessfulyLoaded;
 
         #region Validate Inputs
 #if UNITY_EDITOR
@@ -37,23 +41,26 @@ namespace BHR
             LoadDefaultSceneData(CurrentSceneData);
         }
 
-        public void ChangeScene(SceneDataSO sceneData)
+        public void ChangeScene(SceneDataSO sceneData, bool withEndTransition = true)
         {
             CurrentSceneData = sceneData;
 
             if(SceneManager.GetActiveScene().name != sceneData.SceneName)
             {
                 Debug.Log($"Changing scene from {SceneManager.GetActiveScene().name} to {sceneData.SceneName}");
-                SceneManager.LoadScene(sceneData.SceneName);
+                LoadSceneWithTransition(sceneData.SceneName, withEndTransition);
             }
         }
 
-        public void ReloadScene()
+        public void ReloadScene(bool withTransition = false)
         {
             if(CurrentSceneData != null)
             {
                 Debug.Log($"Reloading {CurrentSceneData.SceneName} scene");
-                SceneManager.LoadScene(CurrentSceneData.SceneName);
+                if (withTransition)
+                    LoadSceneWithTransition(CurrentSceneData.SceneName, false);
+                else
+                    LoadScene(CurrentSceneData.SceneName);
             }
         }
 
@@ -67,7 +74,7 @@ namespace BHR
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            
+            OnSceneSuccessfulyLoaded?.Invoke(scene.name);
         }
 
         private void LoadDefaultSceneData(SceneDataSO sceneData)
@@ -85,6 +92,32 @@ namespace BHR
                 PlayersInputManager.Instance.CanConnect = true;
             }
             ModuleManager.Instance.ProcessModuleState(moduleToLoad, true);
+        }
+
+       private void LoadSceneWithTransition(string sceneName, bool withEndTransition = true) => StartCoroutine(LoadSceneAsync(sceneName, withEndTransition));
+       private void LoadScene(string sceneName) => SceneManager.LoadScene(sceneName);
+        
+       IEnumerator LoadSceneAsync(string sceneName, bool withEndTransition = true)
+        {
+            // Start transition animation
+            ModuleManager.Instance.LaunchTransitionAnimation(true);
+            yield return new WaitForSeconds(ModuleManager.Instance.TransitionDuration);
+
+            // Scene loading
+            AsyncOperation loading = SceneManager.LoadSceneAsync(sceneName);
+            while (!loading.isDone) { yield return null; }
+
+            // End transition animation
+            if(withEndTransition)
+            {
+                ModuleManager.Instance.LaunchTransitionAnimation(false);
+                yield return new WaitForSeconds(ModuleManager.Instance.TransitionDuration);
+            }
+            else
+            {
+                ModuleManager.Instance.SceneTransitionHasFinished = true;
+                ModuleManager.Instance.CheckStartAnimationLaunchConditions();
+            }
         }
     }
 }

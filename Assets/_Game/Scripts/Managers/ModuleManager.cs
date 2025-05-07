@@ -14,6 +14,10 @@ namespace BHR
 {
     public class ModuleManager : ManagerSingleton<ModuleManager>
     {
+        [SerializeField, Required, FoldoutGroup("Refs")] private GameObject _transition;
+        [Required, FoldoutGroup("Settings")] public float TransitionDuration;
+        private bool _haveToLaunchStartAnim = false; 
+        public bool SceneTransitionHasFinished;
 
         [Serializable]
         public enum ModuleType { MAIN_TITLE, LEVEL_SELECTION, CREDITS, PLAYER_SELECTION, MAP_REBINDING, SETTINGS, END_LEVEL, HUD, PAUSE, TEST}
@@ -21,6 +25,7 @@ namespace BHR
         public SerializedDictionary<GameObject, ModuleType> ModulesRef;
         public GameObject GetModule(ModuleType type) => ModulesRef.First(m => m.Value == type).Key;
         [ReadOnly] public GameObject CurrentModule = null;
+        [SerializeField, ReadOnly] private GameObject _moduleToLoadOnSceneLoaded;
         public UnityEvent<GameObject, bool> OnModuleEnabled;
         [SerializeField, ReadOnly] private Stack<GameObject> _historic = new Stack<GameObject>();
         private Selectable _savedBackSelectable;
@@ -34,8 +39,9 @@ namespace BHR
 
         public override void Awake()
         {
-            foreach (Transform go in gameObject.transform)
-                go.gameObject.SetActive(!go.name.ToLower().Contains("module"));
+            foreach (Transform go in gameObject.transform.GetChild(0).transform)
+                if(go.name.ToLower().Contains("module"))
+                    go.gameObject.SetActive(false);
             base.Awake();
         }
 
@@ -48,6 +54,21 @@ namespace BHR
             _historic = new Stack<GameObject>();
 
             PlayersInputManager.Instance.OnUIInput.AddListener(HandleUIInput);
+            ScenesManager.Instance.OnSceneSuccessfulyLoaded.AddListener(LoadModuleOnSceneLoaded);
+            GameManager.Instance.OnLaunchLevel.AddListener((startAnimation) => 
+            {
+                _haveToLaunchStartAnim = startAnimation;
+                CheckStartAnimationLaunchConditions();
+            });
+        }
+
+        public void CheckStartAnimationLaunchConditions()
+        {
+            if (_haveToLaunchStartAnim && SceneTransitionHasFinished)
+            {
+                _haveToLaunchStartAnim = SceneTransitionHasFinished = false;
+                LaunchStartAnimation();
+            }
         }
 
         private void HandleUIInput(InputAction.CallbackContext ctx)
@@ -58,9 +79,14 @@ namespace BHR
             }
         }
 
-        public void OnModuleEnable(GameObject moduleGO)
+        public void SetModuleToLoad(GameObject moduleGO) => _moduleToLoadOnSceneLoaded = moduleGO;
+        public void OnModuleEnable(GameObject moduleGO) => ProcessModuleState(moduleGO);
+
+        private void LoadModuleOnSceneLoaded(string sceneName)
         {
-            ProcessModuleState(moduleGO);
+            if (_moduleToLoadOnSceneLoaded == null) return;
+            ProcessModuleState(_moduleToLoadOnSceneLoaded);
+            _moduleToLoadOnSceneLoaded = null;
         }
 
         public void SaveBackSelectable(Selectable selectable)
@@ -84,10 +110,7 @@ namespace BHR
             ScenesManager.Instance.ChangeScene(sceneData);
         }
 
-        public void ReloadScene()
-        {
-            ScenesManager.Instance.ChangeScene(ScenesManager.Instance.CurrentSceneData);
-        }
+        public void ReloadScene() => ScenesManager.Instance?.ReloadScene(); 
 
         public void QuitGame()
         {
@@ -133,6 +156,8 @@ namespace BHR
                 ProcessModuleState(_historic.Pop(), false, true);
             }
         }
+        public void LaunchTransitionAnimation(bool start) => _transition.GetComponent<TransitionUI>().LaunchTransitionAnimation(start);
+        private void LaunchStartAnimation() => _transition.GetComponent<TransitionUI>().LaunchStartAnimation();
     }
 
 }
