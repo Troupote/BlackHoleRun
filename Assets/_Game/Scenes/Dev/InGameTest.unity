@@ -3331,10 +3331,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4846799805334316505, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
-      propertyPath: GameSettings
-      value: 
-      objectReference: {fileID: 11400000, guid: 49f454b3b4a35104f81eacf0200146b0, type: 2}
     - target: {fileID: 4942750028036633372, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -3539,10 +3535,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CheckpointsManager
       objectReference: {fileID: 0}
-    - target: {fileID: 4607888428053869629, guid: 0c70cb5b63a1c774790ff680dd56c59a, type: 3}
-      propertyPath: _currentCheckpoint
-      value: 
-      objectReference: {fileID: 558542467}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -3606,10 +3598,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5971323618073568585, guid: 60f42a1118d241948b6c1ab72c9cf1fb, type: 3}
-      propertyPath: BaseSettings
-      value: 
-      objectReference: {fileID: 11400000, guid: d697f5838b1aa13499844a902c809e6f, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
