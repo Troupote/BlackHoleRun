@@ -1,5 +1,4 @@
 using Sirenix.OdinInspector;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace BHR
@@ -8,7 +7,7 @@ namespace BHR
     {
         [SerializeField, Tooltip("If empty, this object itslef")] private Transform _object;
         [SerializeField, ShowIf(nameof(OtherObjectSelected)), Tooltip("Rotate around selected object rather than rotate around itself")] private bool _rotateAround;
-        [SerializeField] private float _speed;
+        [SerializeField, Min(0.01f)] private float _speed;
         [SerializeField, EnumToggleButtons] private Axes _axes;
         [SerializeField, Tooltip("Will set a random force in the authorized axes"), HideIf(nameof(_rotateAround))] 
         private bool _randomStartDirection = false;
