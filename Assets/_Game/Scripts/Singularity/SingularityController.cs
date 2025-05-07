@@ -31,7 +31,7 @@ public class SingularityController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!CharactersManager.Instance.isSingularityThrown) return;
+        if (!GameManager.Instance.IsPlaying || !CharactersManager.Instance.isSingularityThrown) return;
         Move();
         CheckJumpApex();
     }

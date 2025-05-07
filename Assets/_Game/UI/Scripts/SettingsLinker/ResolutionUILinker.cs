@@ -13,7 +13,7 @@ namespace BHR.UILinkers
             SettingsManager.Instance.UpdateResolutionAndWindowed();
         }
 
-        protected override void LoadSetting()
+        protected override int LoadSetting()
         {
             TMP_Dropdown dropdown = GetComponent<TMP_Dropdown>();
 
@@ -31,7 +31,12 @@ namespace BHR.UILinkers
                 }
             }
 
-            dropdown.value = dropdown.options.IndexOf(currentResolution);
+            return dropdown.options.IndexOf(currentResolution);
+        }
+
+        protected override void UpdateUI()
+        {
+            GetComponent<TMP_Dropdown>().value = LoadSetting();
         }
     }
 }

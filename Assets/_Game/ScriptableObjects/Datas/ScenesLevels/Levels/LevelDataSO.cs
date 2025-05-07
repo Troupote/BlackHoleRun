@@ -17,13 +17,14 @@ namespace BHR
         public HoleMans StartMan = HoleMans.BLACK_HOLE_MAN;
 
 
-        public void SaveTime(float timeInSeconds)
+        public bool SaveTime(float timeInSeconds)
         {
             if(timeInSeconds < BestTime())
             {
-                Debug.Log("New best time !"); // @todo maybe change UI Text if new best time or first time completed
                 PlayerPrefs.SetFloat(ID.ToString(), timeInSeconds);
+                return true;
             }
+            return false;
         }
 
         public MedalsType MedalObtained(float timeInSeconds) => Times.Where(t => t.Value >= timeInSeconds).OrderBy(t => t.Value).FirstOrDefault().Key;

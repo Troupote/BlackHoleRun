@@ -27,8 +27,9 @@ MonoBehaviour:
   Unmorph: Unmorph
   Aim: Aim
   Throw: Throw
+  Restart: Restart
   Pause: Pause
   Submit: Submit
   Cancel: Cancel
   Switch: Switch
-  Rebind: 
+  Rebind: Rebind

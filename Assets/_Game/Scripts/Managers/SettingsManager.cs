@@ -1,11 +1,16 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 namespace BHR
 {
     public class SettingsManager : ManagerSingleton<SettingsManager>
     {
-        public UnityEvent OnAllDataLoaded;
+        public UnityEvent OnGlobalDatasLoaded;
+        public UnityEvent OnUserDatasLoaded;
+
+        public UnityEvent OnUserSettingsApplied;
+        public UnityEvent OnUserSettingsCanceled;
 
         private void Start()
         {
@@ -31,7 +36,6 @@ namespace BHR
 
         public void UpdateLanguage()
         {
-            Debug.Log(SettingsSave.LoadLanguage() + " is active");
             // @todo Language update (not now)
         }
 
@@ -39,6 +43,9 @@ namespace BHR
         {
             // @todo Thybault c'est ici que tu dois cook
         }
+
+        public void ApplyUserSettings() => OnUserSettingsApplied?.Invoke();
+        public void CancelUserSettings() => OnUserSettingsCanceled?.Invoke();
 
         public void ResetGlobalSettings()
         {
@@ -52,13 +59,32 @@ namespace BHR
             LoadAllSavedData();
         }
 
+        public void ResetUserSettings(InputDevice controller)
+        {
+            SettingsSave.SaveSensitivityX(controller);
+            SettingsSave.SaveSensitivityY(controller);
+            SettingsSave.SaveInvertAxeY(controller);
+            SettingsSave.SaveLeftStickDeadzone(controller);
+            SettingsSave.SaveRightStickDeadzone(controller);
+            SettingsSave.SaveToggleAim(controller);
+
+            LoadUserData(controller);
+        }
+
         private void LoadAllSavedData()
         {
             UpdateLanguage();
             UpdateResolutionAndWindowed();
             UpdateVolume();
-            OnAllDataLoaded?.Invoke();
+            OnGlobalDatasLoaded?.Invoke();
         }
+
+        private void LoadUserData(InputDevice controller)
+        {
+            OnUserDatasLoaded?.Invoke();
+        }
+
+
         #endregion
     }
 }
