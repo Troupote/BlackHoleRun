@@ -18,7 +18,6 @@ public class CacaController : MonoBehaviour
     
     private Vector3 lastPosition;
     private Vector3 currentVelocity;
-    private float footstepTimer = 0f;
 
     private EventInstance footstepEvent; 
 
