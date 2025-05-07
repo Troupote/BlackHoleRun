@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
 
     private GameplayData m_gameplayData;
 
+    private TimeControl timeController;
+
+    private int aimCallCount = 0;
+
     [SerializeField] private float fallMultiplier = 3f;
     [SerializeField] private float lowJumpMultiplier = 2f;
 
@@ -19,6 +23,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         m_gameplayData = CharactersManager.Instance.GameplayData;
         rb.freezeRotation = true;
+
+        timeController = GameManager.Instance.gameObject.GetComponent<TimeControl>();
     }
 
     private void OnEnable()
@@ -28,7 +34,7 @@ public class PlayerController : MonoBehaviour
         PlayersInputManager.Instance.OnHJump.AddListener(HandleJump);
         PlayersInputManager.Instance.OnHDash.AddListener(HandleDash);
         PlayersInputManager.Instance.OnHThrow.AddListener(HandleThrowSingularity);
-        //PlayersInputManager.Instance.OnHAim.AddListener();
+        PlayersInputManager.Instance.OnHAim.AddListener(HandleAim);
         //PlayersInputManager.Instance.OnHSlide.AddListener();
 
     }
@@ -40,7 +46,7 @@ public class PlayerController : MonoBehaviour
         PlayersInputManager.Instance.OnHJump.RemoveListener(HandleJump);
         PlayersInputManager.Instance.OnHDash.RemoveListener(HandleDash);
         PlayersInputManager.Instance.OnHThrow.RemoveListener(HandleThrowSingularity);
-        //PlayersInputManager.Instance.OnHAim.RemoveListener();
+        PlayersInputManager.Instance.OnHAim.RemoveListener(HandleAim);
         //PlayersInputManager.Instance.OnHSlide.RemoveListener();
     }
 
@@ -64,11 +70,11 @@ public class PlayerController : MonoBehaviour
     {
         if (rb.linearVelocity.y < 0)
         {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime * GameManager.Instance.GameTimeScale;
         }
         else if (rb.linearVelocity.y > 0)
         {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime * GameManager.Instance.GameTimeScale;
         }
     }
 
@@ -98,7 +104,7 @@ public class PlayerController : MonoBehaviour
 
         rb.linearVelocity = Vector3.SmoothDamp(rb.linearVelocity, new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.z), ref currentVelocity, 0.1f);
 
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.localScale.y + 0.2f);
+        isGrounded = Physics.CheckSphere(new Vector3(transform.position.x, transform.position.y - transform.localScale.y, transform.position.z), .3f, LayerMask.GetMask("ground"));
     }
 
     public void HandleJump()
@@ -129,6 +135,36 @@ public class PlayerController : MonoBehaviour
 
     public void HandleThrowSingularity()
     {
-         CharactersManager.Instance.TryThrowSingularity();
+        if (!timeController.isFinished)
+        {
+            timeController.isSlowed = false;
+        }
+
+        timeController.isStarted = false;
+        timeController.isSlowed = false;
+
+        aimCallCount = 0;
+
+        CharactersManager.Instance.TryThrowSingularity();
+    }
+
+    public void HandleAim()
+    {
+        if (aimCallCount == 0)
+        {
+            aimCallCount++;
+
+            StartCoroutine(timeController.SlowmotionSequence());
+            timeController.isStarted = true;
+
+        }
+        else if (aimCallCount == 1)
+        {
+            timeController.isStarted = false;
+            timeController.isSlowed = false;
+
+            aimCallCount = 0;
+        }
+
     }
 }
