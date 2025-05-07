@@ -249,6 +249,7 @@ GameObject:
   - component: {fileID: 2256550512557629699}
   - component: {fileID: 4846799805334316505}
   - component: {fileID: 391594483695264458}
+  - component: {fileID: 4775512395861546102}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -319,3 +320,16 @@ MonoBehaviour:
   _disableStartAnimation: 1
   _enableCheckpointInfosText: 1
   _checkpointHUDInfosText: {fileID: 5398624772312287453}
+--- !u!114 &4775512395861546102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4942750028036633372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aafc1af531436d74d8354fc851b73afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aimTime: 2
