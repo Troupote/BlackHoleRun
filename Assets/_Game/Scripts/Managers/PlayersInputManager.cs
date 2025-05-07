@@ -480,7 +480,7 @@ namespace BHR
 
         public void OnRebindAction(int playerIndex)
         {
-            ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.MAP_REBINDING));
+            ModuleManager.Instance.OnModuleEnableWithTransition(ModuleManager.Instance.GetModule(ModuleType.MAP_REBINDING));
             AllowOnlyOnePlayerUIInputs(true);
         }
 

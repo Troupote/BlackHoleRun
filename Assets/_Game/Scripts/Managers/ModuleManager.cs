@@ -24,8 +24,10 @@ namespace BHR
         public GameObject GetModule(ModuleType type) => ModulesRef.First(m => m.Value == type).Key;
         [ReadOnly] public GameObject CurrentModule = null;
         [SerializeField, ReadOnly] private GameObject _savedModuleToLoad;
+        public GameObject SavedModuleToLoad => _savedModuleToLoad;
         public UnityEvent<GameObject, bool> OnModuleEnabled;
         [SerializeField, ReadOnly] private Stack<GameObject> _historic = new Stack<GameObject>();
+        public Stack<GameObject> Historic => _historic;
         private Selectable _savedBackSelectable;
 
         [SerializeField, ReadOnly]
@@ -52,7 +54,7 @@ namespace BHR
             _historic = new Stack<GameObject>();
 
             PlayersInputManager.Instance.OnUIInput.AddListener(HandleUIInput);
-            ScenesManager.Instance.OnSceneSuccessfulyLoaded.AddListener(LoadSavedModule);
+            ScenesManager.Instance.OnSceneSuccessfulyLoaded.AddListener((sceneName) => LoadSavedModule(false));
             GameManager.Instance.OnLaunchLevel.AddListener((startAnimation) => 
             {
                 _haveToLaunchStartAnim = startAnimation;
@@ -80,10 +82,28 @@ namespace BHR
         public void SetModuleToLoad(GameObject moduleGO) => _savedModuleToLoad = moduleGO;
         public void OnModuleEnable(GameObject moduleGO) => ProcessModuleState(moduleGO);
 
-        private void LoadSavedModule(string sceneName)
+        public void OnModuleEnableWithTransition(GameObject moduleGO)
+        {
+            if (ScenesManager.Instance.CurrentSceneData == ScenesManager.Instance.MenuScene)
+            {
+                SetModuleToLoad(moduleGO);
+                CurrentModule.SetActive(false);
+                GetComponent<MainMenuTransitionUI>().LaunchTransition(false);
+            }
+            else
+                OnModuleEnable(moduleGO);
+        }
+        public void OnModuleEnableWithTransition(GameObject moduleGO, bool withBack)
+        {
+            SetModuleToLoad(moduleGO);
+            CurrentModule.SetActive(false);
+            GetComponent<MainMenuTransitionUI>().LaunchTransition(withBack);
+        }
+
+        public void LoadSavedModule(bool back)
         {
             if (_savedModuleToLoad == null) return;
-            ProcessModuleState(_savedModuleToLoad);
+            ProcessModuleState(_savedModuleToLoad, back);
             _savedModuleToLoad = null;
         }
 
@@ -115,24 +135,19 @@ namespace BHR
             ScenesManager.Instance.QuitGame();
         }
 
-        public void ProcessModuleState(GameObject module, bool cannotReturn = false, bool back = false)
+        public void ProcessModuleState(GameObject module, bool back = false)
         {
             if (module == null || module == CurrentModule)
                 return;
 
             module.SetActive(true);
 
-            if(cannotReturn || back)
-            {
-                if(cannotReturn)
-                    ClearNavigationHistoric();
-            }
-            else
+            if(!back)
                 _historic.Push(CurrentModule);
+
             if(CurrentModule != null)
                 CurrentModule?.SetActive(false);
             CurrentModule = module;
-            //Debug.Log($"CurrentModule : {CurrentModule}");
 
             OnModuleEnabled.Invoke(module, _savedBackSelectable != null && back);
             if (back)
@@ -151,7 +166,12 @@ namespace BHR
         {
             if( _historic.Count > 0 && CanBack)
             {
-                ProcessModuleState(_historic.Pop(), false, true);
+                if(ScenesManager.Instance.CurrentSceneData == ScenesManager.Instance.MenuScene)
+                {
+                    OnModuleEnableWithTransition(_historic.Pop(), true);
+                }
+                else
+                    ProcessModuleState(_historic.Pop(), true);
             }
         }
         public void LaunchTransitionAnimation(bool start) => _transition.GetComponent<TransitionUI>().LaunchTransitionAnimation(start);
