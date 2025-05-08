@@ -102,8 +102,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3af6b02600240b4b8b8147471290c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Actions: {fileID: 11400000, guid: c51eb42cd694ab641a9d99a0cf871546, type: 2}
+  _actionsSO: {fileID: 11400000, guid: c51eb42cd694ab641a9d99a0cf871546, type: 2}
   _canConnect: 0
+  _reconnecting: 0
   _currentAllowedInput: 3
   LastPlayerIndexUIInput: 0
   _playersControllerState: 
@@ -117,6 +118,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnInput:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerHasJoined:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerDisconnected:
     m_PersistentCalls:
       m_Calls: []
   OnPlayerReadyStateChanged:
@@ -150,6 +157,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnPause:
+    m_PersistentCalls:
+      m_Calls: []
+  OnIReconnect:
     m_PersistentCalls:
       m_Calls: []
   OnHMove:
