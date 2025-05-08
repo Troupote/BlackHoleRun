@@ -13,6 +13,8 @@ namespace BHR
     {
         [Required]
         public GameSettingsSO GameSettings;
+        [Required]
+        public TutorielDatasSO TutorielDatas;
 
         [SerializeField]
         private PlayerState _activePlayerState;
@@ -180,6 +182,7 @@ namespace BHR
             Cursor.lockState = CursorLockMode.Locked;
             ChangeMainPlayerState(_savedPausedState, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.HUD));
+            ModuleManager.Instance.ClearNavigationHistoric();
         }
 
         public void EndLevel()
@@ -242,6 +245,20 @@ namespace BHR
             yield return new WaitForSeconds(transitionDuration);
             _isRespawning = false;
             IsPlaying = true;
+        }
+
+        public void LoadTutorielData(InputActionReference actionRef)
+        {
+            if(!TutorielDatas.ActionRefTutoriels.ContainsKey(actionRef))
+            {
+                Debug.LogError($"Found no tutoriel for {actionRef.action.name}");
+                return;
+            }
+
+            TutorielData data = TutorielDatas.ActionRefTutoriels[actionRef];
+            ModuleManager.Instance.GetModule(ModuleType.TUTORIEL).GetComponent<TutorielModuleUI>().LoadTutorielData(actionRef, data);
+            Pause(ModuleManager.Instance.GetModule(ModuleType.TUTORIEL));
+            ModuleManager.Instance.ClearNavigationHistoric();
         }
 
         private void Chrono()
