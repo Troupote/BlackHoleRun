@@ -1,37 +1,45 @@
+using Sirenix.OdinInspector;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[CreateAssetMenu(fileName = "InputActionsName", menuName = "PlayerInput/InputActionsName")]
-public class InputActionsSO : ScriptableObject
+namespace BHR
 {
-    [Header("Control schemes")]
-    public string KeyboardScheme;
-    public string GamepadScheme;
+    [CreateAssetMenu(fileName = "InputActionsName", menuName = "PlayerInput/InputActionsName")]
+    public class InputActionsSO : ScriptableObject
+    {
 
-    [Header("Actions maps")]
-    public string HumanoidActionMap;
-    public string SingularityActionMap;
-    public string UIActionMap;
-    public string InactiveActionMap;
-    public string EmptyActionMap;
+        [Header("Control schemes")]
+        public string KeyboardScheme;
+        public string GamepadScheme;
 
-    [Header("Humanoid/Singularity")]
-    public string Move;
-    public string Look;
-    public string Jump;
-    public string Dash;
-    public string Slide;
-    public string Unmorph;
-    public string Aim;
-    public string Throw;
-    public string Restart;
-    public string Pause;
+        [Header("Actions maps")]
+        [Required] public string HumanoidActionMap;
+        [Required] public string SingularityActionMap;
+        [Required] public string UIActionMap;
+        [Required] public string InactiveActionMap;
+        [Required] public string EmptyActionMap;
 
-    [Header("UI")]
-    public string Submit;
-    public string Cancel;
-    public string Switch;
-    public string Rebind;
+        [Header("Humanoid/Singularity (Be sure that both actions have the same name and same bindings)")]
+        [Required] public InputActionReference Move;
+        [Required] public InputActionReference Look;
+        [Required] public InputActionReference Jump;
+        [Required] public InputActionReference Dash;
+        [Required] public InputActionReference Slide;
+        [Required] public InputActionReference Restart;
+        [Required] public InputActionReference Pause;
 
-    public string[] AllActions => new string[] {Move, Look, Jump, Dash, Slide, Aim, Throw, Pause, Submit, Cancel};
+        [Header("Humanoid")]
+        [Required] public InputActionReference Aim;
+        [Required] public InputActionReference Throw;
+
+        [Header("Singularity")]
+        [Required] public InputActionReference Unmorph;
+
+        [Header("UI")]
+        [Required] public InputActionReference Submit;
+        [Required] public InputActionReference Cancel;
+        [Required] public InputActionReference Switch;
+        [Required] public InputActionReference Rebind;
+    }
 }
