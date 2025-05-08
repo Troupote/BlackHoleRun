@@ -11,7 +11,8 @@ namespace BHR
 {
     public class PlayersInputManager : ManagerSingleton<PlayersInputManager>
     {
-        [SerializeField, Required] private InputActionsSO Actions;
+        [SerializeField, Required] private InputActionsSO _actionsSO;
+        public InputActionsSO ActionsSO => _actionsSO;
 
         [SerializeField, ReadOnly] private bool _canConnect; // Enable the ControllerSelection 
         public bool CanConnect { get => _canConnect; set => _canConnect = value; }
@@ -95,7 +96,7 @@ namespace BHR
         {
             _playersControllerState = new PlayerControllerState[] { PlayerControllerState.DISCONNECTED, PlayerControllerState.DISCONNECTED };
             _playersReadyState = new PlayerReadyState[] { PlayerReadyState.NONE, PlayerReadyState.NONE };
-            InputActions.Initialize(Actions);
+            InputActions.Initialize(ActionsSO);
         }
 
         private void Start()

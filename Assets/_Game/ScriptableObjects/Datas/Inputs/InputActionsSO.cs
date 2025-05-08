@@ -2,12 +2,16 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 namespace BHR
 {
     [CreateAssetMenu(fileName = "InputActionsName", menuName = "PlayerInput/InputActionsName")]
     public class InputActionsSO : ScriptableObject
     {
+        [SerializeField, Required]
+        private SerializedDictionary<string, Sprite> _bindingsControlPathToSprite; // do NOT rename or mess with it
+        public Dictionary<string, Sprite> BindingsControlPathToSprite => _bindingsControlPathToSprite;
 
         [Header("Control schemes")]
         public string KeyboardScheme;
