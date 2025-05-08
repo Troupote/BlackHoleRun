@@ -91,7 +91,7 @@ namespace BHR
         public float GameTimeScale => _gameTimeScale;
         #endregion
 
-        public UnityEvent<int, PlayerState> OnPlayerStateChanged;
+        public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
 
         private void Start()
         {
@@ -276,6 +276,7 @@ namespace BHR
                 PlayerState secondPlayerState = _activePlayerState == PlayerState.UI ? PlayerState.UI : PlayerState.INACTIVE;
                 PlayersInputManager.Instance.PlayersInputControllerRef[1-_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
             }
+            OnMainPlayerStateChanged?.Invoke(state, switchActivePlayer);
         }
     }
 }
