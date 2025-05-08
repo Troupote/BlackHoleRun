@@ -267,6 +267,9 @@ namespace BHR
             {
                 _activePlayerIndex = Array.IndexOf(PlayersInputManager.Instance.PlayersReadyState, PlayerReadyState.READY);
                 PlayersInputManager.Instance.PlayersInputControllerRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+
+                if (PlayersInputManager.Instance.PlayersInputControllerRef.Where(p => p != null).ToArray().Length == 2)
+                    PlayersInputManager.Instance.PlayersInputControllerRef[1 - _activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = state == PlayerState.UI ? state : PlayerState.INACTIVE;
             }
             else
             {

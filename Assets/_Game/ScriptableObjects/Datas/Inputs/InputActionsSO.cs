@@ -40,6 +40,9 @@ namespace BHR
         [Header("Singularity")]
         [Required] public InputActionReference Unmorph;
 
+        [Header("Inactive")]
+        [Required] public InputActionReference Reconnect;
+
         [Header("UI")]
         [Required] public InputActionReference Submit;
         [Required] public InputActionReference Cancel;
