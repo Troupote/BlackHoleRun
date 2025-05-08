@@ -1,0 +1,189 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37d4a9fdc37ec9542b8604e195a088de, type: 3}
+  m_Name: InputActionsName
+  m_EditorClassIdentifier: 
+  _bindingsControlPathToSprite:
+    m_Keys:
+    - <Keyboard>/space
+    - <Gamepad>/buttonSouth
+    - <Keyboard>/a
+    - <Keyboard>/b
+    - <Keyboard>/c
+    - <Keyboard>/d
+    - <Keyboard>/e
+    - <Keyboard>/f
+    - <Keyboard>/g
+    - <Keyboard>/h
+    - <Keyboard>/i
+    - <Keyboard>/j
+    - <Keyboard>/k
+    - <Keyboard>/l
+    - <Keyboard>/m
+    - <Keyboard>/n
+    - <Keyboard>/o
+    - <Keyboard>/p
+    - <Keyboard>/q
+    - <Keyboard>/r
+    - <Keyboard>/s
+    - <Keyboard>/t
+    - <Keyboard>/u
+    - <Keyboard>/v
+    - <Keyboard>/w
+    - <Keyboard>/x
+    - <Keyboard>/y
+    - <Keyboard>/z
+    - <Keyboard>/0
+    - <Keyboard>/1
+    - <Keyboard>/2
+    - <Keyboard>/3
+    - <Keyboard>/4
+    - <Keyboard>/5
+    - <Keyboard>/6
+    - <Keyboard>/7
+    - <Keyboard>/8
+    - <Keyboard>/9
+    - <Keyboard>/enter
+    - <Keyboard>/escape
+    - <Keyboard>/leftShift
+    - <Keyboard>/rightShift
+    - <Keyboard>/leftCtrl
+    - <Keyboard>/rightCtrl
+    - <Keyboard>/rightAlt
+    - <Keyboard>/leftAlt
+    - <Keyboard>/tab
+    - <Keyboard>/backspace
+    - <Keyboard>/leftArrow
+    - <Keyboard>/rightArrow
+    - <Keyboard>/upArrow
+    - <Keyboard>/downArrow
+    - <Mouse>/leftButton
+    - <Mouse>/rightButton
+    - <Mouse>/middleButton
+    - <Pointer>/delta
+    - None
+    - <Gamepad>/buttonNorth
+    - <Gamepad>/buttonWest
+    - <Gamepad>/buttonEast
+    - <Gamepad>/start
+    - <Gamepad>/select
+    - <Gamepad>/leftStickPress
+    - <Gamepad>/leftStick
+    - <Gamepad>/rightStick
+    - <Gamepad>/rightStickPress
+    - <Gamepad>/rightShoulder
+    - <Gamepad>/rightTrigger
+    - <Gamepad>/leftTrigger
+    - <Gamepad>/leftShoulder
+    - <Gamepad>/dpad/up
+    - <Gamepad>/dpad/right
+    - <Gamepad>/dpad/down
+    - <Gamepad>/dpad/left
+    - '*/{Menu}'
+    m_Values:
+    - {fileID: 21300000, guid: e79e87ac14621ca4caf98e333e451d8d, type: 3}
+    - {fileID: 21300000, guid: f3d71dd7d8f8bbe439d8bf4d33ae240a, type: 3}
+    - {fileID: 21300000, guid: 5f35470d157684b478f54bf6c340265f, type: 3}
+    - {fileID: 21300000, guid: 1a91fb33ccadb3f4ca4a355d9e53ddf1, type: 3}
+    - {fileID: 21300000, guid: 2aa6f4bb46514f542b016c83989b3e97, type: 3}
+    - {fileID: 21300000, guid: 09c145094aca5f640ae13eecf94e9a1c, type: 3}
+    - {fileID: 21300000, guid: c2376272a3203904b9bd537bfb3497e4, type: 3}
+    - {fileID: 21300000, guid: 9b07f71c15ca2dc4683dcce22397f239, type: 3}
+    - {fileID: 21300000, guid: 4c03495b9f39ada448e9d357c3e0a150, type: 3}
+    - {fileID: 21300000, guid: 7d801e6cbc33c7c4dbca3af10f0a2557, type: 3}
+    - {fileID: 21300000, guid: 318e833dc2dfbfb4aad899aea5b40260, type: 3}
+    - {fileID: 21300000, guid: ab46b254ee4149341a20d7d74d78e77c, type: 3}
+    - {fileID: 21300000, guid: 5ba10dc2cc0b71e4390e481c7efd6b4f, type: 3}
+    - {fileID: 21300000, guid: a023b5a497f2fef43a8165ad3684bb80, type: 3}
+    - {fileID: 21300000, guid: a691c61b6415dc54ebd6844e175df0d4, type: 3}
+    - {fileID: 21300000, guid: 07fe71dd059bad74b92b21e1be26bbfa, type: 3}
+    - {fileID: 21300000, guid: 28753980c4a0fbe49a3ea134438a6636, type: 3}
+    - {fileID: 21300000, guid: 6a9496d8dedbb3b40b4354ced942c85c, type: 3}
+    - {fileID: 21300000, guid: 561d7b88e2cb73c48a8d4aa6cf651743, type: 3}
+    - {fileID: 21300000, guid: 3c7c2c1d8ca3ec64c8911c1354a52d5e, type: 3}
+    - {fileID: 21300000, guid: eb7d4d144ab212e4782120d092647c29, type: 3}
+    - {fileID: 21300000, guid: d7e3429dddb3e6842a9e51f44d9b3754, type: 3}
+    - {fileID: 21300000, guid: 56c6c6de11fe188469d5b36971981d26, type: 3}
+    - {fileID: 21300000, guid: 6812ae929fbbf724f92d780e144e6087, type: 3}
+    - {fileID: 21300000, guid: bcaf8bd3586b87c47a7c0f30fb68959c, type: 3}
+    - {fileID: 21300000, guid: 824b9d17cd4cbc54fa65debcb86636b4, type: 3}
+    - {fileID: 21300000, guid: 894f750573d11f74ba5219d846d7cbf7, type: 3}
+    - {fileID: 21300000, guid: d05f2b169692eec49bfea76f29d70d42, type: 3}
+    - {fileID: 21300000, guid: 6e9e518820b2471479aba8a413c964b3, type: 3}
+    - {fileID: 21300000, guid: f616de67fe7463a4d87b8a500e30a60d, type: 3}
+    - {fileID: 21300000, guid: d92eb9e98a62ae3429993f37e22e8356, type: 3}
+    - {fileID: 21300000, guid: f78460f5c5a87f6489adb067d9ba06bd, type: 3}
+    - {fileID: 21300000, guid: d0f7a7d0fd2e7074cb77af0f74a04ceb, type: 3}
+    - {fileID: 21300000, guid: 8d522f50843b9c14da42860fc6fd047b, type: 3}
+    - {fileID: 21300000, guid: f081cfe775be7b341bb317f5081672a7, type: 3}
+    - {fileID: 21300000, guid: 7863637ed75e7ed4b98a5cf6c808c908, type: 3}
+    - {fileID: 21300000, guid: 65b60ab06a30ef543969c2ae2c0bd097, type: 3}
+    - {fileID: 21300000, guid: 904d653abb6687f4bb3b24debe5364e5, type: 3}
+    - {fileID: 21300000, guid: b8b23b3f67f752c4aa6fa0dd63b2c868, type: 3}
+    - {fileID: 21300000, guid: 2de20d2bc91444247b0b594edcd97015, type: 3}
+    - {fileID: 21300000, guid: 1890b1128058424458cf95417ef81666, type: 3}
+    - {fileID: 21300000, guid: 1890b1128058424458cf95417ef81666, type: 3}
+    - {fileID: 21300000, guid: cdec70c02ee800143968d2366f630b5c, type: 3}
+    - {fileID: 21300000, guid: cdec70c02ee800143968d2366f630b5c, type: 3}
+    - {fileID: 21300000, guid: 499f3157b3ffeb44d9db8adee1ebf1ad, type: 3}
+    - {fileID: 21300000, guid: 499f3157b3ffeb44d9db8adee1ebf1ad, type: 3}
+    - {fileID: 21300000, guid: dc4ee533b4e6deb46917514e3fc65cbe, type: 3}
+    - {fileID: 21300000, guid: 5f1b94f499a187a458fee23c172da327, type: 3}
+    - {fileID: 21300000, guid: 5e0ced4b9aa02f14a875e996c6215be3, type: 3}
+    - {fileID: 21300000, guid: ca3d20ddc89d4564882b242cffcecd31, type: 3}
+    - {fileID: 21300000, guid: 3a309371c3d2e3f48bc116e2911102c3, type: 3}
+    - {fileID: 21300000, guid: dfef74e9c5023c646a70eb7dce91841e, type: 3}
+    - {fileID: 21300000, guid: 18b7ca8b836ec5641b31337a73ee0ded, type: 3}
+    - {fileID: 21300000, guid: b4e61605217f38c428c688747bf5658f, type: 3}
+    - {fileID: 21300000, guid: fd9d3e24e5dcca046a82818f7178235f, type: 3}
+    - {fileID: 21300000, guid: 3cc718e2fdd531a48a2651226454e9c1, type: 3}
+    - {fileID: 21300000, guid: 6a1320924975e2e428fbbb6c47a40c11, type: 3}
+    - {fileID: 21300000, guid: c5a74dd0dbf042545afb72e6f8d33d73, type: 3}
+    - {fileID: 21300000, guid: a0b1046b0e8b46b40872d93d1f855041, type: 3}
+    - {fileID: 21300000, guid: 30e47d5eae8b0c441bc5ca399bb2ad55, type: 3}
+    - {fileID: 21300000, guid: 2821c9d2ae634fb48a27c28047121d80, type: 3}
+    - {fileID: 21300000, guid: 65019eed76ba2ce4db026b96abebe098, type: 3}
+    - {fileID: 21300000, guid: 240b9d7713330cc4f8a7f22c1d9abbf2, type: 3}
+    - {fileID: 21300000, guid: cbb294005eafce642a656153b9b5e492, type: 3}
+    - {fileID: 21300000, guid: d1e74a01d0b666740a1c8654f4c71305, type: 3}
+    - {fileID: 21300000, guid: d049c6bae8c931449856aa995eaef0d4, type: 3}
+    - {fileID: 21300000, guid: 0217e293afc36c5448ad9d6a0601f942, type: 3}
+    - {fileID: 21300000, guid: 2197ea6be50c4d94698506892055d8de, type: 3}
+    - {fileID: 21300000, guid: ba153dbc035242549be4ab62316058e6, type: 3}
+    - {fileID: 21300000, guid: 8a307b81583d605428a3229e3718fd21, type: 3}
+    - {fileID: 21300000, guid: 8c62d18ebea61094caabad346cb7f869, type: 3}
+    - {fileID: 21300000, guid: e798200eeb4fc604d81c8b6b2cf0b0d8, type: 3}
+    - {fileID: 21300000, guid: 3d740529bc2c5f44ba289bb7160d9cee, type: 3}
+    - {fileID: 21300000, guid: 5168fe9193b2db64689a654d48ac3d4b, type: 3}
+    - {fileID: 21300000, guid: 2821c9d2ae634fb48a27c28047121d80, type: 3}
+  KeyboardScheme: KeyboardMouse
+  GamepadScheme: Gamepad
+  HumanoidActionMap: Humanoid
+  SingularityActionMap: Singularity
+  UIActionMap: UI
+  InactiveActionMap: Inactive
+  EmptyActionMap: Empty
+  Move: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Look: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Jump: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Dash: {fileID: 7040659881675835329, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Slide: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Restart: {fileID: -4653908602500446411, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Pause: {fileID: 778457890188746008, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Aim: {fileID: 2411907206095950430, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Throw: {fileID: 7476244043514120974, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Unmorph: {fileID: -3535540288982953839, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Reconnect: {fileID: 245474079214246112, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Submit: {fileID: 4058125351009167879, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Cancel: {fileID: -5335930654512368930, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Switch: {fileID: 665529430514429314, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  Rebind: {fileID: 5595573662915259294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
