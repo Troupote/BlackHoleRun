@@ -167,7 +167,7 @@
                 },
                 {
                     "name": "left",
-                    "id": "2e46982e-44cc-431b-9f0b-c11910bf467a",
+                    "id": "bb98a274-3c5e-4740-a292-00b16aaf18df",
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
@@ -1288,7 +1288,7 @@
                 {
                     "name": "",
                     "id": "ce3b0831-3949-44ca-ae8f-0527ef020906",
-                    "path": "<Gamepad>/select",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
