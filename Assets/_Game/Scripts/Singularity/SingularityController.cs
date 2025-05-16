@@ -1,6 +1,5 @@
 using BHR;
 using System.Runtime.CompilerServices;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.Scripting.APIUpdating;
 
@@ -32,8 +31,18 @@ public class SingularityController : MonoBehaviour
     void FixedUpdate()
     {
         if (!GameManager.Instance.IsPlaying || !CharactersManager.Instance.isSingularityThrown) return;
+        ApplyBetterGravity();
         Move();
         CheckJumpApex();
+    }
+
+    [SerializeField] private float lowJumpMultiplier = 2.5f;
+    private void ApplyBetterGravity()
+    {
+        if (rb.linearVelocity.y > 0)
+        {
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime * GameManager.Instance.GameTimeScale;
+        }
     }
 
     private void Move()
@@ -47,10 +56,9 @@ public class SingularityController : MonoBehaviour
         rb.AddForce(curveDirection.normalized * CharactersManager.Instance.GameplayData.MovingCurveForce, ForceMode.Force);
     }
 
-    [SerializeField] private float jumpForce = 15f;
+    [SerializeField] private float jumpForce = 40f;
     private bool isWaitingForJumpApex = false;
     private bool hasTriggeredApex = false;
-
     public void Jump()
     {
         if (isPaused) return;
@@ -72,7 +80,7 @@ public class SingularityController : MonoBehaviour
     {
         if (!isWaitingForJumpApex || hasTriggeredApex) return;
 
-        if (rb.linearVelocity.y <= 5f)
+        if (rb.linearVelocity.y <= 0f)
         {
             CharactersManager.Instance.ChangePlayersTurn();
             hasTriggeredApex = true;
