@@ -101,7 +101,7 @@ namespace BHR
         {
             // Start transition animation
             ModuleManager.Instance.LaunchTransitionAnimation(true);
-            yield return new WaitForSeconds(ModuleManager.Instance.TransitionDuration);
+            yield return new WaitForSeconds(ModuleManager.Instance.DefaultTransitionDuration);
 
             // Scene loading
             AsyncOperation loading = SceneManager.LoadSceneAsync(sceneName);
@@ -111,7 +111,7 @@ namespace BHR
             if(withEndTransition)
             {
                 ModuleManager.Instance.LaunchTransitionAnimation(false);
-                yield return new WaitForSeconds(ModuleManager.Instance.TransitionDuration);
+                yield return new WaitForSeconds(ModuleManager.Instance.DefaultTransitionDuration);
             }
             else
             {

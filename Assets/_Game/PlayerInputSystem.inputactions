@@ -167,7 +167,7 @@
                 },
                 {
                     "name": "left",
-                    "id": "2e46982e-44cc-431b-9f0b-c11910bf467a",
+                    "id": "bb98a274-3c5e-4740-a292-00b16aaf18df",
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
@@ -1288,7 +1288,7 @@
                 {
                     "name": "",
                     "id": "ce3b0831-3949-44ca-ae8f-0527ef020906",
-                    "path": "<Gamepad>/select",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
@@ -1318,6 +1318,15 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "MultiTap,Hold",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reconnect",
+                    "type": "Button",
+                    "id": "804f5c10-2d6c-4d29-87dd-d10bd237d5ef",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
                     "initialStateCheck": false
                 }
             ],
@@ -1363,6 +1372,39 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "abc55b8c-1752-4bd9-876f-7a9de9c9b730",
+                    "path": "*/{Submit}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reconnect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "39d317c9-2435-4c5c-8aa8-6f57528ac889",
+                    "path": "*/{Cancel}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reconnect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "85d4036b-05e6-40c4-a5ea-dd2f8b2f19bf",
+                    "path": "*/{Menu}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reconnect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

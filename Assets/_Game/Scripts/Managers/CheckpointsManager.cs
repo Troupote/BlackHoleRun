@@ -16,7 +16,7 @@ namespace BHR
         private void SetCheckpointAndRespawn(Transform checkpoint)
         {
             SetCheckpoint(checkpoint);
-            RespawnPlayer();
+            ReplacePlayer();
         }
 #endif
 
@@ -45,12 +45,10 @@ namespace BHR
 #endif
         }
 
-        public void RespawnPlayer()
+        public void ReplacePlayer()
         {
             CharactersManager.Instance.CharacterObject.transform.position = _currentCheckpoint.position;
             CharactersManager.Instance.CharacterObject.transform.rotation = _currentCheckpoint.rotation;
-
-            // @todo transition, cooldown, "pause" state etc... many things
         }
 
 #if UNITY_EDITOR
@@ -60,7 +58,7 @@ namespace BHR
             {
                 if(Input.GetKeyDown(KeyCode.Space))
                 {
-                    RespawnPlayer();
+                    ReplacePlayer();
                     return;
                 }
 
@@ -94,7 +92,7 @@ namespace BHR
                 newCheckpointId = transform.childCount - 1;
 
             SetCheckpoint(transform.GetChild(newCheckpointId), true);
-            RespawnPlayer();
+            ReplacePlayer();
         }
 #endif
     }

@@ -67,6 +67,7 @@ public class PlayerInputController : MonoBehaviour
 
     private void PlayerStateChanged(PlayerState state)
     {
+        if (_playerInput == null) _playerInput = GetComponent<PlayerInput>();
         //Debug.Log($"Changing state of player {_playerInput.playerIndex} to {state}");
         switch(state)
         {

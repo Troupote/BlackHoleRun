@@ -285,8 +285,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0c71de25bbb1274da51d6732e564162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameSettings: {fileID: 11400000, guid: d697f5838b1aa13499844a902c809e6f, type: 2}
+  GameSettings: {fileID: 11400000, guid: 49f454b3b4a35104f81eacf0200146b0, type: 2}
   _activePlayerState: 0
+  _selectedLevel: {fileID: 0}
+  _currentLevel: {fileID: 0}
   _soloMode: 1
   OnLaunchLevel:
     m_PersistentCalls:
@@ -300,6 +302,9 @@ MonoBehaviour:
   OnTimerChanged:
     m_PersistentCalls:
       m_Calls: []
+  _isPlaying: 0
+  _isPaused: 0
+  _gameTimeScale: 0
   OnPlayerStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -332,4 +337,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aafc1af531436d74d8354fc851b73afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aimTime: 2
+  isSlowed: 1
+  isFinished: 0
+  isStarted: 0

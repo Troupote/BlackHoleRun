@@ -29,8 +29,14 @@ namespace BHR
         private void Start()
         {
             transform.GetChild(0).gameObject.SetActive(_debug);
-            if(CheckpointInfosTextEnabled && CheckpointHUDInfosText != null)
-                CheckpointHUDInfosText.gameObject.SetActive(true);
+            ModuleManager.Instance.OnModuleEnabled.AddListener(OnModuleEnabled);
+        }
+
+        private void OnModuleEnabled(GameObject module, bool withBack)
+        {
+            if (CheckpointInfosTextEnabled && CheckpointHUDInfosText != null)
+                CheckpointHUDInfosText.gameObject.SetActive(ModuleManager.Instance.ModulesRef[module] == ModuleType.HUD);
+           
         }
     }
 }

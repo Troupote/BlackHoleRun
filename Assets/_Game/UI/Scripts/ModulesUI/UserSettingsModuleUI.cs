@@ -13,9 +13,9 @@ namespace BHR
         [SerializeField, Required, FoldoutGroup("Refs")] private GameObject _advancedPanel;
         [SerializeField, Required, FoldoutGroup("Refs")] private TextMeshProUGUI _activeControllerText;
         [SerializeField, Required, FoldoutGroup("Refs")] private GameObject _switchInfos;
-        [SerializeField, Required, FoldoutGroup("Refs")] private GameObject _switchGamepadIcon;
-        [SerializeField, Required, FoldoutGroup("Refs")] private GameObject _switchKeyboardIcon;
         [SerializeField, Required, FoldoutGroup("Refs")] private Button _switchSettingsButton;
+        [SerializeField, Required, FoldoutGroup("Refs")] private GameObject _moveKeyboardInput;
+        [SerializeField, Required, FoldoutGroup("Refs")] private GameObject _moveGamepadInput;
 
         public override void Back()
         {
@@ -75,24 +75,14 @@ namespace BHR
 
             _activeControllerText.text = "Current Controller : " + controllersName;
 
+            // Switch input indication if two players
             UpdateControllerSwitchInfos(activePlayerInput.playerIndex);
+
+            // Disable the right move (Gamepad : cannot rebind Move. Keyboard : can rebind it)
+            _moveKeyboardInput.SetActive(PlayersInputManager.Instance.CurrentAllowedDevice is Keyboard || PlayersInputManager.Instance.CurrentAllowedDevice is Mouse);
+            _moveGamepadInput.SetActive(PlayersInputManager.Instance.CurrentAllowedDevice is Gamepad);
         }
 
-        private void UpdateControllerSwitchInfos(int playerIndex)
-        {
-            // Switch infos
-            if (PlayersInputManager.Instance.PlayerConnectedCount() >= 2)
-            {
-                _switchInfos.SetActive(true);
-
-                bool gamepad = PlayersInputManager.Instance.PlayersControllerState[PlayersInputManager.Instance.CurrentAllowedInput == AllowedPlayerInput.FIRST_PLAYER ? 0 : 1] == PlayerControllerState.GAMEPAD;
-                _switchGamepadIcon.SetActive(gamepad);
-                _switchKeyboardIcon.SetActive(!gamepad);
-            }
-            else
-            {
-                _switchInfos.SetActive(false);
-            }
-        }
+        private void UpdateControllerSwitchInfos(int playerIndex) => _switchInfos.SetActive(PlayersInputManager.Instance.PlayerConnectedCount() >= 2);
     }
 }

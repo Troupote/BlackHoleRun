@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mouseBaseSensitivity: {x: 50, y: 37.5}
   gamepadBaseSensitivity: {x: 300, y: 225}
+  _respawningDuration: 0.5

@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,7 +11,8 @@ namespace BHR
 {
     public class GameManager : ManagerSingleton<GameManager>
     {
-        public SettingsSO GameSettings;
+        [Required]
+        public GameSettingsSO GameSettings;
 
         [SerializeField]
         private PlayerState _activePlayerState;
@@ -79,6 +81,9 @@ namespace BHR
                     IsPlaying = false;
             }
         }
+        private bool _isRespawning = false;
+        private bool IsRespawning => _isRespawning;
+
         private PlayerState _savedPausedState = PlayerState.NONE;
         private float _savedGameTimeScale = 1f;
         [SerializeField, ReadOnly]
@@ -86,7 +91,7 @@ namespace BHR
         public float GameTimeScale => _gameTimeScale;
         #endregion
 
-        public UnityEvent<int, PlayerState> OnPlayerStateChanged;
+        public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
 
         private void Start()
         {
@@ -223,10 +228,26 @@ namespace BHR
             }
         }
 
+        public void Respawning() => StartCoroutine(RespawnPlayer(GameSettings.RespawningDuration));
+
+        IEnumerator RespawnPlayer(float duration)
+        {
+            float transitionDuration = GameSettings.RespawningDuration / 2f;
+            IsPaused = true;
+            _isRespawning = true;
+            ModuleManager.Instance.LaunchTransitionAnimation(true, transitionDuration);
+            yield return new WaitForSeconds(transitionDuration);
+            CheckpointsManager.Instance.ReplacePlayer();
+            ModuleManager.Instance.LaunchTransitionAnimation(false, transitionDuration);
+            yield return new WaitForSeconds(transitionDuration);
+            _isRespawning = false;
+            IsPlaying = true;
+        }
+
         private void Chrono()
         {
-            if (IsPlaying)
-                Timer += Time.deltaTime * GameTimeScale;
+            if (IsPlaying || IsRespawning)
+                Timer += Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
         }
 
         private const float _outerWildsEasterEggBonus = -0.22f;
@@ -246,6 +267,9 @@ namespace BHR
             {
                 _activePlayerIndex = Array.IndexOf(PlayersInputManager.Instance.PlayersReadyState, PlayerReadyState.READY);
                 PlayersInputManager.Instance.PlayersInputControllerRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+
+                if (PlayersInputManager.Instance.PlayersInputControllerRef.Where(p => p != null).ToArray().Length == 2)
+                    PlayersInputManager.Instance.PlayersInputControllerRef[1 - _activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = state == PlayerState.UI ? state : PlayerState.INACTIVE;
             }
             else
             {
@@ -255,6 +279,7 @@ namespace BHR
                 PlayerState secondPlayerState = _activePlayerState == PlayerState.UI ? PlayerState.UI : PlayerState.INACTIVE;
                 PlayersInputManager.Instance.PlayersInputControllerRef[1-_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = secondPlayerState;
             }
+            OnMainPlayerStateChanged?.Invoke(state, switchActivePlayer);
         }
     }
 }

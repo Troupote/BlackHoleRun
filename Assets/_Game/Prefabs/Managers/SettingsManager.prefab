@@ -44,3 +44,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a12da4f96531104daa80db98f2e697e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BaseSettings: {fileID: 11400000, guid: d697f5838b1aa13499844a902c809e6f, type: 2}
+  OnGlobalDatasLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserDatasLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserSettingsApplied:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserSettingsCanceled:
+    m_PersistentCalls:
+      m_Calls: []

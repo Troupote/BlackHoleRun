@@ -23,6 +23,7 @@ namespace BHR
         public static string Throw;
         public static string Restart;
         public static string Pause;
+        public static string Reconnect;
 
         public static string Submit;
         public static string Cancel;
@@ -42,21 +43,22 @@ namespace BHR
             InactiveActionMap = inputActions.InactiveActionMap;
             EmptyActionMap = inputActions.EmptyActionMap;
 
-            Move = inputActions.Move;
-            Look = inputActions.Look;
-            Jump = inputActions.Jump;
-            Dash = inputActions.Dash;
-            Slide = inputActions.Slide;
-            Unmorph = inputActions.Unmorph;
-            Aim = inputActions.Aim;
-            Throw = inputActions.Throw;
-            Restart = inputActions.Restart;
-            Pause = inputActions.Pause;
+            Move = inputActions.Move.action.name;
+            Look = inputActions.Look.action.name;
+            Jump = inputActions.Jump.action.name;
+            Dash = inputActions.Dash.action.name;
+            Slide = inputActions.Slide.action.name;
+            Unmorph = inputActions.Unmorph.action.name;
+            Aim = inputActions.Aim.action.name;
+            Throw = inputActions.Throw.action.name;
+            Restart = inputActions.Restart.action.name;
+            Pause = inputActions.Pause.action.name;
+            Reconnect = inputActions.Reconnect.action.name;
 
-            Submit = inputActions.Submit;
-            Cancel = inputActions.Cancel;
-            Switch = inputActions.Switch;
-            Rebind = inputActions.Rebind;
+            Submit = inputActions.Submit.action.name;
+            Cancel = inputActions.Cancel.action.name;
+            Switch = inputActions.Switch.action.name;
+            Rebind = inputActions.Rebind.action.name;
 
             AllActions = new string[]
             {

@@ -11,10 +11,13 @@ namespace BHR
 {
     public class PlayersInputManager : ManagerSingleton<PlayersInputManager>
     {
-        [SerializeField, Required] private InputActionsSO Actions;
+        [SerializeField, Required] private InputActionsSO _actionsSO;
+        public InputActionsSO ActionsSO => _actionsSO;
 
         [SerializeField, ReadOnly] private bool _canConnect; // Enable the ControllerSelection 
         public bool CanConnect { get => _canConnect; set => _canConnect = value; }
+
+        [SerializeField, ReadOnly] private bool _reconnecting = false;
 
         // Players managing
         private PlayerInputController[] _playersInputControllerRef = new PlayerInputController[2];
@@ -76,7 +79,7 @@ namespace BHR
         public UnityEvent<AllowedPlayerInput> OnAllowedInputChanged;
 
         public UnityEvent<InputAction.CallbackContext> OnUIInput;
-        public UnityEvent<InputAction.CallbackContext> OnInput;
+        public UnityEvent<InputAction.CallbackContext, int> OnInput;
 
         public UnityEvent<int> OnPlayerHasJoined;
         public UnityEvent<int> OnPlayerDisconnected;
@@ -95,12 +98,13 @@ namespace BHR
         {
             _playersControllerState = new PlayerControllerState[] { PlayerControllerState.DISCONNECTED, PlayerControllerState.DISCONNECTED };
             _playersReadyState = new PlayerReadyState[] { PlayerReadyState.NONE, PlayerReadyState.NONE };
-            InputActions.Initialize(Actions);
+            InputActions.Initialize(ActionsSO);
         }
 
         private void Start()
         {
             ModuleManager.Instance.OnModuleEnabled.AddListener(OnModuleEnabled);
+            OnIReconnect?.AddListener(AttemptReconnection);
         }
 
         #region Input management
@@ -131,10 +135,10 @@ namespace BHR
             }
 
             // For debug purpose or Game Manager, there's this generic input event
-            OnInput.Invoke(ctx);
+            OnInput.Invoke(ctx, playerIndex);
         }
 
-        public UnityEvent OnHJump, OnHDash, OnHSlide, OnHThrow, OnSJump, OnSDash, OnSUnmorph, OnPause; // Performed events
+        public UnityEvent OnHJump, OnHDash, OnHSlide, OnHThrow, OnSJump, OnSDash, OnSUnmorph, OnPause, OnIReconnect; // Performed events
         public UnityEvent<Vector2> OnHMove, OnSMove; // Vector2 value events
         public UnityEvent<Vector2, PlayerControllerState> OnHLook, OnSLook; // Vector2 value events depending of the controller used
         public UnityEvent OnHAim; // Multiple callbacks events (Hold throw, Hold/toggle aim)
@@ -184,7 +188,7 @@ namespace BHR
                     OnHMove.Invoke(value);
                 }
 
-                else if (ctx.action.name == InputActions.Aim && (ctx.performed || ctx.canceled && SettingsSave.LoadToggleAim(CurrentActivePlayerDevice)==0) || ctx.action.name == InputActions.Throw && ctx.canceled)
+                else if (ctx.action.name == InputActions.Aim && (ctx.performed || ctx.canceled && SettingsSave.LoadToggleAim(CurrentActivePlayerDevice) == 0) || ctx.action.name == InputActions.Throw && ctx.canceled)
                     OnHAim.Invoke();
 
                 if (ctx.performed)
@@ -244,6 +248,11 @@ namespace BHR
                         OnSUnmorph.Invoke(); // @todo link to singularity unmorph action (if any)
                 }
             }
+
+            // INACTIVE
+            else if (ctx.action.actionMap.name == InputActions.InactiveActionMap)
+                if (ctx.performed && ctx.action.name == InputActions.Reconnect)
+                    OnIReconnect.Invoke();
             #endregion
         }
 
@@ -274,7 +283,7 @@ namespace BHR
 
         public void ToggleCurrentAllowedInput()
         {
-            if (CurrentAllowedInput == AllowedPlayerInput.NONE || CurrentAllowedInput == AllowedPlayerInput.BOTH)
+            if (CurrentAllowedInput == AllowedPlayerInput.NONE || CurrentAllowedInput == AllowedPlayerInput.BOTH || PlayerConnectedCount() <= 1)
                 return;
 
             CurrentAllowedInput = CurrentAllowedInput == AllowedPlayerInput.FIRST_PLAYER ? AllowedPlayerInput.SECOND_PLAYER : AllowedPlayerInput.FIRST_PLAYER;
@@ -309,10 +318,7 @@ namespace BHR
             SetAllowedInput(playerInputController.playerIndex, false);
 
             if(GameManager.Instance.SoloMode && ( GameManager.Instance.IsPlaying || GameManager.Instance.IsPaused))
-            {
-                // if player was playing alone but a second device's connected, re open the player selection (for coop mode if wanted)
-                GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleType.PLAYER_SELECTION));
-            }
+                Reconnection();
 
             OnPlayerHasJoined.Invoke(playerInputController.playerIndex);
         }
@@ -364,9 +370,7 @@ namespace BHR
         {
             // Check if player was playing
             if(PlayersReadyState[playerInputController.playerIndex] == PlayerReadyState.READY && GameManager.Instance.IsPlaying)
-            {
-                GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleType.PLAYER_SELECTION));
-            }
+                Reconnection();
 
             UpdatePlayerControllerState(playerInputController.playerIndex);
             UpdatePlayerReadyState(playerInputController.playerIndex, PlayerReadyState.NONE);
@@ -400,6 +404,18 @@ namespace BHR
                     UpdatePlayerReadyState(i, PlayerReadyState.CONNECTED);
 
             SetSoloPlayer();
+        }
+
+        private void AttemptReconnection()
+        {
+            if (GameManager.Instance.SoloMode && GameManager.Instance.IsPlaying)
+                Reconnection();
+        }
+
+        private void Reconnection()
+        {
+            _reconnecting = true;
+            GameManager.Instance.Pause(ModuleManager.Instance.GetModule(ModuleType.PLAYER_SELECTION));
         }
 
         private void UpdatePlayerControllerState(int playerIndex)
@@ -458,14 +474,38 @@ namespace BHR
             SetSoloPlayer();
 
             if (CheckReadyState())
-                GameManager.Instance.LaunchLevel(!GameManager.Instance.IsPaused);
+            {
+                if (_reconnecting)
+                {
+                    _reconnecting = false;
+                    SetSoloPlayer();
+                    GameManager.Instance.SoloMode = SoloPlayer;
+                    GameManager.Instance.Resume();
+                }
+                else
+                    GameManager.Instance.LaunchLevel(!GameManager.Instance.IsPaused);
+            }
         }
 
         public void OnCancelAction(int playerIndex)
         {
             // Back action if already disconnected 
             if (PlayersReadyState[playerIndex] == PlayerReadyState.LOGGED_OUT)
-                ModuleManager.Instance.Back();
+            {
+                if (PlayerConnectedCount() <= 1)
+                    return; 
+
+                if (_reconnecting)
+                {
+                    _reconnecting = false;
+                    SetSoloPlayer();
+                    GameManager.Instance.SoloMode = SoloPlayer;
+                    GameManager.Instance.Resume();
+                    return;
+                }
+                else
+                    ModuleManager.Instance.Back();
+            }
 
             // Cancel ready state or log out
             UpdatePlayerReadyState(playerIndex, PlayersReadyState[playerIndex] == PlayerReadyState.READY ? PlayerReadyState.CONNECTED : PlayerReadyState.LOGGED_OUT);

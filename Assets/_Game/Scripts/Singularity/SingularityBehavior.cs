@@ -9,7 +9,7 @@ public class SingularityBehavior : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera cameraRef;
 
     private Rigidbody rb;
-    private GameplayData gameplayData;
+    private CharacterGameplayData gameplayData;
 
     private bool isThrown = false;
     private Vector3 followVelocity = Vector3.zero;

@@ -15,7 +15,7 @@ namespace BHR
     public class ModuleManager : ManagerSingleton<ModuleManager>
     {
         [SerializeField, Required, FoldoutGroup("Refs")] private GameObject _transition;
-        [Required, FoldoutGroup("Settings")] public float TransitionDuration;
+        [Required, FoldoutGroup("Settings")] public float DefaultTransitionDuration;
         private bool _haveToLaunchStartAnim = false; 
         public bool SceneTransitionHasFinished;
 
@@ -174,7 +174,7 @@ namespace BHR
                     ProcessModuleState(_historic.Pop(), true);
             }
         }
-        public void LaunchTransitionAnimation(bool start) => _transition.GetComponent<TransitionUI>().LaunchTransitionAnimation(start);
+        public void LaunchTransitionAnimation(bool start, float duration = float.MaxValue) => _transition.GetComponent<TransitionUI>().LaunchTransitionAnimation(start, duration);
         private void LaunchStartAnimation() => _transition.GetComponent<TransitionUI>().LaunchStartAnimation();
     }
 
