@@ -13,8 +13,6 @@ namespace BHR
     {
         [Required]
         public GameSettingsSO GameSettings;
-        [Required]
-        public TutorielDatasSO TutorielDatas;
 
         [SerializeField]
         private PlayerState _activePlayerState;
@@ -29,7 +27,7 @@ namespace BHR
         public LevelDataSO SelectedLevel
         {
             get => _selectedLevel;
-            private set => _selectedLevel = value;
+            set => _selectedLevel = value;
         }
 
         [SerializeField, ReadOnly]
@@ -94,6 +92,7 @@ namespace BHR
         #endregion
 
         public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
+        public UnityEvent OnPaused, OnResumed;
 
         private void Start()
         {
@@ -167,6 +166,7 @@ namespace BHR
         public void Pause(GameObject moduleToLoad)
         {
             Cursor.lockState = CursorLockMode.None;
+            OnPaused?.Invoke();
             if(!IsPaused)
             {
                 _savedGameTimeScale = GameTimeScale;
@@ -179,6 +179,7 @@ namespace BHR
 
         public void Resume()
         {
+            OnResumed?.Invoke();
             IsPlaying = true;
             Cursor.lockState = CursorLockMode.Locked;
             ChangeMainPlayerState(_savedPausedState, false);
@@ -216,7 +217,7 @@ namespace BHR
             ChangeMainPlayerState(PlayerState.UI, false);
             LaunchLevel(withStartAnimation);
         }
-        #endregion
+#endregion
         public void CleanInGame(bool late)
         {
             if(!late)
@@ -248,16 +249,9 @@ namespace BHR
             IsPlaying = true;
         }
 
-        public void LoadTutorielData(InputActionReference actionRef)
+        public void LoadTutorielData(TutorielData data)
         {
-            if(!TutorielDatas.ActionRefTutoriels.ContainsKey(actionRef))
-            {
-                Debug.LogError($"Found no tutoriel for {actionRef.action.name}");
-                return;
-            }
-
-            TutorielData data = TutorielDatas.ActionRefTutoriels[actionRef];
-            ModuleManager.Instance.GetModule(ModuleType.TUTORIEL).GetComponent<TutorielModuleUI>().LoadTutorielData(actionRef, data);
+            ModuleManager.Instance.GetModule(ModuleType.TUTORIEL).GetComponent<TutorielModuleUI>().LoadTutorielData(data);
             Pause(ModuleManager.Instance.GetModule(ModuleType.TUTORIEL));
             ModuleManager.Instance.ClearNavigationHistoric();
         }

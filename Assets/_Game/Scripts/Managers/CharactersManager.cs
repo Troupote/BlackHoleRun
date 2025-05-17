@@ -41,6 +41,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         _characterObject = Instantiate(_characterPrefab);
         _singularityObject = Instantiate(_singularityPrefab);
+        _characterObject.tag = "Player";
+        _singularityObject.tag = "Singularity";
 
         a_singularityBehavior = _singularityObject.GetComponent<SingularityBehavior>();
         a_characterBehavior = _characterObject.GetComponent<CharacterBehavior>();

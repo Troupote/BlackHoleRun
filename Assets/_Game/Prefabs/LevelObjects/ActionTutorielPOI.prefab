@@ -270,7 +270,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5759567830367385941}
   - component: {fileID: 873986855985659643}
-  - component: {fileID: 500151115400347472}
   m_Layer: 0
   m_Name: POITrigger
   m_TagString: Untagged
@@ -314,20 +313,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2.261116, z: 1}
   m_Center: {x: 0, y: 0.630558, z: 0}
---- !u!114 &500151115400347472
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4650561970029465418}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e34f0aa714bccd942a1409538b6350c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _actionRef: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  _tutorielDatas: {fileID: 11400000, guid: fd171007e9411cc4e8d9692a6f69aabf, type: 2}
 --- !u!1 &4867207247560591696
 GameObject:
   m_ObjectHideFlags: 0
@@ -2191,6 +2176,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 158439594586120955}
+  - component: {fileID: 19351617131240214}
+  - component: {fileID: 6829962503051042718}
   m_Layer: 0
   m_Name: ActionTutorielPOI
   m_TagString: Untagged
@@ -2216,6 +2203,48 @@ Transform:
   - {fileID: 5759567830367385941}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &19351617131240214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5886496669270678657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e34f0aa714bccd942a1409538b6350c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _actionRef: {fileID: 7476244043514120974, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _durationMinBetweenTriggers: 2
+  _tutorielDatas: {fileID: 11400000, guid: fd171007e9411cc4e8d9692a6f69aabf, type: 2}
+--- !u!54 &6829962503051042718
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5886496669270678657}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &6395524163191973115
 GameObject:
   m_ObjectHideFlags: 0

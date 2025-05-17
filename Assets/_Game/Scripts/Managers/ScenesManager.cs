@@ -32,6 +32,15 @@ namespace BHR
         public override void Awake()
         {
             base.Awake();
+#if UNITY_EDITOR
+            if(_startSceneData == null)
+            {
+                LevelDataSO debugScene = ScriptableObject.CreateInstance<LevelDataSO>();
+                debugScene.SceneName = SceneManager.GetActiveScene().name;
+                GameManager.Instance.SelectedLevel = debugScene;
+                _startSceneData = debugScene;
+            }
+#endif
             CurrentSceneData = _startSceneData;
         }
 

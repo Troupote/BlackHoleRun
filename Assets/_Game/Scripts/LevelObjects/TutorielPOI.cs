@@ -1,29 +1,61 @@
 using Sirenix.OdinInspector;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace BHR
 {
+    [Serializable]
+    public struct TutorielData
+    {
+        public string TutorielName;
+        public InputActionReference ActionRef;
+        [TextArea]
+        public string Description;
+        public Sprite Scheme;
+    }
     public class TutorielPOI : MonoBehaviour
     {
-        [SerializeField, Required, ValidateInput(nameof(_hasATutoriel), "Your action ref doesn't have a tutoriel associated with it")]
-        private InputActionReference _actionRef;
 
-#if UNITY_EDITOR
-        [SerializeField, Tooltip("Enter tutorials data to quickly check if your action ref has one"), ShowIf(nameof(_actionRef), null), LabelText("Quick check")]
-        private TutorielDatasSO _tutorielDatas;
-#endif
+        [SerializeField]
+        private TutorielData _turorialData;
 
-        #region Odin stuff
-        private bool _hasATutoriel => _tutorielDatas == null || _tutorielDatas.ActionRefTutoriels.ContainsKey(_actionRef);
+        [Header("Settings"), SerializeField, Tooltip("Once tutoriel popup closed, wait this time before re trigger it if detected")] private float _durationMinBetweenTriggers = 2f;
+        private bool _isOn = false;
+        [Min(15f)]
+        [SerializeField] private float _distanceFade;
 
-        #endregion
+        private void Awake()
+        {
+            foreach(FadeWithDistanceUI fade in GetComponentsInChildren<FadeWithDistanceUI>())
+                fade.DistanceFade = _distanceFade;
+        }
 
         private void OnTriggerEnter(Collider other)
         {
             // @todo remove tuto if level completed ? -> make a settings option ?
-            GameManager.Instance.LoadTutorielData(_actionRef);
+            if(other.CompareTag("Player") && !_isOn)
+            {
+                _isOn = true;
+                GameManager.Instance.LoadTutorielData(_turorialData);
+            }
         }
+
+        private void Start()
+        {
+            ModuleManager.Instance.OnTutorielToggled.AddListener(ToggleUI);
+        }
+
+        private void ToggleUI(bool enabled)
+        {
+            if (_isOn && !enabled)
+                Invoke("CanTriggerAgain", _durationMinBetweenTriggers);
+
+            foreach(Transform child in transform)
+                child.gameObject.SetActive(!enabled);
+        }
+
+        private void CanTriggerAgain() => _isOn = false;
     }
 
 }

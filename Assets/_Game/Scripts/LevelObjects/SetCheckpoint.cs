@@ -37,7 +37,7 @@ public class SetCheckpoint : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(CheckpointsManager.Instance.CurrentCheckpoint != _targetCheckpoint)
+        if(CheckpointsManager.Instance.CurrentCheckpoint != _targetCheckpoint && other.CompareTag("Player"))
             CheckpointsManager.Instance.SetCheckpoint(_targetCheckpoint);
     }
 }

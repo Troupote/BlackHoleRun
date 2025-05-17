@@ -16,13 +16,15 @@ namespace BHR
         [SerializeField, Required, FoldoutGroup("Refs")] private Transform _bindingsContainer;
         public override void Back()
         {
+            ModuleManager.Instance.OnTutorielToggled.Invoke(false);
             GameManager.Instance.Resume();
         }
 
-        public void LoadTutorielData(InputActionReference actionRef, TutorielData tutoData)
+        public void LoadTutorielData(TutorielData tutoData)
         {
+            ModuleManager.Instance.OnTutorielToggled.Invoke(true);
             _tutorielName.text = tutoData.TutorielName;
-            LoadBindings(actionRef);
+            LoadBindings(tutoData.ActionRef);
             _description.text = tutoData.Description;
             _schema.sprite = tutoData.Scheme;
         }
@@ -47,7 +49,10 @@ namespace BHR
                 
                 // Set active false to the bindings sprite in excess
                 if(i >= bindings.Count)
+                {
                     _bindingsContainer.GetChild(i).gameObject.SetActive(false);
+                    continue;
+                }
 
                 // Set the right sprite
                 string controlPath = bindings[i].effectivePath;
@@ -57,6 +62,7 @@ namespace BHR
                     controlPath = BindingsToSprite.ConvertQwertyToAzerty(controlPath);
 
                 _bindingsContainer.GetChild(i).GetComponent<Image>().sprite = spriteFinder[controlPath];
+                _bindingsContainer.GetChild(i).gameObject.SetActive(true);
             }
         }
     }
