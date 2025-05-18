@@ -8,10 +8,9 @@ namespace BHR
     [Serializable]
     public struct TutorielData
     {
-        public string TutorielName;
+        public string TutorielNameKey;
         public InputActionReference ActionRef;
-        [TextArea]
-        public string Description;
+        public string DescriptionKey;
         public Sprite Scheme;
     }
     public class TutorielPOI : MonoBehaviour

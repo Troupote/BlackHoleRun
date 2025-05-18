@@ -738,6 +738,14 @@ PrefabInstance:
       propertyPath: _turorialData.TutorielName
       value: Jump
       objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.DescriptionKey
+      value: M/T/JumpDesc
+      objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.TutorielNameKey
+      value: A/Jump
+      objectReference: {fileID: 0}
     - target: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.09
@@ -820,7 +828,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3559246531546936598, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_text
-      value: Jump
+      value: Sauter
+      objectReference: {fileID: 0}
+    - target: {fileID: 3559246531546936598, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: m_fontSize
+      value: 0.65
       objectReference: {fileID: 0}
     - target: {fileID: 3799369715726613855, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -840,7 +852,7 @@ PrefabInstance:
       objectReference: {fileID: 1742046191}
     - target: {fileID: 4168045254367972388, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 5231840702957954645, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -892,7 +904,7 @@ PrefabInstance:
       objectReference: {fileID: 1628296955}
     - target: {fileID: 7109649164767792627, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 8246375190454834040, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -908,18 +920,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9220789522373662450, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Spacing
-      value: -17
+      value: -16.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 203509740}
   m_SourcePrefab: {fileID: 100100000, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
 --- !u!4 &203509738 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
   m_PrefabInstance: {fileID: 203509737}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &203509739 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+  m_PrefabInstance: {fileID: 203509737}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &203509740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 203509739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2404a37f3bd75444aa4ad05d0f228347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LocalizationKey: A/Jump
 --- !u!1 &219283887
 GameObject:
   m_ObjectHideFlags: 0
@@ -1088,6 +1121,14 @@ PrefabInstance:
       propertyPath: _turorialData.TutorielName
       value: Dash
       objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.DescriptionKey
+      value: M/T/DashDesc
+      objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.TutorielNameKey
+      value: A/Dash
+      objectReference: {fileID: 0}
     - target: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 41.65
@@ -1190,7 +1231,7 @@ PrefabInstance:
       objectReference: {fileID: 1420929960}
     - target: {fileID: 4168045254367972388, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 5231840702957954645, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -1242,7 +1283,7 @@ PrefabInstance:
       objectReference: {fileID: 1512591121}
     - target: {fileID: 7109649164767792627, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 8246375190454834040, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -1263,8 +1304,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 253475465}
   m_SourcePrefab: {fileID: 100100000, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+--- !u!1 &253475464 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+  m_PrefabInstance: {fileID: 253475463}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &253475465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 253475464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2404a37f3bd75444aa4ad05d0f228347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LocalizationKey: A/Dash
 --- !u!43 &256974196
 Mesh:
   m_ObjectHideFlags: 0
@@ -3281,6 +3343,14 @@ PrefabInstance:
       propertyPath: _turorialData.TutorielName
       value: Jump
       objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.DescriptionKey
+      value: M/T/JumpDesc
+      objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.TutorielNameKey
+      value: A/Jump
+      objectReference: {fileID: 0}
     - target: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.73799896
@@ -3363,7 +3433,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3559246531546936598, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_text
-      value: Jump
+      value: Sauter
       objectReference: {fileID: 0}
     - target: {fileID: 3799369715726613855, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -3383,7 +3453,7 @@ PrefabInstance:
       objectReference: {fileID: 1645112013}
     - target: {fileID: 4168045254367972388, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 5231840702957954645, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -3435,7 +3505,7 @@ PrefabInstance:
       objectReference: {fileID: 1680200390}
     - target: {fileID: 7109649164767792627, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 8246375190454834040, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -3456,13 +3526,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 505610710}
   m_SourcePrefab: {fileID: 100100000, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
 --- !u!4 &505610708 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
   m_PrefabInstance: {fileID: 505610707}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &505610709 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+  m_PrefabInstance: {fileID: 505610707}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &505610710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 505610709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2404a37f3bd75444aa4ad05d0f228347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LocalizationKey: A/Jump
 --- !u!1 &515976574
 GameObject:
   m_ObjectHideFlags: 0
@@ -6229,7 +6320,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: -16.71
+  m_Spacing: -15.27
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -7253,6 +7344,14 @@ PrefabInstance:
       propertyPath: _turorialData.TutorielName
       value: Look
       objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.DescriptionKey
+      value: M/T/LookDesc
+      objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.TutorielNameKey
+      value: A/Look
+      objectReference: {fileID: 0}
     - target: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.840001
@@ -7339,7 +7438,7 @@ PrefabInstance:
       objectReference: {fileID: 489854900}
     - target: {fileID: 4168045254367972388, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 5231840702957954645, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -7375,7 +7474,7 @@ PrefabInstance:
       objectReference: {fileID: 132165170}
     - target: {fileID: 7109649164767792627, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 8246375190454834040, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -7388,8 +7487,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1381640150}
   m_SourcePrefab: {fileID: 100100000, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+--- !u!1 &1381640149 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+  m_PrefabInstance: {fileID: 1381640148}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1381640150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381640149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2404a37f3bd75444aa4ad05d0f228347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LocalizationKey: A/Look
 --- !u!1 &1414206627
 GameObject:
   m_ObjectHideFlags: 0
@@ -7402,6 +7522,7 @@ GameObject:
   - component: {fileID: 1414206631}
   - component: {fileID: 1414206630}
   - component: {fileID: 1414206629}
+  - component: {fileID: 1414206632}
   m_Layer: 5
   m_Name: ActionName
   m_TagString: Untagged
@@ -7542,6 +7663,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1414206627}
   m_CullTransparentMesh: 1
+--- !u!114 &1414206632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1414206627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2404a37f3bd75444aa4ad05d0f228347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LocalizationKey: A/Move
 --- !u!43 &1420929960
 Mesh:
   m_ObjectHideFlags: 0
@@ -8202,6 +8336,14 @@ PrefabInstance:
       propertyPath: _turorialData.TutorielName
       value: Move
       objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.DescriptionKey
+      value: M/T/MoveDesc
+      objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.TutorielNameKey
+      value: A/Move
+      objectReference: {fileID: 0}
     - target: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.8600006
@@ -8284,7 +8426,7 @@ PrefabInstance:
       objectReference: {fileID: 1310403532}
     - target: {fileID: 4168045254367972388, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 5231840702957954645, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -8320,7 +8462,7 @@ PrefabInstance:
       objectReference: {fileID: 1609113922}
     - target: {fileID: 7109649164767792627, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 7703956406045191239, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_IsActive
@@ -9427,6 +9569,14 @@ PrefabInstance:
       propertyPath: _turorialData.TutorielName
       value: Singularity
       objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.DescriptionKey
+      value: M/T/SingularityDesc
+      objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.TutorielNameKey
+      value: Singularity
+      objectReference: {fileID: 0}
     - target: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.09
@@ -9533,7 +9683,7 @@ PrefabInstance:
       objectReference: {fileID: 256974196}
     - target: {fileID: 4168045254367972388, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 5231840702957954645, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -9585,7 +9735,7 @@ PrefabInstance:
       objectReference: {fileID: 586369689}
     - target: {fileID: 7109649164767792627, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 7703956406045191239, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_IsActive
@@ -9614,13 +9764,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1721548109}
   m_SourcePrefab: {fileID: 100100000, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
 --- !u!4 &1721548107 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
   m_PrefabInstance: {fileID: 1721548106}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1721548108 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+  m_PrefabInstance: {fileID: 1721548106}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1721548109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721548108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2404a37f3bd75444aa4ad05d0f228347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LocalizationKey: Singularity
 --- !u!1 &1723250768
 GameObject:
   m_ObjectHideFlags: 0
@@ -11032,6 +11203,14 @@ PrefabInstance:
       propertyPath: _turorialData.TutorielName
       value: Look
       objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.DescriptionKey
+      value: M/T/LookDesc
+      objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.TutorielNameKey
+      value: A/Look
+      objectReference: {fileID: 0}
     - target: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.13
@@ -11118,7 +11297,7 @@ PrefabInstance:
       objectReference: {fileID: 1759572404}
     - target: {fileID: 4168045254367972388, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 5231840702957954645, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -11154,7 +11333,7 @@ PrefabInstance:
       objectReference: {fileID: 356324461}
     - target: {fileID: 7109649164767792627, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 8246375190454834040, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -11167,13 +11346,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2090872864}
   m_SourcePrefab: {fileID: 100100000, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
 --- !u!4 &2090872862 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
   m_PrefabInstance: {fileID: 2090872861}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2090872863 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+  m_PrefabInstance: {fileID: 2090872861}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2090872864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2090872863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2404a37f3bd75444aa4ad05d0f228347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LocalizationKey: A/Look
 --- !u!4 &2098098499 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2310266131685152686, guid: 0c70cb5b63a1c774790ff680dd56c59a, type: 3}
@@ -11425,6 +11625,14 @@ PrefabInstance:
       propertyPath: _turorialData.TutorielName
       value: Move
       objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.DescriptionKey
+      value: M/T/MoveDesc
+      objectReference: {fileID: 0}
+    - target: {fileID: 19351617131240214, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: _turorialData.TutorielNameKey
+      value: A/Move
+      objectReference: {fileID: 0}
     - target: {fileID: 158439594586120955, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.74
@@ -11511,7 +11719,7 @@ PrefabInstance:
       objectReference: {fileID: 1670679979}
     - target: {fileID: 4168045254367972388, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 5231840702957954645, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -11551,7 +11759,7 @@ PrefabInstance:
       objectReference: {fileID: 1155192829}
     - target: {fileID: 7109649164767792627, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 780
+      value: 783
       objectReference: {fileID: 0}
     - target: {fileID: 8246375190454834040, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
@@ -11559,7 +11767,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9220789522373662450, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Spacing
-      value: -16.71
+      value: -15.27
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11567,8 +11775,29 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 477528519769724985, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 520396589}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5251968370359316822}
   m_SourcePrefab: {fileID: 100100000, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+--- !u!1 &5251968370359316821 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6395524163191973115, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+  m_PrefabInstance: {fileID: 5251968370359316820}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5251968370359316822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5251968370359316821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2404a37f3bd75444aa4ad05d0f228347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LocalizationKey: A/Move
 --- !u!1001 &6599717280498960030
 PrefabInstance:
   m_ObjectHideFlags: 0

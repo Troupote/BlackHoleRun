@@ -1,3 +1,4 @@
+using Assets.SimpleLocalization.Scripts;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,9 @@ namespace BHR
         public void LoadTutorielData(TutorielData tutoData)
         {
             ModuleManager.Instance.OnTutorielToggled.Invoke(true);
-            _tutorielName.text = tutoData.TutorielName;
+            _tutorielName.text = LocalizationManager.Localize(tutoData.TutorielNameKey);
             LoadBindings(tutoData.ActionRef);
-            _description.text = tutoData.Description;
+            _description.text = LocalizationManager.Localize(tutoData.DescriptionKey);
             _schema.sprite = tutoData.Scheme;
         }
 

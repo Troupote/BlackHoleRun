@@ -12,15 +12,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63817d93022759543b57e795c78efe11, type: 3}
   m_Name: LocalizationSettings
   m_EditorClassIdentifier: 
-  TableId: 1RvKY3VE_y5FPhEECCa5dv4F7REJ7rBtGzQg9Z_B_DE4
+  TableId: 17Mp1_V4EsrAapaD4ZQl5aiuIe0qc3fOVPaaRZ_1zT9U
   Sheets:
-  - Name: Menu
+  - Name: Global
+    Id: 901971065
+    TextAsset: {fileID: 4900000, guid: e7e41360dc86d7e489a46d472c0dc5d9, type: 3}
+  - Name: Actions
+    Id: 692007976
+    TextAsset: {fileID: 4900000, guid: b79026413e7b36b4dbb20bd3a02e614f, type: 3}
+  - Name: MainTitle
     Id: 0
-    TextAsset: {fileID: 4900000, guid: cf55c05861a4d264a855e6349bef560e, type: 3}
+    TextAsset: {fileID: 4900000, guid: a8cefdb52f3921b4db23837ed60541dd, type: 3}
+  - Name: LevelSelection
+    Id: 1327508782
+    TextAsset: {fileID: 4900000, guid: 4f0eedcc55c52ec42b27a388dd6b270f, type: 3}
+  - Name: Credits
+    Id: 111955114
+    TextAsset: {fileID: 4900000, guid: 5db33e84fcf4e5c4ba4fb1521d11993b, type: 3}
+  - Name: Pause
+    Id: 141522056
+    TextAsset: {fileID: 4900000, guid: c051fe48fc570474cb62441896a8b61c, type: 3}
+  - Name: EndLevel
+    Id: 789723410
+    TextAsset: {fileID: 4900000, guid: 340e9ba95b208694086062c778a5b825, type: 3}
+  - Name: Tutorial
+    Id: 37053464
+    TextAsset: {fileID: 4900000, guid: 124f2f24b52ee5c47b2e1ff0c0fc999e, type: 3}
   - Name: Settings
-    Id: 331980525
+    Id: 1270109423
     TextAsset: {fileID: 4900000, guid: 9e915f09744b99e4eb2d3ded7f443ddc, type: 3}
-  - Name: Tests
-    Id: 1674352817
-    TextAsset: {fileID: 4900000, guid: 78955087f9a816a49851f5f94193f224, type: 3}
+  - Name: UserSettings
+    Id: 309223157
+    TextAsset: {fileID: 4900000, guid: d4ba6428c7ff3ca4e8d757315d7512f8, type: 3}
+  - Name: PlayerSelection
+    Id: 268982419
+    TextAsset: {fileID: 4900000, guid: 4d4e21684dfcacf4dafd468225367fad, type: 3}
   SaveFolder: {fileID: 102900000, guid: c392831e85f928548b8494fefd912562, type: 3}

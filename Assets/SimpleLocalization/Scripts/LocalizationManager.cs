@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BHR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -33,7 +34,11 @@ namespace Assets.SimpleLocalization.Scripts
 		/// </summary>
         public static void AutoLanguage()
         {
-            Language = "English";
+            if(SettingsSave.LoadLanguage() == SettingsSave.START_LANGUAGE)
+            {
+                Language = Application.systemLanguage switch { SystemLanguage.English => "English", SystemLanguage.French => "Français", _ => SettingsSave.DEFAULT_LANGUAGE };
+                SettingsSave.SaveLanguage(Language);
+            }
         }
 
         /// <summary>

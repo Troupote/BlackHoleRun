@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.SimpleLocalization.Scripts
@@ -6,7 +10,6 @@ namespace Assets.SimpleLocalization.Scripts
 	/// <summary>
 	/// Localize text component.
 	/// </summary>
-    [RequireComponent(typeof(Text))]
     public class LocalizedText : MonoBehaviour
     {
         public string LocalizationKey;
@@ -24,7 +27,10 @@ namespace Assets.SimpleLocalization.Scripts
 
         private void Localize()
         {
-            GetComponent<Text>().text = LocalizationManager.Localize(LocalizationKey);
+            if(TryGetComponent<Text>(out Text text))
+                text.text = LocalizationManager.Localize(LocalizationKey);
+            if (TryGetComponent<TextMeshProUGUI>(out TextMeshProUGUI textMeshPro))
+                textMeshPro.text = LocalizationManager.Localize(LocalizationKey);
         }
     }
 }
