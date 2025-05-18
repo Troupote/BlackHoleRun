@@ -6063,8 +6063,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Are you sure you want to play alone ?\n\nBLACK HOLE RUN is for 2 players,
-    but you can enjoy it alone as well ! \n\n(However, you can't complete a level
-    in solo mode)\n"
+    but you can enjoy it alone as well ! \n\n(However, you can't record a time in
+    solo mode)\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 027e53bf063d2d74badb31b42b7a24c1, type: 2}
   m_sharedMaterial: {fileID: -1700728973679544269, guid: 027e53bf063d2d74badb31b42b7a24c1, type: 2}
@@ -17564,6 +17564,9 @@ MonoBehaviour:
   _canBack: 1
   HideMedalColor: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 0.78431374}
   HideMedalTextColor: {r: 0.5882353, g: 0.5882353, b: 0.5882353, a: 0.78431374}
+  OnTutorielToggled:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &638910790502046785
 MonoBehaviour:
   m_ObjectHideFlags: 0

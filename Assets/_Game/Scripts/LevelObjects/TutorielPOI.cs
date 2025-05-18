@@ -25,6 +25,12 @@ namespace BHR
         [Min(15f)]
         [SerializeField] private float _distanceFade;
 
+        [SerializeField] private bool _hasComposite;
+        [SerializeField, Required, ShowIf(nameof(_hasComposite))]
+        private GameObject _uniqueBinding;
+        [SerializeField, Required, ShowIf(nameof(_hasComposite))]
+        private GameObject _compositeBindingsParent;
+
         private void Awake()
         {
             foreach(FadeWithDistanceUI fade in GetComponentsInChildren<FadeWithDistanceUI>())
@@ -44,6 +50,11 @@ namespace BHR
         private void Start()
         {
             ModuleManager.Instance.OnTutorielToggled.AddListener(ToggleUI);
+            if (_hasComposite)
+            {
+                GameManager.Instance.OnMainPlayerStateChanged.AddListener((newState, hasSwitched) => CheckComposite());
+                CheckComposite();
+            }
         }
 
         private void ToggleUI(bool enabled)
@@ -53,6 +64,17 @@ namespace BHR
 
             foreach(Transform child in transform)
                 child.gameObject.SetActive(!enabled);
+        }
+
+        private void CheckComposite()
+        {
+            // Hard coding for displaying 4 bindings for move action
+            bool displayComposite = false;
+            if (PlayersInputManager.Instance.CurrentActivePlayerDevice is Keyboard || PlayersInputManager.Instance.CurrentActivePlayerDevice is Mouse)
+                displayComposite = true;
+
+            _uniqueBinding.SetActive(!displayComposite);
+            _compositeBindingsParent.SetActive(displayComposite);
         }
 
         private void CanTriggerAgain() => _isOn = false;
