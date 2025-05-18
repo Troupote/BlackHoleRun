@@ -66,9 +66,9 @@ namespace BHR
 
             List<InputBinding> controlPaths = new List<InputBinding>();
             if (currentActivePlayerController == PlayerControllerState.KEYBOARD)
-                controlPaths = _actionRef.action.bindings.Where(b => b.effectivePath.Contains("Keyboard") || b.effectivePath.Contains("Mouse") || b.effectivePath.Contains("Pointer")).ToList();
+                controlPaths = BindingsToSprite.KeyboardBindings(_actionRef.action.bindings.ToList());
             else if (currentActivePlayerController == PlayerControllerState.GAMEPAD)
-                controlPaths = _actionRef.action.bindings.Where(b => b.effectivePath.Contains("Gamepad") || b.effectivePath.Contains("*")).ToList();
+                controlPaths = BindingsToSprite.GamepadBindings(_actionRef.action.bindings.ToList());
 
             string controlPathKey = controlPaths[0].effectivePath;
 
@@ -81,8 +81,8 @@ namespace BHR
                 controlPathKey = "None";
             }
 
-            if(currentActivePlayerController == PlayerControllerState.KEYBOARD && IsCurrentKeyboardAzerty())
-                controlPathKey = ConvertQwertyToAzerty(controlPathKey);
+            if(currentActivePlayerController == PlayerControllerState.KEYBOARD && BindingsToSprite.IsCurrentKeyboardAzerty())
+                controlPathKey = BindingsToSprite.ConvertQwertyToAzerty(controlPathKey);
 
 
             if (spriteFinder.ContainsKey(controlPathKey))
@@ -96,58 +96,6 @@ namespace BHR
 #endif
         }
 
-        private string ConvertQwertyToAzerty(string controlPath)
-        {
-            string input = controlPath.Split("/")[controlPath.Split("/").Length - 1];
-            if (!_qwertyToAzerty.ContainsKey(input))
-                return controlPath;
-            else
-            {
-                string newControlPath = "";
-                for (int i = 0; i < controlPath.Split("/").Length; i++)
-                    if (i == controlPath.Split("/").Length - 1)
-                        newControlPath += _qwertyToAzerty[input];
-                    else
-                        newControlPath += controlPath.Split("/")[i] + "/";
-                return newControlPath;
-            }
-        }
-
-        private Dictionary<string, string> _qwertyToAzerty = new Dictionary<string, string>
-        {
-            // Lettres différentes
-            { "a", "q" },
-            { "q", "a" },
-            { "w", "z" },
-            { "z", "w" },
-            { "m", ";" },
-
-            // Chiffres avec shift (ex: 1 = !)
-            //{ "1", "&" },
-            //{ "2", "é" },
-            //{ "3", "\"" },
-            //{ "4", "'" },
-            //{ "5", "(" },
-            //{ "6", "-" },
-            //{ "7", "è" },
-            //{ "8", "_" },
-            //{ "9", "ç" },
-            //{ "0", "à" },
-
-            // Symboles
-            { "-", ")" },
-            { "=", "=" },  // Pas toujours mappé différemment, dépend du clavier
-            { "[", "^" },
-            { "]", "$" },
-            { ";", "m" },  // Inverse de "m" ci-dessus
-            { "'", "ù" },
-            { ",", "," },  // Virgule reste
-            { ".", ":" },
-            { "/", "!" },
-            { "\\", "*" },
-            { "`", "²" }
-        };
-
-        private bool IsCurrentKeyboardAzerty() => Keyboard.current.wKey.displayName.ToLower() == "z";
+        
     }
 }

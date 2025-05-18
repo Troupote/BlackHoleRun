@@ -1,3 +1,4 @@
+using Assets.SimpleLocalization.Scripts;
 using BHR;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ public class LevelSelectionUI : AModuleUI
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private Image[] _medalsSprite;
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private TextMeshProUGUI[] _medalsTimeText;
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private Button _playButton;
+    [SerializeField, Required, FoldoutGroup("Level Infos/Localization")] private string _notCompletedYetLocalizationKey;
 
     [SerializeField, Required, FoldoutGroup("Settings")] private Color _hideColor;
 
@@ -78,7 +80,8 @@ public class LevelSelectionUI : AModuleUI
 
         UtilitiesFunctions.DisplayMedals((int)data.MedalObtained(), data, _medalsSprite, _medalsTimeText);
 
-        _bestTimeText.text = "BEST : " + (data.BestTime() == float.MaxValue ? "Not completed yet" : UtilitiesFunctions.TimeFormat(data.BestTime()));
+        // @todo Localization
+        _bestTimeText.text = LocalizationManager.Localize("Best").ToUpper() + " : " + (data.BestTime() == float.MaxValue ? LocalizationManager.Localize(_notCompletedYetLocalizationKey) : UtilitiesFunctions.TimeFormat(data.BestTime()));
 
         _levelSelectionPanel.SetActive(false);
         _levelSelectedPanel.SetActive(true);

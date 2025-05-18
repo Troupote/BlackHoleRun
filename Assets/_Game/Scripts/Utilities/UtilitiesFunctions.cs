@@ -39,5 +39,7 @@ namespace BHR
             (vector.y >= Mathf.Min(min.y, max.y) && vector.y <= Mathf.Max(min.y, max.y)) &&
             (vector.z >= Mathf.Min(min.z, max.z) && vector.z <= Mathf.Max(min.z, max.z));
         }
+
+        public static string ToLowerWithFirstUpper(string text) => char.ToUpper(text[0]) + text.Substring(1);
     }
 }

@@ -1,3 +1,4 @@
+using Assets.SimpleLocalization.Scripts;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -40,7 +41,7 @@ namespace BHR
 
         public void UpdateLanguage()
         {
-            // @todo Language update (not now)
+            LocalizationManager.Language = SettingsSave.LoadLanguage();
         }
 
         public void UpdateVolume()

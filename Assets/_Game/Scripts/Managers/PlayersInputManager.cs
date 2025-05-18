@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 
 namespace BHR
 {
@@ -142,7 +143,7 @@ namespace BHR
         public UnityEvent<Vector2> OnHMove, OnSMove; // Vector2 value events
         public UnityEvent<Vector2, PlayerControllerState> OnHLook, OnSLook; // Vector2 value events depending of the controller used
         public UnityEvent OnHAim; // Multiple callbacks events (Hold throw, Hold/toggle aim)
-        public UnityEvent OnRestart; // Interactions performed events
+        public UnityEvent OnRestartLevel, OnRespawn; // Interactions performed events
 
         private void SendInputEvent(InputAction.CallbackContext ctx, int playerIndex)
         {
@@ -155,7 +156,10 @@ namespace BHR
 
             #region Common at all player states
             if (ctx.action.name == InputActions.Restart && ctx.performed)
-                OnRestart.Invoke();
+                if (ctx.interaction is HoldInteraction)
+                    OnRestartLevel.Invoke();
+                else if(ctx.interaction is MultiTapInteraction)
+                    OnRespawn.Invoke();
             #endregion
 
             #region Specific player state

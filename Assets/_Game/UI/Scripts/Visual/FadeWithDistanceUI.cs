@@ -8,8 +8,11 @@ namespace BHR
 {
     public class FadeWithDistanceUI : MonoBehaviour
     {
+        private float _fadeTransitionDistance = 15f;
+
         [SerializeField, Tooltip("If empty, MainCamera")] private Transform _target;
-        [SerializeField] private Vector2 _distanceFade;
+        [Min(15f), Tooltip("At this distance, the object became invisible")]
+        public float DistanceFade;
         [SerializeField, Tooltip("If true, the color fades away as the target approaching rather than the contrary")] private bool _invert = false;
         private Color _baseColor;
 
@@ -31,7 +34,7 @@ namespace BHR
         {
             Color fadeColor = new Color(_baseColor.r,_baseColor.g,_baseColor.b, 0f);
             float distance = Vector3.Distance(transform.position, _target.position);
-            float percents = Mathf.Clamp01((distance - _distanceFade.x) / (_distanceFade.y - _distanceFade.x));
+            float percents = Mathf.Clamp01((distance - DistanceFade + _fadeTransitionDistance) / _fadeTransitionDistance);
             if(_invert) percents = 1 - percents;
             Color targetColor = Color.Lerp(_baseColor, fadeColor, percents);
 
