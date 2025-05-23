@@ -37,6 +37,7 @@ namespace BHR
         [FoldoutGroup("UI Settings")] public Color HideMedalColor;
         [FoldoutGroup("UI Settings")] public Color HideMedalTextColor;
 
+        public UnityEvent<bool> OnTutorielToggled;
         public override void Awake()
         {
             foreach (Transform go in gameObject.transform.GetChild(0).transform)

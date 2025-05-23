@@ -1,3 +1,4 @@
+using Assets.SimpleLocalization.Scripts;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -29,6 +30,6 @@ namespace BHR.UILinkers
             UpdateCurrentModeText(LoadSetting());
         }
 
-        public void UpdateCurrentModeText(bool isToggle) => _currentModeText.text = isToggle ? "Toggle" : "Hold";
+        public void UpdateCurrentModeText(bool isToggle) => _currentModeText.text = isToggle ? LocalizationManager.Localize("Toggle") : LocalizationManager.Localize("Hold");
     }
 }

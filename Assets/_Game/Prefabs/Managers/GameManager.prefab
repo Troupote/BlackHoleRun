@@ -286,6 +286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameSettings: {fileID: 11400000, guid: 49f454b3b4a35104f81eacf0200146b0, type: 2}
+  TutorielDatas: {fileID: 11400000, guid: fd171007e9411cc4e8d9692a6f69aabf, type: 2}
   _activePlayerState: 0
   _selectedLevel: {fileID: 0}
   _currentLevel: {fileID: 0}
@@ -305,7 +306,7 @@ MonoBehaviour:
   _isPlaying: 0
   _isPaused: 0
   _gameTimeScale: 0
-  OnPlayerStateChanged:
+  OnMainPlayerStateChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &391594483695264458

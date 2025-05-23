@@ -27,7 +27,7 @@ namespace BHR
         public LevelDataSO SelectedLevel
         {
             get => _selectedLevel;
-            private set => _selectedLevel = value;
+            set => _selectedLevel = value;
         }
 
         [SerializeField, ReadOnly]
@@ -92,6 +92,7 @@ namespace BHR
         #endregion
 
         public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
+        public UnityEvent OnPaused, OnResumed;
 
         private void Start()
         {
@@ -99,7 +100,8 @@ namespace BHR
 
             // Bind to input events
             PlayersInputManager.Instance.OnPause.AddListener(TogglePause);
-            PlayersInputManager.Instance.OnRestart.AddListener(() => RestartLevel(false));
+            PlayersInputManager.Instance.OnRestartLevel.AddListener(() => RestartLevel(false));
+            PlayersInputManager.Instance.OnRespawn.AddListener(Respawning);
         }
 
         private void Update()
@@ -164,6 +166,7 @@ namespace BHR
         public void Pause(GameObject moduleToLoad)
         {
             Cursor.lockState = CursorLockMode.None;
+            OnPaused?.Invoke();
             if(!IsPaused)
             {
                 _savedGameTimeScale = GameTimeScale;
@@ -176,10 +179,12 @@ namespace BHR
 
         public void Resume()
         {
+            OnResumed?.Invoke();
             IsPlaying = true;
             Cursor.lockState = CursorLockMode.Locked;
             ChangeMainPlayerState(_savedPausedState, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.HUD));
+            ModuleManager.Instance.ClearNavigationHistoric();
         }
 
         public void EndLevel()
@@ -212,7 +217,7 @@ namespace BHR
             ChangeMainPlayerState(PlayerState.UI, false);
             LaunchLevel(withStartAnimation);
         }
-        #endregion
+#endregion
         public void CleanInGame(bool late)
         {
             if(!late)
@@ -242,6 +247,13 @@ namespace BHR
             yield return new WaitForSeconds(transitionDuration);
             _isRespawning = false;
             IsPlaying = true;
+        }
+
+        public void LoadTutorielData(TutorielData data)
+        {
+            ModuleManager.Instance.GetModule(ModuleType.TUTORIEL).GetComponent<TutorielModuleUI>().LoadTutorielData(data);
+            Pause(ModuleManager.Instance.GetModule(ModuleType.TUTORIEL));
+            ModuleManager.Instance.ClearNavigationHistoric();
         }
 
         private void Chrono()
