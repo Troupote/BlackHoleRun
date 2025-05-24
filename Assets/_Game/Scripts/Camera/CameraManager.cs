@@ -6,7 +6,9 @@ using UnityEngine;
 public class CameraManager : ManagerSingleton<CameraManager>
 {
     [field: SerializeField]
-    internal CinemachineBrain MainCamBrain { get; private set; }
+    internal Camera MainCam { get; private set; }
+
+    private CinemachineBrain MainCamBrain;
 
     [field: SerializeField]
     internal CinemachineVirtualCamera PlayerCam { get; private set; }
@@ -25,6 +27,8 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     private PlayerControllerState currentControllerUsed = PlayerControllerState.DISCONNECTED;
 
+    public CinemachineVirtualCamera CurrentCam => (PlayerCam.Priority > SingularityCam.Priority) ? PlayerCam : SingularityCam;
+
     public override void Awake()
     {
         SetInstance(false);
@@ -32,6 +36,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     void Start()
     {
+        MainCamBrain = MainCam.GetComponent<CinemachineBrain>();
         PlayerCam.Priority = 5;
         SingularityCam.Priority = 0;
         SingularityCam.gameObject.SetActive(false);
@@ -97,8 +102,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         MainCamBrain.enabled = true;
     }
 
-
-    void Update()
+    void LateUpdate()
     {
         if (!m_hasBeenInstancied || !GameManager.Instance.IsPlaying) return;
 
@@ -111,7 +115,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, -90, 90);
 
-        if (CharactersManager.Instance.isSingularityThrown)
+        if (CurrentCam == SingularityCam)
         {
             float targetRotationY = rotationY + mouseX;
             targetRotationY = Mathf.Clamp(targetRotationY, initialRotationY - 90, initialRotationY + 90);
@@ -124,7 +128,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
             rotationY += mouseX;
             transform.rotation = Quaternion.Euler(0, rotationY, 0);
             PlayerCam.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-            PlayerCam.Follow.gameObject.transform.Rotate(Vector3.up * mouseX);
+            //PlayerCam.Follow.gameObject.transform.Rotate(Vector3.up * mouseX);
         }
 
         // Adjust FOV

@@ -1,14 +1,15 @@
 using BHR;
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class CharactersManager : ManagerSingleton<CharactersManager>
 {
     [SerializeField]
-    private GameObject _characterPrefab;
+    private GameObject m_characterPrefab;
 
     [SerializeField]
-    private GameObject _singularityPrefab;
+    private GameObject m_singularityPrefab;
 
     [SerializeField]
     private CharacterGameplayData m_gameplayData;
@@ -18,14 +19,12 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     [SerializeField]
     private LayerMask groundLayer;
 
-    private GameObject _singularityObject;
-    private GameObject _characterObject;
-    public GameObject CharacterObject => _characterObject;
+    private GameObject m_singularityObject;
+    private GameObject m_characterObject;
+    public GameObject CharacterObject => m_characterObject;
 
-    private SingularityBehavior a_singularityBehavior;
-    private CharacterBehavior a_characterBehavior;
-
-    internal bool isSingularityThrown = false;
+    private SingularityBehavior m_singularityBehavior;
+    private CharacterBehavior m_characterBehavior;
 
     public override void Awake()
     {
@@ -37,23 +36,39 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         SpawnCharacterAtPosition(CheckpointsManager.Instance.CurrentCheckpoint.position);
     }
 
+    private bool m_isInstancied = false;
     private void InstanciatePrefabsOnScene()
     {
-        _characterObject = Instantiate(_characterPrefab);
-        _singularityObject = Instantiate(_singularityPrefab);
-        _characterObject.tag = "Player";
-        _singularityObject.tag = "Singularity";
+        m_characterObject = Instantiate(m_characterPrefab);
+        m_singularityObject = Instantiate(m_singularityPrefab);
 
-        a_singularityBehavior = _singularityObject.GetComponent<SingularityBehavior>();
-        a_characterBehavior = _characterObject.GetComponent<CharacterBehavior>();
+        m_singularityBehavior = m_singularityObject.GetComponent<SingularityBehavior>();
+        m_characterBehavior = m_characterObject.GetComponent<CharacterBehavior>();
 
-        CameraManager.Instance.SetDependencies(_characterObject, _singularityObject);
+        CameraManager.Instance.SetDependencies(m_characterObject, m_singularityObject);
+        m_characterBehavior.InitializeDependencies(m_gameplayData);
+        m_singularityBehavior.InitializeDependencies(m_gameplayData);
+
+        ListenToEvents();
+
+        m_isInstancied = true;
     }
 
-    private bool AreObjectsInstancied()
+    private void ListenToEvents()
     {
-        return _characterObject != null && _singularityObject != null && a_singularityBehavior != null && a_characterBehavior != null;
+        m_characterBehavior.OnThrowInput += ThrowSingularity;
+        m_singularityBehavior.OnThrowPerformed += OnThrowPerformed;
+        m_singularityBehavior.OnUnmorph += SwitchCharactersPositions;
     }
+
+    private void UnlistenToEvents()
+    {
+        m_singularityBehavior.OnThrowPerformed -= OnThrowPerformed;
+        m_characterBehavior.OnThrowInput -= ThrowSingularity;
+        m_singularityBehavior.OnUnmorph -= SwitchCharactersPositions;
+    }
+
+    private bool AreObjectsInstancied() => m_isInstancied;
 
     public void SpawnCharacterAtPosition(Vector3 a_position)
     {
@@ -62,106 +77,97 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
             InstanciatePrefabsOnScene();
         }
 
-        _characterObject.transform.position = a_position;
+        m_characterObject.transform.position = a_position;
+        m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(true);
     }
+
+    #region Life Cycle
+
+    private void FixedUpdate()
+    {
+        if (!AreObjectsInstancied()) return;
+
+    }
+
+    #endregion
+
+    #region Switch Characters
 
     float GetCharacterHeight()
     {
-        CapsuleCollider collider = _characterObject.GetComponent<CapsuleCollider>();
+        CapsuleCollider collider = m_characterObject.GetComponent<CapsuleCollider>();
         return collider ? collider.height : 2.0f;
     }
 
-    public void SwitchCharacterAndSingularity()
+    public void SwitchCharactersPositions()
     {
-        Vector3 singularityPosition = _singularityObject.transform.position;
+        Vector3 singularityPosition = m_singularityObject.transform.position;
         RaycastHit hit;
+        // To make sure the character does not get stuck underground
         if (Physics.Raycast(singularityPosition + Vector3.up * 0.5f, Vector3.down, out hit, 2.0f, groundLayer))
         {
             singularityPosition.y = hit.point.y + GetCharacterHeight();
         }
 
-        a_characterBehavior.ResetVelocity();
-        a_singularityBehavior.ResetVelocity();
+        var oldCharacterPosition = m_characterObject.transform.position;
+        m_characterObject.transform.position = singularityPosition;
+        m_singularityObject.transform.position = oldCharacterPosition;
 
-        Vector3 oldCharacterPosition = _characterObject.transform.position;
-        _characterObject.transform.position = singularityPosition;
-        _singularityObject.transform.position = oldCharacterPosition;
+        CameraManager.Instance.SwitchCameraToCharacter(m_characterObject.transform.position);
 
-        a_characterBehavior.ImobilizeCharacter(false);
+        m_characterBehavior.ImobilizeCharacter(false);
 
         GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
-    }
 
-    public void ChangePlayersTurn(bool a_isEarly = false)
-    {
-        GameManager.Instance.ILoveOuterWidls();
-        StartCoroutine(WaitForBlendingAndSwitch(a_isEarly));
-    }
-
-    private IEnumerator WaitForBlendingAndSwitch(bool a_isEarly)
-    {
-        if (!a_isEarly)
+        StartCoroutine(MoveSlowlySingularityToNewCharacter(() =>
         {
-            yield return new WaitUntil(() => !CameraManager.Instance.IsBlending);
+            m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(true);
+        }));
+    }
+
+    internal bool SingularityMovingToCharacter { get; private set; } = false;
+    private IEnumerator MoveSlowlySingularityToNewCharacter(Action onComplete = null)
+    {
+        SingularityMovingToCharacter = true;
+
+        float elapsed = 0f;
+
+        Vector3 start = m_singularityObject.transform.position;
+
+        while (elapsed < 2f)
+        {
+            float t = elapsed / 2f;
+            float curveT = m_gameplayData.JoinBackToCharacterSpeed.Evaluate(t); // To redo maybe
+            Vector3 currentTarget = CameraManager.Instance.SingularityPlacementRefTransform.position;
+
+            m_singularityObject.transform.position = Vector3.Lerp(start, currentTarget, curveT);
+
+            elapsed += Time.deltaTime;
+            yield return null;
         }
 
-        SwitchCharacterAndSingularity();
-        CameraManager.Instance.SwitchCameraToCharacter(_characterObject.transform.position);
-        a_singularityBehavior.ResetThrowState(true);
+        m_singularityObject.transform.position = CameraManager.Instance.SingularityPlacementRefTransform.position;
+
+        onComplete?.Invoke();
+
+        SingularityMovingToCharacter = false;
     }
 
-    public void IsSingularityThrown(bool a_isIt)
+    #endregion
+
+    #region Throw
+    public void ThrowSingularity()
     {
-        isSingularityThrown = a_isIt;
+        if (!m_singularityBehavior.IsAllowedToBeThrown) return;
+
+        m_singularityBehavior.OnThrow();
+        m_characterBehavior.ImobilizeCharacter(true);
+        GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
     }
 
-    public void TryThrowSingularity()
+    private void OnThrowPerformed()
     {
-        if (a_singularityBehavior.IsThrown && !a_singularityBehavior.AlreadyCollided)
-        {
-            ChangePlayersTurn(true);
-            return;
-        }
-
-        if (!a_characterBehavior.HasTouchedGround) return;
-
-        a_singularityBehavior.Throw();
-        a_characterBehavior.ImobilizeCharacter(true);
-        IsSingularityThrown(true);
+        CameraManager.Instance.SwitchCameraToSingularity();
     }
-
-    private float timeElasped = 0;
-
-    private void Update()
-    {
-        if (!AreObjectsInstancied()) return;
-        if (a_singularityBehavior == null || _characterObject == null) return;
-
-        if (!a_singularityBehavior.IsThrown)
-        {
-            if (timeElasped > 0) timeElasped = 0;
-        }
-        else
-        {
-            if (GameManager.Instance.GameTimeScale == 0) return;
-
-            timeElasped += Time.deltaTime;
-
-            if (timeElasped >= m_gameplayData.SecondsBeforeSpawningCharacterBackIfNoCollision)
-            {
-                ChangePlayersTurn();
-                timeElasped = 0;
-            }
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        if (!AreObjectsInstancied() || !GameManager.Instance.IsPlaying) return;
-
-        if (!a_singularityBehavior.IsThrown)
-        {
-            a_singularityBehavior.FollowPlayer();
-        }
-    }
+    #endregion
 }

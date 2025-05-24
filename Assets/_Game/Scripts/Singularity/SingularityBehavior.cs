@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using BHR;
 using Cinemachine;
@@ -5,99 +6,104 @@ using UnityEngine;
 
 public class SingularityBehavior : MonoBehaviour
 {
-    [Header("-----Dependencies-----")]
-    [SerializeField] private CinemachineVirtualCamera cameraRef;
+    #region Dependencies
+    private Rigidbody m_rigidbody;
+    private CharacterGameplayData m_gameplayData;
+    #endregion
 
-    private Rigidbody rb;
-    private CharacterGameplayData gameplayData;
+    [field: SerializeField]
+    internal SingularityCharacterFollowComponent SingularityCharacterFollowComponent { get; private set; } = null;
 
-    private bool isThrown = false;
-    private Vector3 followVelocity = Vector3.zero;
+    public Action OnThrowPerformed;
+    public Action OnUnmorph;
 
-    public bool IsThrown => isThrown;
-    public bool AlreadyCollided { get; private set; } = false;
+    private bool m_isInitialized = false;
 
-    private void Start()
+    public void InitializeDependencies(CharacterGameplayData a_gameplayData)
     {
-        InitializeDependencies();
+        m_rigidbody = GetComponent<Rigidbody>();
+        m_gameplayData = a_gameplayData;
+
+        SingularityCharacterFollowComponent.InititializeDependencies(this.transform, m_rigidbody);
+
+        m_isInitialized = true;
+    }
+    #region Life Cycle
+
+    private void FixedUpdate()
+    {
+        if (!m_isInitialized) return;
+
+        HandleThrowCurve();
     }
 
-    private void InitializeDependencies()
+    #endregion
+
+    internal bool IsAllowedToBeThrown => SingularityCharacterFollowComponent.IsKinematicEnabled();
+
+    public void Move(Vector2 a_movementValue)
     {
-        rb = GetComponent<Rigidbody>();
-        cameraRef = CameraManager.Instance.PlayerCam;
-        gameplayData = CharactersManager.Instance.GameplayData;
+        float moveX = a_movementValue.x;
+
+        if (a_movementValue.x == 0) return;
+
+        Vector3 curveDirection = transform.right * moveX;
+
+        m_rigidbody.AddForce(curveDirection.normalized * CharactersManager.Instance.GameplayData.MovingCurveForce, ForceMode.Force);
     }
 
-    private void SetRigidbodyState(bool isActive)
-    {
-        rb.isKinematic = !isActive;
-        rb.useGravity = isActive;
+    #region Throw
 
-        if (isActive)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
+    [SerializeField]
+    private AnimationCurve m_verticalVelocityCurve;
+    [SerializeField]
+    private float m_curveDuration = 2f;
+    private bool m_isThrown = false;
+    private float m_throwTime = 0f;
+
+    public void OnThrow()
+    {
+        SingularityCharacterFollowComponent.PickupSingularity(false);
+
+        Vector3 throwDirection = CameraManager.Instance.MainCam.transform.forward;
+
+        m_rigidbody.AddForce(throwDirection * m_gameplayData.ThrowForce, ForceMode.Impulse);
+
+        m_throwTime = 0f;
+
+        OnThrowPerformed?.Invoke();
     }
 
-    public void FollowPlayer()
+    private void HandleThrowCurve()
     {
-        if (isThrown || rb == null) return;
+        if (SingularityCharacterFollowComponent.IsKinematicEnabled()) return;
 
-        SetRigidbodyState(false);
-        Transform followTarget = CameraManager.Instance.SingularityPlacementRefTransform;
-        Vector3 targetPos = followTarget.position;
-        Vector3 smoothedPos = Vector3.Lerp(transform.position, targetPos, 7f * Time.fixedDeltaTime);
-        rb.MovePosition(smoothedPos);
+        m_throwTime += Time.fixedDeltaTime;
+        float normalizedTime = m_throwTime / m_curveDuration;
+
+        Vector3 velocity = m_rigidbody.linearVelocity;
+
+        velocity.y += Physics.gravity.y * Time.fixedDeltaTime;
+
+        /* Useless for the moment, idk yet
+        float verticalMultiplier = m_verticalVelocityCurve.Evaluate(normalizedTime);
+        velocity.y *= verticalMultiplier;
+        */
+
+        m_rigidbody.linearVelocity = velocity;
+
     }
+    #endregion
 
-    public void Throw()
-    {
-        if (isThrown) return;
-
-        isThrown = true;
-        SetRigidbodyState(true);
-
-        Vector3 forwardDirection = GetThrowDirection();
-        ApplyThrowForce(forwardDirection);
-
-        CameraManager.Instance.SwitchCameraToSingularity();
-        CharactersManager.Instance.IsSingularityThrown(true);
-        GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
-    }
-
-    private Vector3 GetThrowDirection()
-    {
-        Vector3 playerVelocityXZ = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-        return cameraRef.transform.forward + (playerVelocityXZ * 0.2f);
-    }
-
-    private void ApplyThrowForce(Vector3 direction)
-    {
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-        rb.AddForce(direction.normalized * gameplayData.ThrowForce, ForceMode.Impulse);
-    }
-
-    public void ResetVelocity()
-    {
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-    }
+    #region Collision Detection
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!isThrown || AlreadyCollided || collision == null) return;
+        if (SingularityCharacterFollowComponent.IsKinematicEnabled() || CharactersManager.Instance.SingularityMovingToCharacter) return;
 
-        AlreadyCollided = true;
-        CharactersManager.Instance.ChangePlayersTurn();
+        m_isThrown = false;
+        OnUnmorph?.Invoke();
     }
 
-    public void ResetThrowState(bool allowThrow)
-    {
-        isThrown = !allowThrow;
-        AlreadyCollided = false;
-        CharactersManager.Instance.IsSingularityThrown(false);
-    }
+    #endregion
 }

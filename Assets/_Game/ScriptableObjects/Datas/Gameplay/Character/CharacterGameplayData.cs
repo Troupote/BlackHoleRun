@@ -5,6 +5,12 @@ using UnityEngine.Rendering;
 [CreateAssetMenu(fileName = "GameplayData", menuName = "Gameplay/CharacterGameplayData")]
 public class CharacterGameplayData : ScriptableObject
 {
+    [Title("General Settings")]
+    [SerializeField]
+    private float m_cooldownBeforeThrowAllowed = 3f;
+
+    public float CooldownBeforeThrowAllowed => m_cooldownBeforeThrowAllowed;
+
     [Title("Singularity Settings")]
     [SerializeField]
     private float m_secondsBeforeSpawningCharacterBackIfNoCollision = 4f;
@@ -17,6 +23,11 @@ public class CharacterGameplayData : ScriptableObject
     [SerializeField]
     private float m_movingCurveForce = 15f;
     public float MovingCurveForce => m_movingCurveForce;
+
+    [SerializeField] 
+    private AnimationCurve m_joinBackToCharacterSpeed;
+
+    public AnimationCurve JoinBackToCharacterSpeed => m_joinBackToCharacterSpeed;
 
     [Title("Character Settings")]
     [SerializeField]

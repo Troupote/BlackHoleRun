@@ -5,16 +5,27 @@ using UnityEngine.Scripting.APIUpdating;
 
 public class SingularityController : MonoBehaviour
 {
-    [SerializeField]
-    private Rigidbody rb;
-    private Vector2 moveValue;
+    private SingularityBehavior m_singularityBehavior;
+    private Vector2 m_moveValue = Vector2.zero;
+    private bool m_isInitialized = false;
+    void Start()
+    {
+        InitializeDependencies();
+    }
+
+    private void InitializeDependencies()
+    {
+        m_singularityBehavior = GetComponent<SingularityBehavior>();
+
+        m_isInitialized = true;
+    }
 
     private void OnEnable()
     {
         // Bind inputs
-        PlayersInputManager.Instance.OnSMove.AddListener(HandleSingulairtyMove);
+        PlayersInputManager.Instance.OnSMove.AddListener(HandleSingularityMove);
         PlayersInputManager.Instance.OnSUnmorph.AddListener(HandleUnMorphEarly);
-        PlayersInputManager.Instance.OnSJump.AddListener(Jump);
+        //PlayersInputManager.Instance.OnSJump.AddListener(Jump);
         // Bind toout le reste la
 
     }
@@ -22,106 +33,32 @@ public class SingularityController : MonoBehaviour
     private void OnDisable()
     {
         // Debind inputs
-        PlayersInputManager.Instance.OnSMove.RemoveListener(HandleSingulairtyMove);
+        PlayersInputManager.Instance.OnSMove.RemoveListener(HandleSingularityMove);
         PlayersInputManager.Instance.OnSUnmorph.RemoveListener(HandleUnMorphEarly);
-        PlayersInputManager.Instance.OnSJump.RemoveListener(Jump);
+        //PlayersInputManager.Instance.OnSJump.RemoveListener(Jump);
         // Debing le reste
     }
 
-    void FixedUpdate()
+    #region Life Cycle
+
+    private void FixedUpdate()
     {
-        if (!GameManager.Instance.IsPlaying || !CharactersManager.Instance.isSingularityThrown) return;
-        ApplyBetterGravity();
-        Move();
-        CheckJumpApex();
+        if (!m_isInitialized) return;
+
+        m_singularityBehavior.Move(m_moveValue);
     }
 
-    [SerializeField] private float lowJumpMultiplier = 2.5f;
-    private void ApplyBetterGravity()
+    #endregion
+
+    private void HandleSingularityMove(Vector2 a_movementValue)
     {
-        if (rb.linearVelocity.y > 0)
-        {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime * GameManager.Instance.GameTimeScale;
-        }
+        m_moveValue = a_movementValue;
     }
-
-    private void Move()
-    {
-        float moveX = moveValue.x;
-
-        if (moveValue.x == 0 && moveValue.y == 0) return;
-
-        Vector3 curveDirection = transform.right * moveX;
-
-        rb.AddForce(curveDirection.normalized * CharactersManager.Instance.GameplayData.MovingCurveForce, ForceMode.Force);
-    }
-
-    [SerializeField] private float jumpForce = 40f;
-    private bool isWaitingForJumpApex = false;
-    private bool hasTriggeredApex = false;
-    public void Jump()
-    {
-        if (isPaused) return;
-
-        Vector3 currentVelocity = rb.linearVelocity;
-
-        currentVelocity.x *= 0.4f;
-        currentVelocity.z *= 0.4f;
-
-        rb.linearVelocity = currentVelocity;
-
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
-        isWaitingForJumpApex = true;
-        hasTriggeredApex = false;
-    }
-
-    private void CheckJumpApex()
-    {
-        if (!isWaitingForJumpApex || hasTriggeredApex) return;
-
-        if (rb.linearVelocity.y <= 0f)
-        {
-            CharactersManager.Instance.ChangePlayersTurn();
-            hasTriggeredApex = true;
-            isWaitingForJumpApex = false;
-        }
-    }
-
-
-    private void Update()
-    {
-        HandlePauseState(GameManager.Instance.GameTimeScale == 0);
-    }
-
-    private Vector3 cachedVelocity;
-    private Vector3 cachedAngularVelocity;
-    private bool isPaused;
-
-    public void HandlePauseState(bool paused)
-    {
-        if (paused && !isPaused)
-        {
-            // Pause
-            cachedVelocity = rb.linearVelocity;
-            cachedAngularVelocity = rb.angularVelocity;
-            rb.isKinematic = true;
-            isPaused = true;
-        }
-        else if (!paused && isPaused)
-        {
-            // Resume
-            rb.isKinematic = false;
-            rb.linearVelocity = cachedVelocity;
-            rb.angularVelocity = cachedAngularVelocity;
-            isPaused = false;
-        }
-    }
-
-    public void HandleSingulairtyMove(Vector2 value) => moveValue = value;
 
     private void HandleUnMorphEarly()
     {
-        CharactersManager.Instance.TryThrowSingularity();
+        m_singularityBehavior.OnUnmorph?.Invoke();
     }
+
+
 }

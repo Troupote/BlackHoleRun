@@ -1,50 +1,127 @@
+using BHR;
+using System;
 using UnityEngine;
 
 public class CharacterBehavior : MonoBehaviour
 {
-    private Rigidbody _rigidbody;
+    #region Dependencies
 
-    private bool _hasTouchedGround = true;
-    public bool HasTouchedGround => _hasTouchedGround;
+    private Rigidbody m_rigidbody;
+    private CharacterGameplayData m_gameplayData;
 
-    [SerializeField]
-    private LayerMask m_groundLayer;
+    #endregion
 
-    private void Start()
+    private Vector3 currentVelocity;
+    private bool m_isInitialized = false;
+    public Action OnThrowInput;
+    public void InitializeDependencies(CharacterGameplayData a_gameplayData)
     {
-        _rigidbody = GetComponent<Rigidbody>();
+        m_rigidbody = GetComponent<Rigidbody>();
+        m_gameplayData = a_gameplayData;
+
+        m_isInitialized = true;
     }
 
-    public void TryThrowSingularity()
-    {
-        if (!_hasTouchedGround) return;
+    #region Life Cycle
 
-        CharactersManager.Instance.TryThrowSingularity();
+    private float m_gravityScale = 8f;
+    private Vector3 m_gravity = Physics.gravity;
+
+    private void FixedUpdate()
+    {
+        if (!m_isInitialized) return;
+
+        Vector3 gravityForce = m_gravity * m_gravityScale;
+        m_rigidbody.AddForce(gravityForce);
     }
 
-    public void ResetVelocity()
+    #endregion
+
+    private void ResetVelocity()
     {
-        _rigidbody.linearVelocity = Vector3.zero;
-        _rigidbody.angularVelocity = Vector3.zero;
+        if (!m_isInitialized) return;
+
+        m_rigidbody.linearVelocity = Vector3.zero;
+        m_rigidbody.angularVelocity = Vector3.zero;
     }
 
-    public void ImobilizeCharacter(bool a_shouldImobilize)
+    public void ImobilizeCharacter(bool a_shouldBeImobilized)
     {
-        _rigidbody.useGravity = !a_shouldImobilize;
-        _rigidbody.isKinematic = a_shouldImobilize;
-
-        if (a_shouldImobilize)
-        { 
-            _hasTouchedGround = false;
-        }
+        m_rigidbody.isKinematic = a_shouldBeImobilized;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    #region Movement
+    public void Move(Vector2 a_moveValue)
     {
-        // Check if the object we collided with is part of the ground layer
-        if (((1 << collision.gameObject.layer) & m_groundLayer) != 0)
-        {
-            _hasTouchedGround = true;
-        }
+        if (m_rigidbody.isKinematic) return;
+
+        float moveX = a_moveValue.x;
+        float moveZ = a_moveValue.y;
+
+        Transform cam = CameraManager.Instance.CurrentCam.transform;
+
+        Vector3 camForward = cam.forward;
+        Vector3 camRight = cam.right;
+        camForward.y = 0;
+        camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        Vector3 moveDir = (camForward * moveZ + camRight * moveX).normalized;
+        Vector3 targetVelocity = moveDir * m_gameplayData.PlayerSpeed;
+
+        m_rigidbody.linearVelocity = Vector3.SmoothDamp(m_rigidbody.linearVelocity, new Vector3(targetVelocity.x, m_rigidbody.linearVelocity.y, targetVelocity.z), ref currentVelocity, 0.1f);
     }
+
+    #endregion
+
+    #region Jump
+
+    public void OnJump()
+    {
+        if (!IsGrounded()) return;
+
+        m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
+        m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
+    }
+
+    #endregion
+
+    #region Dash
+
+    public void OnDash() // TBD: Add cooldown logic
+    {
+        Transform cam = CameraManager.Instance.CurrentCam.transform;
+
+        Vector3 dashDir = cam.forward;
+        dashDir.y = 0;
+        dashDir.Normalize();
+
+        m_rigidbody.AddForce(dashDir * m_gameplayData.DashForce, ForceMode.VelocityChange);
+    }
+
+    #endregion
+
+    #region Throw Singularity
+
+    public void OnThrowSingularity()
+    {
+        ResetVelocity();
+        OnThrowInput?.Invoke();
+    }
+
+    #endregion
+
+    #region IsGrounded
+
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundDistance = 0.4f;
+    [SerializeField] private LayerMask groundMask;
+
+    public bool IsGrounded()
+    {
+        return Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+    }
+
+    #endregion
 }
