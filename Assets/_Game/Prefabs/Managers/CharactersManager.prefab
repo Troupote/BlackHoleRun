@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c7ab17272ede1141b652873e42cbfc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _characterPrefab: {fileID: 4458174275016469787, guid: 82e7f987ce0e31e4a935311e5b410ea4, type: 3}
-  _singularityPrefab: {fileID: 2938045941139767026, guid: df3099e18e29c6048a76f111051f5ad7, type: 3}
+  m_characterPrefab: {fileID: 4458174275016469787, guid: 82e7f987ce0e31e4a935311e5b410ea4, type: 3}
+  m_singularityPrefab: {fileID: 2938045941139767026, guid: df3099e18e29c6048a76f111051f5ad7, type: 3}
   m_gameplayData: {fileID: 11400000, guid: bab024fbbe50866409ddc44d8a098e36, type: 2}
   groundLayer:
     serializedVersion: 2

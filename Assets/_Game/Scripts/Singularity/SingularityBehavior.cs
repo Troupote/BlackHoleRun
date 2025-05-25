@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using BHR;
 using Cinemachine;
@@ -5,93 +6,134 @@ using UnityEngine;
 
 public class SingularityBehavior : MonoBehaviour
 {
-    [Header("-----Dependencies-----")]
-    [SerializeField] private CinemachineVirtualCamera cameraRef;
+    #region Dependencies
+    private Rigidbody m_rigidbody;
+    private CharacterGameplayData m_gameplayData;
+    #endregion
 
-    private Rigidbody rb;
-    private CharacterGameplayData gameplayData;
+    [field: SerializeField]
+    internal SingularityCharacterFollowComponent SingularityCharacterFollowComponent { get; private set; } = null;
 
-    private bool isThrown = false;
-    private Vector3 followVelocity = Vector3.zero;
+    public Action OnThrowPerformed;
+    public Action OnUnmorph;
+    public Action<Vector3> OnJump;
+    public Action<Vector3, Vector3> OnDash;
 
-    public bool IsThrown => isThrown;
-    public bool AlreadyCollided { get; private set; } = false;
+    private bool m_isInitialized = false;
 
-    private void Start()
+    public void InitializeDependencies(CharacterGameplayData a_gameplayData)
     {
-        InitializeDependencies();
+        m_rigidbody = GetComponent<Rigidbody>();
+        m_gameplayData = a_gameplayData;
+
+        SingularityCharacterFollowComponent.InititializeDependencies(this.transform, m_rigidbody);
+
+        m_isInitialized = true;
     }
 
-    private void InitializeDependencies()
+    #region Life Cycle
+
+    private void FixedUpdate()
     {
-        rb = GetComponent<Rigidbody>();
-        cameraRef = CameraManager.Instance.PlayerCam;
-        gameplayData = CharactersManager.Instance.GameplayData;
+        if (!m_isInitialized) return;
+
+        HandleThrowCurve();
     }
 
-    private void SetRigidbodyState(bool isActive)
-    {
-        rb.isKinematic = !isActive;
-        rb.useGravity = isActive;
+    #endregion
 
-        if (isActive)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
+    internal bool IsAllowedToBeThrown => SingularityCharacterFollowComponent.IsKinematicEnabled();
+
+    #region Move
+    public void Move(Vector2 a_movementValue)
+    {
+        float moveX = a_movementValue.x;
+
+        if (a_movementValue.x == 0) return;
+
+        Vector3 curveDirection = transform.right * moveX;
+
+        m_rigidbody.AddForce(curveDirection.normalized * CharactersManager.Instance.GameplayData.MovingCurveForce, ForceMode.Force);
     }
 
-    public void FollowPlayer()
-    {
-        if (isThrown || rb == null) return;
+    #endregion
 
-        SetRigidbodyState(false);
-        Transform followTarget = CameraManager.Instance.SingularityPlacementRefTransform;
-        Vector3 targetPos = followTarget.position;
-        Vector3 smoothedPos = Vector3.SmoothDamp(transform.position, targetPos, ref followVelocity, 0.1f);
-        rb.MovePosition(smoothedPos);
+    #region Throw
+
+    [SerializeField]
+    private AnimationCurve m_verticalVelocityCurve;
+    [SerializeField]
+    private float m_curveDuration = 2f;
+    private bool m_isThrown = false;
+    private float m_throwTime = 0f;
+
+    public void OnThrow()
+    {
+        SingularityCharacterFollowComponent.PickupSingularity(false);
+
+        Vector3 throwDirection = CameraManager.Instance.MainCam.transform.forward;
+
+        m_rigidbody.AddForce(throwDirection * m_gameplayData.ThrowForce, ForceMode.Impulse);
+
+        m_throwTime = 0f;
+
+        OnThrowPerformed?.Invoke();
     }
 
-    public void Throw()
+    private void HandleThrowCurve()
     {
-        if (isThrown) return;
+        if (SingularityCharacterFollowComponent.IsKinematicEnabled()) return;
 
-        isThrown = true;
-        SetRigidbodyState(true);
+        m_throwTime += Time.fixedDeltaTime;
+        float normalizedTime = m_throwTime / m_curveDuration;
 
-        Vector3 forwardDirection = GetThrowDirection();
-        ApplyThrowForce(forwardDirection);
+        Vector3 velocity = m_rigidbody.linearVelocity;
 
-        CameraManager.Instance.SwitchCameraToSingularity();
-        CharactersManager.Instance.IsSingularityThrown(true);
-        GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
+        velocity.y += Physics.gravity.y * Time.fixedDeltaTime;
+
+        /* Useless for the moment, idk yet
+        float verticalMultiplier = m_verticalVelocityCurve.Evaluate(normalizedTime);
+        velocity.y *= verticalMultiplier;
+        */
+
+        m_rigidbody.linearVelocity = velocity;
+
+    }
+    #endregion
+
+    #region Jump
+
+    public void Jump()
+    {
+        OnJump?.Invoke(m_rigidbody.linearVelocity);
     }
 
-    private Vector3 GetThrowDirection()
+    #endregion
+
+    #region Dash
+
+    public void Dash()
     {
-        Vector3 playerVelocityXZ = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-        return cameraRef.transform.forward + (playerVelocityXZ * 0.2f);
+        Transform cam = CameraManager.Instance.CurrentCam.transform;
+
+        Vector3 dashDir = cam.forward;
+        dashDir.y = 0;
+        dashDir.Normalize();
+
+        OnDash?.Invoke(m_rigidbody.linearVelocity, dashDir);
     }
 
-    private void ApplyThrowForce(Vector3 direction)
-    {
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-        rb.AddForce(direction.normalized * gameplayData.ThrowForce, ForceMode.Impulse);
-    }
+    #endregion
+
+    #region Collision Detection
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!isThrown || AlreadyCollided || collision == null) return;
+        if (SingularityCharacterFollowComponent.IsKinematicEnabled() || CharactersManager.Instance.SingularityMovingToCharacter) return;
 
-        AlreadyCollided = true;
-        CharactersManager.Instance.ChangePlayersTurn();
+        m_isThrown = false;
+        OnUnmorph?.Invoke();
     }
 
-    public void ResetThrowState(bool allowThrow)
-    {
-        isThrown = !allowThrow;
-        AlreadyCollided = false;
-        CharactersManager.Instance.IsSingularityThrown(false);
-    }
+    #endregion
 }
