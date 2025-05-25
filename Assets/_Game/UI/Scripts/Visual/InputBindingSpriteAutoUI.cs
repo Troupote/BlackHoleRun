@@ -14,7 +14,6 @@ namespace BHR
         private bool _inGame = false;
         [SerializeField, ShowIf(nameof(_hasCompositeElement))]
         private bool _useComposite;
-        protected enum DirectionComposite {NONE, up, right, down, left}
         [SerializeField, ShowIf(nameof(_useComposite)), ValidateInput(nameof(_directionIsNotNone))]
         private DirectionComposite _directionOfComposite = DirectionComposite.NONE;
         public InputBindingComposite test;
