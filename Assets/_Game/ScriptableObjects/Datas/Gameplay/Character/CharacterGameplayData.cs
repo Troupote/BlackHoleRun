@@ -7,7 +7,7 @@ public class CharacterGameplayData : ScriptableObject
 {
     [Title("General Settings")]
     [SerializeField]
-    private float m_cooldownBeforeThrowAllowed = 3f;
+    private float m_cooldownBeforeThrowAllowed = 2f;
 
     public float CooldownBeforeThrowAllowed => m_cooldownBeforeThrowAllowed;
 
@@ -17,9 +17,6 @@ public class CharacterGameplayData : ScriptableObject
     public float MaxDistanceBetweenPlayers => m_maxDistanceBetweenPlayers;
 
     [Title("Singularity Settings")]
-    [SerializeField]
-    private float m_secondsBeforeSpawningCharacterBackIfNoCollision = 4f;
-    public float SecondsBeforeSpawningCharacterBackIfNoCollision => m_secondsBeforeSpawningCharacterBackIfNoCollision;
 
     [SerializeField]
     private float m_throwForce = 30f;
@@ -33,6 +30,14 @@ public class CharacterGameplayData : ScriptableObject
     private AnimationCurve m_joinBackToCharacterSpeed;
 
     public AnimationCurve JoinBackToCharacterSpeed => m_joinBackToCharacterSpeed;
+
+    [SerializeField]
+    private float m_DashForce = 40f;
+    public float SingularityDashForce => m_DashForce;
+
+    [SerializeField]
+    private float m_JumpForce = 20f;
+    public float SingularityJumpForce => m_JumpForce;
 
     [Title("Character Settings")]
     [SerializeField]
@@ -50,6 +55,10 @@ public class CharacterGameplayData : ScriptableObject
     [SerializeField]
     private float m_dashCooldown = 1.5f;
     public float DashCooldown => m_dashCooldown;
+
+    [SerializeField]
+    private float m_gravityScale = 8f;
+    public float CharacterGravityScale => m_gravityScale;
 
     [Title("Camera Settings")]
     [SerializeField]

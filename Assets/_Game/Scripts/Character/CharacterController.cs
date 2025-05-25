@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     private CharacterBehavior m_characterBehavior;
     private Vector2 m_moveValue = Vector2.zero;
     private bool m_isInitialized = false;
+    private int aimCallCount = 0;
 
     void Start()
     {
@@ -21,7 +22,7 @@ public class PlayerController : MonoBehaviour
         m_isInitialized = true;
     }
 
-    private void OnEnable()
+private void OnEnable()
     {
         // Bind inputs 
         PlayersInputManager.Instance.OnHMove.AddListener(HandleMove);
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour
         PlayersInputManager.Instance.OnHDash.AddListener(HandleDash);
         PlayersInputManager.Instance.OnHThrow.AddListener(HandleThrowSingularity);
         PlayersInputManager.Instance.OnHAim.AddListener(HandleAim);
+        CharactersManager.Instance.ResetInputs += ResetInputs;
         //PlayersInputManager.Instance.OnHSlide.AddListener();
 
     }
@@ -41,6 +43,7 @@ public class PlayerController : MonoBehaviour
         PlayersInputManager.Instance.OnHDash.RemoveListener(HandleDash);
         PlayersInputManager.Instance.OnHThrow.RemoveListener(HandleThrowSingularity);
         PlayersInputManager.Instance.OnHAim.RemoveListener(HandleAim);
+        CharactersManager.Instance.ResetInputs -= ResetInputs;
         //PlayersInputManager.Instance.OnHSlide.RemoveListener();
     }
 
@@ -55,6 +58,10 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
+    private void ResetInputs()
+    {
+        m_moveValue = Vector2.zero;
+    }
     private void HandleMove(Vector2 a_movementValue)
     {
         m_moveValue = a_movementValue;
@@ -72,12 +79,34 @@ public class PlayerController : MonoBehaviour
 
     private void HandleThrowSingularity()
     {
-        m_moveValue = Vector2.zero;
+        if (!m_timeController.isFinished)
+        {
+            m_timeController.isSlowed = false;
+        }
+
+        m_timeController.isStarted = false;
+        m_timeController.isSlowed = false;
+
+        aimCallCount = 0;
         m_characterBehavior.OnThrowSingularity();
     }
 
     private void HandleAim()
     {
+        if (aimCallCount == 0)
+        {
+            aimCallCount++;
 
+            StartCoroutine(m_timeController.SlowmotionSequence());
+            m_timeController.isStarted = true;
+
+        }
+        else if (aimCallCount == 1)
+        {
+            m_timeController.isStarted = false;
+            m_timeController.isSlowed = false;
+
+            aimCallCount = 0;
+        }
     }
 }

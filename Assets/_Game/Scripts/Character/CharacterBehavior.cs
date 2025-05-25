@@ -1,5 +1,6 @@
 using BHR;
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class CharacterBehavior : MonoBehaviour
@@ -13,6 +14,7 @@ public class CharacterBehavior : MonoBehaviour
 
     private Vector3 currentVelocity;
     private bool m_isInitialized = false;
+
     public Action OnThrowInput;
 
     private float m_moveLockTimer = 0f;
@@ -27,14 +29,13 @@ public class CharacterBehavior : MonoBehaviour
 
     #region Life Cycle
 
-    private float m_gravityScale = 8f;
     private Vector3 m_gravity = Physics.gravity;
 
     private void FixedUpdate()
     {
         if (!m_isInitialized) return;
 
-        Vector3 gravityForce = m_gravity * m_gravityScale;
+        Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale;
         m_rigidbody.AddForce(gravityForce);
 
 
@@ -102,19 +103,21 @@ public class CharacterBehavior : MonoBehaviour
     public void OnSingularityJump(Vector3 a_linearVelocityToApply)
     {
         m_moveLockTimer = 0.5f;
-        // Apply total inherited velocity first
+
         m_rigidbody.linearVelocity = a_linearVelocityToApply;
 
-        // Add a slight upward boost *in addition* to the inherited Y
-        m_rigidbody.AddForce(Vector3.up * 5f, ForceMode.Impulse); // Optional: tweak strength
+        m_rigidbody.AddForce(Vector3.up * m_gameplayData.SingularityJumpForce, ForceMode.Impulse);
     }
 
     #endregion
 
     #region Dash
 
-    public void OnDash() // TBD: Add cooldown logic
+    private bool m_canDash = true;
+    public void OnDash()
     {
+        if (!m_canDash) return;
+
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
         Vector3 dashDir = cam.forward;
@@ -122,6 +125,25 @@ public class CharacterBehavior : MonoBehaviour
         dashDir.Normalize();
 
         m_rigidbody.AddForce(dashDir * m_gameplayData.DashForce, ForceMode.VelocityChange);
+
+        StartCoroutine(DashCooldown());
+    }
+
+    private IEnumerator DashCooldown()
+    {
+        m_canDash = false;
+
+        yield return new WaitForSeconds(m_gameplayData.DashCooldown);
+
+        m_canDash = true;
+    }
+
+    public void OnSingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
+    {
+        m_moveLockTimer = 0.5f;
+        m_rigidbody.linearVelocity = a_linearVelocityToApply;
+
+        m_rigidbody.AddForce(a_direction * m_gameplayData.SingularityDashForce, ForceMode.VelocityChange);
     }
 
     #endregion

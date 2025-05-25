@@ -17,6 +17,7 @@ public class SingularityBehavior : MonoBehaviour
     public Action OnThrowPerformed;
     public Action OnUnmorph;
     public Action<Vector3> OnJump;
+    public Action<Vector3, Vector3> OnDash;
 
     private bool m_isInitialized = false;
 
@@ -29,6 +30,7 @@ public class SingularityBehavior : MonoBehaviour
 
         m_isInitialized = true;
     }
+
     #region Life Cycle
 
     private void FixedUpdate()
@@ -42,6 +44,7 @@ public class SingularityBehavior : MonoBehaviour
 
     internal bool IsAllowedToBeThrown => SingularityCharacterFollowComponent.IsKinematicEnabled();
 
+    #region Move
     public void Move(Vector2 a_movementValue)
     {
         float moveX = a_movementValue.x;
@@ -52,6 +55,8 @@ public class SingularityBehavior : MonoBehaviour
 
         m_rigidbody.AddForce(curveDirection.normalized * CharactersManager.Instance.GameplayData.MovingCurveForce, ForceMode.Force);
     }
+
+    #endregion
 
     #region Throw
 
@@ -101,6 +106,21 @@ public class SingularityBehavior : MonoBehaviour
     public void Jump()
     {
         OnJump?.Invoke(m_rigidbody.linearVelocity);
+    }
+
+    #endregion
+
+    #region Dash
+
+    public void Dash()
+    {
+        Transform cam = CameraManager.Instance.CurrentCam.transform;
+
+        Vector3 dashDir = cam.forward;
+        dashDir.y = 0;
+        dashDir.Normalize();
+
+        OnDash?.Invoke(m_rigidbody.linearVelocity, dashDir);
     }
 
     #endregion

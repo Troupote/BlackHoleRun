@@ -26,6 +26,8 @@ public class SingularityController : MonoBehaviour
         PlayersInputManager.Instance.OnSMove.AddListener(HandleSingularityMove);
         PlayersInputManager.Instance.OnSUnmorph.AddListener(HandleUnMorphEarly);
         PlayersInputManager.Instance.OnSJump.AddListener(HandleJump);
+        PlayersInputManager.Instance.OnSDash.AddListener(HandleDash);
+        CharactersManager.Instance.ResetInputs += ResetInputs;
         // Bind toout le reste la
 
     }
@@ -36,6 +38,8 @@ public class SingularityController : MonoBehaviour
         PlayersInputManager.Instance.OnSMove.RemoveListener(HandleSingularityMove);
         PlayersInputManager.Instance.OnSUnmorph.RemoveListener(HandleUnMorphEarly);
         PlayersInputManager.Instance.OnSJump.RemoveListener(HandleJump);
+        PlayersInputManager.Instance.OnSDash.RemoveListener(HandleDash);
+        CharactersManager.Instance.ResetInputs -= ResetInputs;
         // Debing le reste
     }
 
@@ -49,6 +53,11 @@ public class SingularityController : MonoBehaviour
     }
 
     #endregion
+
+    private void ResetInputs()
+    {
+        m_moveValue = Vector2.zero;
+    }
 
     private void HandleSingularityMove(Vector2 a_movementValue)
     {
@@ -65,5 +74,9 @@ public class SingularityController : MonoBehaviour
         m_singularityBehavior.Jump();
     }
 
+    private void HandleDash()
+    {
+        m_singularityBehavior.Dash();
+    }
 
 }

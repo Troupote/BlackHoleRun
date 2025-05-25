@@ -26,6 +26,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     private SingularityBehavior m_singularityBehavior;
     private CharacterBehavior m_characterBehavior;
 
+    public Action ResetInputs;
+
     public override void Awake()
     {
         SetInstance(false);
@@ -60,6 +62,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.OnThrowPerformed += OnThrowPerformed;
         m_singularityBehavior.OnUnmorph += SwitchCharactersPositions;
         m_singularityBehavior.OnJump += OnSingularityJump;
+        m_singularityBehavior.OnDash += SingularityDash;
     }
 
     private void UnlistenToEvents()
@@ -68,6 +71,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_characterBehavior.OnThrowInput -= ThrowSingularity;
         m_singularityBehavior.OnUnmorph -= SwitchCharactersPositions;
         m_singularityBehavior.OnJump -= OnSingularityJump;
+        m_singularityBehavior.OnDash -= SingularityDash;
     }
 
     private bool AreObjectsInstancied() => m_isInstancied;
@@ -122,6 +126,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     public void SwitchCharactersPositions()
     {
         Vector3 singularityPosition = m_singularityObject.transform.position;
+        var oldCharacterPosition = m_characterObject.transform.position;
+
         RaycastHit hit;
         // To make sure the character does not get stuck underground
         if (Physics.Raycast(singularityPosition + Vector3.up * 0.5f, Vector3.down, out hit, 2.0f, groundLayer))
@@ -129,11 +135,11 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
             singularityPosition.y = hit.point.y + GetCharacterHeight();
         }
 
-        var oldCharacterPosition = m_characterObject.transform.position;
-        m_characterObject.transform.position = singularityPosition;
-        m_singularityObject.transform.position = oldCharacterPosition;
+        CorrectlySwitchPositionsOfPlayers(singularityPosition, oldCharacterPosition);
 
         CameraManager.Instance.SwitchCameraToCharacter(m_characterObject.transform.position);
+
+        ResetInputs?.Invoke();
 
         GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
 
@@ -145,6 +151,27 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         }));
     }
 
+    private void CorrectlySwitchPositionsOfPlayers(Vector3 a_singularityPosition, Vector3 a_oldCharacterPosition)
+    {
+        var rbCharacter = m_characterObject.GetComponent<Rigidbody>();
+        var rbSingularity = m_singularityObject.GetComponent<Rigidbody>();
+
+        var interpolationCharacter = rbCharacter.interpolation;
+        var interpolationSingularity = rbSingularity.interpolation;
+
+        rbCharacter.interpolation = RigidbodyInterpolation.None;
+        rbSingularity.interpolation = RigidbodyInterpolation.None;
+
+        rbCharacter.position = a_singularityPosition;
+        rbSingularity.position = a_oldCharacterPosition;
+
+        m_characterObject.transform.position = a_singularityPosition;
+        m_singularityObject.transform.position = a_oldCharacterPosition;
+
+        rbCharacter.interpolation = interpolationCharacter;
+        rbSingularity.interpolation = interpolationSingularity;
+    }
+
     internal bool SingularityMovingToCharacter { get; private set; } = false;
     private IEnumerator MoveSlowlySingularityToNewCharacter(Action onComplete = null)
     {
@@ -154,9 +181,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         Vector3 start = m_singularityObject.transform.position;
 
-        while (elapsed < 2f)
+        while (elapsed < m_gameplayData.CooldownBeforeThrowAllowed)
         {
-            float t = elapsed / 2f;
+            float t = elapsed / m_gameplayData.CooldownBeforeThrowAllowed;
             float curveT = m_gameplayData.JoinBackToCharacterSpeed.Evaluate(t); // To redo maybe
             Vector3 currentTarget = CameraManager.Instance.SingularityPlacementRefTransform.position;
 
@@ -197,6 +224,16 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         SwitchCharactersPositions();
         m_characterBehavior.OnSingularityJump(a_linearVelocityToApply);
+    }
+
+    #endregion
+
+    #region Singularity Dash
+
+    public void SingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
+    {
+        SwitchCharactersPositions();
+        m_characterBehavior.OnSingularityDash(a_linearVelocityToApply, a_direction);
     }
 
     #endregion
