@@ -25,7 +25,7 @@ public class SingularityController : MonoBehaviour
         // Bind inputs
         PlayersInputManager.Instance.OnSMove.AddListener(HandleSingularityMove);
         PlayersInputManager.Instance.OnSUnmorph.AddListener(HandleUnMorphEarly);
-        //PlayersInputManager.Instance.OnSJump.AddListener(Jump);
+        PlayersInputManager.Instance.OnSJump.AddListener(HandleJump);
         // Bind toout le reste la
 
     }
@@ -35,7 +35,7 @@ public class SingularityController : MonoBehaviour
         // Debind inputs
         PlayersInputManager.Instance.OnSMove.RemoveListener(HandleSingularityMove);
         PlayersInputManager.Instance.OnSUnmorph.RemoveListener(HandleUnMorphEarly);
-        //PlayersInputManager.Instance.OnSJump.RemoveListener(Jump);
+        PlayersInputManager.Instance.OnSJump.RemoveListener(HandleJump);
         // Debing le reste
     }
 
@@ -58,6 +58,11 @@ public class SingularityController : MonoBehaviour
     private void HandleUnMorphEarly()
     {
         m_singularityBehavior.OnUnmorph?.Invoke();
+    }
+
+    private void HandleJump()
+    {
+        m_singularityBehavior.Jump();
     }
 
 

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DevCharacterGameplayData
   m_EditorClassIdentifier: 
   m_cooldownBeforeThrowAllowed: 3
+  m_maxDistanceBetweenPlayers: 125
   m_secondsBeforeSpawningCharacterBackIfNoCollision: 15
   m_throwForce: 30
   m_movingCurveForce: 15

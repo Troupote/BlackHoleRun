@@ -14,6 +14,9 @@ public class CharacterBehavior : MonoBehaviour
     private Vector3 currentVelocity;
     private bool m_isInitialized = false;
     public Action OnThrowInput;
+
+    private float m_moveLockTimer = 0f;
+
     public void InitializeDependencies(CharacterGameplayData a_gameplayData)
     {
         m_rigidbody = GetComponent<Rigidbody>();
@@ -33,6 +36,17 @@ public class CharacterBehavior : MonoBehaviour
 
         Vector3 gravityForce = m_gravity * m_gravityScale;
         m_rigidbody.AddForce(gravityForce);
+
+
+        // Lock the move when Singularity Jump is performed
+        if (m_moveLockTimer > 0f)
+        {
+            m_moveLockTimer -= Time.fixedDeltaTime;
+            if (m_moveLockTimer <= 0f)
+            {
+                m_moveLockTimer = 0f;
+            }
+        }
     }
 
     #endregion
@@ -53,7 +67,7 @@ public class CharacterBehavior : MonoBehaviour
     #region Movement
     public void Move(Vector2 a_moveValue)
     {
-        if (m_rigidbody.isKinematic) return;
+        if (m_rigidbody.isKinematic || m_moveLockTimer > 0f) return;
 
         float moveX = a_moveValue.x;
         float moveZ = a_moveValue.y;
@@ -83,6 +97,16 @@ public class CharacterBehavior : MonoBehaviour
 
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
         m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
+    }
+
+    public void OnSingularityJump(Vector3 a_linearVelocityToApply)
+    {
+        m_moveLockTimer = 0.5f;
+        // Apply total inherited velocity first
+        m_rigidbody.linearVelocity = a_linearVelocityToApply;
+
+        // Add a slight upward boost *in addition* to the inherited Y
+        m_rigidbody.AddForce(Vector3.up * 5f, ForceMode.Impulse); // Optional: tweak strength
     }
 
     #endregion

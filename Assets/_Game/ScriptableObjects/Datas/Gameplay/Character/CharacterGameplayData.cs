@@ -11,6 +11,11 @@ public class CharacterGameplayData : ScriptableObject
 
     public float CooldownBeforeThrowAllowed => m_cooldownBeforeThrowAllowed;
 
+    [SerializeField]
+    private float m_maxDistanceBetweenPlayers = 125f;
+
+    public float MaxDistanceBetweenPlayers => m_maxDistanceBetweenPlayers;
+
     [Title("Singularity Settings")]
     [SerializeField]
     private float m_secondsBeforeSpawningCharacterBackIfNoCollision = 4f;

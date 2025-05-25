@@ -16,6 +16,7 @@ public class SingularityBehavior : MonoBehaviour
 
     public Action OnThrowPerformed;
     public Action OnUnmorph;
+    public Action<Vector3> OnJump;
 
     private bool m_isInitialized = false;
 
@@ -93,6 +94,15 @@ public class SingularityBehavior : MonoBehaviour
         m_rigidbody.linearVelocity = velocity;
 
     }
+    #endregion
+
+    #region Jump
+
+    public void Jump()
+    {
+        OnJump?.Invoke(m_rigidbody.linearVelocity);
+    }
+
     #endregion
 
     #region Collision Detection

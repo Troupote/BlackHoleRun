@@ -59,6 +59,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_characterBehavior.OnThrowInput += ThrowSingularity;
         m_singularityBehavior.OnThrowPerformed += OnThrowPerformed;
         m_singularityBehavior.OnUnmorph += SwitchCharactersPositions;
+        m_singularityBehavior.OnJump += OnSingularityJump;
     }
 
     private void UnlistenToEvents()
@@ -66,6 +67,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.OnThrowPerformed -= OnThrowPerformed;
         m_characterBehavior.OnThrowInput -= ThrowSingularity;
         m_singularityBehavior.OnUnmorph -= SwitchCharactersPositions;
+        m_singularityBehavior.OnJump -= OnSingularityJump;
     }
 
     private bool AreObjectsInstancied() => m_isInstancied;
@@ -81,6 +83,12 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(true);
     }
 
+    private bool IsDistanceBetweenPlayersExceeded()
+    {
+        return (Vector3.Distance(m_characterObject.transform.position, m_singularityObject.transform.position)
+            > m_gameplayData.MaxDistanceBetweenPlayers);
+    }
+
     #region Life Cycle
 
     private void FixedUpdate()
@@ -88,6 +96,18 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         if (!AreObjectsInstancied()) return;
 
     }
+
+    private void Update()
+    {
+        if (!AreObjectsInstancied()) return;
+
+        // Check if the distance between players is exceeded
+        if (IsDistanceBetweenPlayersExceeded() && !m_singularityBehavior.SingularityCharacterFollowComponent.IsKinematicEnabled())
+        {
+            SwitchCharactersPositions();
+        }
+    }
+
 
     #endregion
 
@@ -115,9 +135,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         CameraManager.Instance.SwitchCameraToCharacter(m_characterObject.transform.position);
 
-        m_characterBehavior.ImobilizeCharacter(false);
-
         GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
+
+        m_characterBehavior.ImobilizeCharacter(false);
 
         StartCoroutine(MoveSlowlySingularityToNewCharacter(() =>
         {
@@ -169,5 +189,15 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         CameraManager.Instance.SwitchCameraToSingularity();
     }
+    #endregion
+
+    #region Singularity Jump
+
+    private void OnSingularityJump(Vector3 a_linearVelocityToApply)
+    {
+        SwitchCharactersPositions();
+        m_characterBehavior.OnSingularityJump(a_linearVelocityToApply);
+    }
+
     #endregion
 }
