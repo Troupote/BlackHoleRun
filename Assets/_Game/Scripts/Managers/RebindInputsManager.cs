@@ -1,9 +1,10 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace BHR
 {
-    public class RebindInputsManager : MonoBehaviour
+    public class RebindInputsManager : ManagerSingleton<RebindInputsManager>
     {
 
         private void OnEnable()
@@ -29,5 +30,12 @@ namespace BHR
             SettingsManager.Instance.ApplyUserSettings();
             PlayersInputManager.Instance.ToggleCurrentAllowedInput();
         }
+
+        #region Rebinding
+        public bool IsRebinding { get; private set; }
+
+        public void ToggleRebinding(float time) => Invoke("ToggleRebinding",time);
+        public void ToggleRebinding() => IsRebinding = !IsRebinding;
+        #endregion
     }
 }

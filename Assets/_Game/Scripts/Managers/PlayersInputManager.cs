@@ -36,14 +36,18 @@ namespace BHR
             }
         }
 
-        public InputDevice CurrentAllowedDevice => CurrentAllowedInput switch
+        public InputDevice CurrentAllowedDevice => CurrentAllowedPlayerInput.devices[0];
+
+        public InputDevice CurrentActivePlayerDevice => CurrentActivePlayerInput.devices[0];
+        public PlayerControllerState CurrentActiveControllerState => PlayersControllerState[GameManager.Instance.ActivePlayerIndex];
+
+        public PlayerInput CurrentActivePlayerInput => PlayersInputControllerRef[GameManager.Instance.ActivePlayerIndex].GetComponent<PlayerInput>();
+        public PlayerInput CurrentAllowedPlayerInput => CurrentAllowedInput switch
         {
-            AllowedPlayerInput.FIRST_PLAYER => PlayersInputControllerRef[0].GetComponent<PlayerInput>().devices[0],
-            AllowedPlayerInput.SECOND_PLAYER => PlayersInputControllerRef[1].GetComponent<PlayerInput>().devices[0],
+            AllowedPlayerInput.FIRST_PLAYER => PlayersInputControllerRef[0].GetComponent<PlayerInput>(),
+            AllowedPlayerInput.SECOND_PLAYER => PlayersInputControllerRef[1].GetComponent<PlayerInput>(),
             _ => null
         };
-
-        public InputDevice CurrentActivePlayerDevice => PlayersInputControllerRef[GameManager.Instance.ActivePlayerIndex].GetComponent<PlayerInput>().devices[0];
 
 #if UNITY_EDITOR
         [Button] private void ForceAllowedInputState(AllowedPlayerInput state) => CurrentAllowedInput = state;
@@ -111,6 +115,9 @@ namespace BHR
         #region Input management
         public void HandleInput(InputAction.CallbackContext ctx, int playerIndex)
         {
+            if(RebindInputsManager.Instance.IsRebinding)
+                return;
+
             string actionMap = ctx.action.actionMap.name;
             //Debug.Log($"Player in {actionMap} state has {ctx.phase} {ctx.action.name} with {ctx.control.device.name}");
 
@@ -203,8 +210,8 @@ namespace BHR
                     else if (ctx.action.name == InputActions.Dash)
                         OnHDash.Invoke();
 
-                    else if (ctx.action.name == InputActions.Slide)
-                        OnHSlide.Invoke();
+                    //else if (ctx.action.name == InputActions.Slide)
+                    //    OnHSlide.Invoke();
 
                     else if (ctx.action.name == InputActions.Throw)
                         OnHThrow.Invoke();
@@ -248,8 +255,8 @@ namespace BHR
                     else if (ctx.action.name == InputActions.Dash)
                         OnSDash.Invoke(); // @todo link to singularity dash action
 
-                    else if (ctx.action.name == InputActions.Unmorph)
-                        OnSUnmorph.Invoke(); // @todo link to singularity unmorph action (if any)
+                    //else if (ctx.action.name == InputActions.Unmorph)
+                    //    OnSUnmorph.Invoke(); // @todo link to singularity unmorph action (if any)
                 }
             }
 

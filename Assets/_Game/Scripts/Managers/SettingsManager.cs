@@ -13,6 +13,7 @@ namespace BHR
 
         public UnityEvent OnGlobalDatasLoaded;
         public UnityEvent OnUserDatasLoaded;
+        public UnityEvent<string> OnUserBindingsLoaded;
 
         public UnityEvent OnUserSettingsApplied;
         public UnityEvent OnUserSettingsCanceled;
@@ -64,7 +65,7 @@ namespace BHR
             LoadAllSavedData();
         }
 
-        public void ResetUserSettings(InputDevice controller)
+        public void ResetAdvancedUserSettings(InputDevice controller)
         {
             SettingsSave.SaveSensitivityX(controller);
             SettingsSave.SaveSensitivityY(controller);
@@ -74,6 +75,12 @@ namespace BHR
             SettingsSave.SaveToggleAim(controller);
 
             LoadUserData(controller);
+        }
+
+        public void ResetBindingsSettings(InputDevice controller)
+        {
+            SettingsSave.SaveBindings(controller);
+            OnUserBindingsLoaded?.Invoke(SettingsSave.LoadBindings(controller));
         }
 
         private void LoadAllSavedData()

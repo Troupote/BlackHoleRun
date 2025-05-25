@@ -41,7 +41,10 @@ namespace BHR
             if (_inGame)
                 GameManager.Instance.OnMainPlayerStateChanged.AddListener((state, haveSwitched) => UpdateSprite());
             else
+            {
                 PlayersInputManager.Instance.OnAllowedInputChanged.AddListener((newAllowed) => UpdateSprite());
+                SettingsManager.Instance.OnUserBindingsLoaded.AddListener((bjson) => UpdateSprite());
+            }
         }
 
         private void OnDisable()
@@ -49,10 +52,13 @@ namespace BHR
             if (_inGame)
                 GameManager.Instance.OnMainPlayerStateChanged.RemoveListener((state, haveSwitched) => UpdateSprite());
             else
+            {
                 PlayersInputManager.Instance.OnAllowedInputChanged.RemoveListener((newAllowed) => UpdateSprite());
+                SettingsManager.Instance.OnUserBindingsLoaded.RemoveListener((bjson) => UpdateSprite());
+            }
         }
 
-        private void UpdateSprite()
+        public void UpdateSprite()
         {
             // If no need to change sprite 
             if ((_inGame && GameManager.Instance.ActivePlayerState == PlayerState.UI)
@@ -76,7 +82,7 @@ namespace BHR
 
             if(controlPathKey == null || controlPathKey == string.Empty || !spriteFinder.ContainsKey(controlPathKey))
             {
-                Debug.LogError($"Control path {controlPathKey} isn't in the dictionary / an allowed path on {gameObject.name}");
+                Debug.LogError($"Control path {controlPathKey} isn't in the dictionary / an allowed path on {gameObject.name}");    
                 controlPathKey = "None";
             }
 
