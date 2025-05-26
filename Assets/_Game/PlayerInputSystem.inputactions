@@ -291,7 +291,7 @@
                 {
                     "name": "",
                     "id": "d8854a60-7dfa-487e-b25f-560a4a7b2325",
-                    "path": "<Keyboard>/escape",
+                    "path": "<Keyboard>/p",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardMouse",
@@ -463,7 +463,7 @@
                 {
                     "name": "",
                     "id": "839bed8a-625b-418a-ae17-ea6ac1760947",
-                    "path": "<Keyboard>/escape",
+                    "path": "<Keyboard>/p",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardMouse",
@@ -1183,22 +1183,22 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "34328c0f-c8da-4c4e-803c-aa236478c577",
-                    "path": "<Keyboard>/escape",
+                    "id": "37a8dc73-761c-441d-94ac-25574e3883d5",
+                    "path": "*/{Menu}",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";KeyboardMouse",
+                    "groups": ";Gamepad",
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "37a8dc73-761c-441d-94ac-25574e3883d5",
-                    "path": "*/{Menu}",
+                    "id": "34328c0f-c8da-4c4e-803c-aa236478c577",
+                    "path": "<Keyboard>/p",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";KeyboardMouse",
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
