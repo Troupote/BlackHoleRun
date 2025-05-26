@@ -28,21 +28,66 @@ public class SingularityBehavior : MonoBehaviour
 
         SingularityCharacterFollowComponent.InititializeDependencies(this.transform, m_rigidbody);
 
+        ListenToEvents();
+
         m_isInitialized = true;
     }
+
+    public void ListenToEvents()
+    {
+        GameManager.Instance.OnPaused.AddListener(OnPaused);
+        GameManager.Instance.OnResumed.AddListener(OnResume);
+    }
+
+    public void UnlistenToEvents()
+    {
+        GameManager.Instance.OnPaused.RemoveListener(OnPaused);
+        GameManager.Instance.OnResumed.RemoveListener(OnResume);
+    }
+
+    #region On Pause
+
+    private bool m_isPaused = false;
+    private Vector3 m_oldVelocity;
+    private Vector3 m_oldAngularVelocity;
+
+    private void OnPaused()
+    {
+        if (SingularityCharacterFollowComponent.IsPickedUp) return;
+
+        m_isPaused = true;
+
+        m_oldVelocity = m_rigidbody.linearVelocity;
+        m_oldAngularVelocity = m_rigidbody.angularVelocity;
+        m_rigidbody.isKinematic = true;
+    }
+
+    private void OnResume()
+    {
+        if (SingularityCharacterFollowComponent.IsPickedUp) return;
+
+        m_rigidbody.isKinematic = false;
+        m_rigidbody.linearVelocity = m_oldVelocity;
+        m_rigidbody.angularVelocity = m_oldAngularVelocity;
+
+        m_isPaused = false;
+    }
+
+    #endregion
 
     #region Life Cycle
 
     private void FixedUpdate()
     {
-        if (!m_isInitialized) return;
+        if (!m_isInitialized || m_isPaused) return;
 
         HandleThrowCurve();
+
     }
 
     #endregion
 
-    internal bool IsAllowedToBeThrown => SingularityCharacterFollowComponent.IsKinematicEnabled();
+    internal bool IsAllowedToBeThrown => SingularityCharacterFollowComponent.IsPickedUp;
 
     #region Move
     public void Move(Vector2 a_movementValue)
@@ -82,7 +127,7 @@ public class SingularityBehavior : MonoBehaviour
 
     private void HandleThrowCurve()
     {
-        if (SingularityCharacterFollowComponent.IsKinematicEnabled()) return;
+        if (SingularityCharacterFollowComponent.IsPickedUp) return;
 
         m_throwTime += Time.fixedDeltaTime;
         float normalizedTime = m_throwTime / m_curveDuration;
@@ -129,7 +174,7 @@ public class SingularityBehavior : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (SingularityCharacterFollowComponent.IsKinematicEnabled() || CharactersManager.Instance.SingularityMovingToCharacter) return;
+        if (SingularityCharacterFollowComponent.IsPickedUp || CharactersManager.Instance.SingularityMovingToCharacter) return;
 
         m_isThrown = false;
         OnUnmorph?.Invoke();

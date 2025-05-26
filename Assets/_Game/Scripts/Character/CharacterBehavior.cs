@@ -24,8 +24,48 @@ public class CharacterBehavior : MonoBehaviour
         m_rigidbody = GetComponent<Rigidbody>();
         m_gameplayData = a_gameplayData;
 
+        ListenToEvents();
+
         m_isInitialized = true;
     }
+
+    public void ListenToEvents()
+    {
+        GameManager.Instance.OnPaused.AddListener(OnPaused);
+        GameManager.Instance.OnResumed.AddListener(OnResume);
+    }
+
+    public void UnlistenToEvents()
+    {
+        GameManager.Instance.OnPaused.RemoveListener(OnPaused);
+        GameManager.Instance.OnResumed.RemoveListener(OnResume);
+    }
+
+    #region On Pause
+
+    private bool m_isPaused = false;
+    private Vector3 m_oldVelocity;
+    private Vector3 m_oldAngularVelocity;
+
+    private void OnPaused()
+    {
+        m_isPaused = true;
+
+        m_oldVelocity = m_rigidbody.linearVelocity;
+        m_oldAngularVelocity = m_rigidbody.angularVelocity;
+        m_rigidbody.isKinematic = true;
+    }
+
+    private void OnResume()
+    {
+        m_rigidbody.isKinematic = false;
+        m_rigidbody.linearVelocity = m_oldVelocity;
+        m_rigidbody.angularVelocity = m_oldAngularVelocity;
+
+        m_isPaused = false;
+    }
+
+    #endregion
 
     #region Life Cycle
 
@@ -33,11 +73,10 @@ public class CharacterBehavior : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!m_isInitialized) return;
+        if (!m_isInitialized || m_isPaused) return;
 
         Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale;
-        m_rigidbody.AddForce(gravityForce);
-
+        m_rigidbody.AddForce(gravityForce * GameManager.Instance.GameTimeScale);
 
         // Lock the move when Singularity Jump is performed
         if (m_moveLockTimer > 0f)

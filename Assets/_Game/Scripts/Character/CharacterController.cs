@@ -31,6 +31,7 @@ private void OnEnable()
         PlayersInputManager.Instance.OnHThrow.AddListener(HandleThrowSingularity);
         PlayersInputManager.Instance.OnHAim.AddListener(HandleAim);
         CharactersManager.Instance.ResetInputs += ResetInputs;
+        GameManager.Instance.OnPaused.AddListener(ResetInputs);
         //PlayersInputManager.Instance.OnHSlide.AddListener();
 
     }
@@ -44,6 +45,7 @@ private void OnEnable()
         PlayersInputManager.Instance.OnHThrow.RemoveListener(HandleThrowSingularity);
         PlayersInputManager.Instance.OnHAim.RemoveListener(HandleAim);
         CharactersManager.Instance.ResetInputs -= ResetInputs;
+        GameManager.Instance.OnPaused.RemoveListener(ResetInputs);
         //PlayersInputManager.Instance.OnHSlide.RemoveListener();
     }
 

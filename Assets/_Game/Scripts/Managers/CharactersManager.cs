@@ -106,7 +106,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         if (!AreObjectsInstancied()) return;
 
         // Check if the distance between players is exceeded
-        if (IsDistanceBetweenPlayersExceeded() && !m_singularityBehavior.SingularityCharacterFollowComponent.IsKinematicEnabled())
+        if (IsDistanceBetweenPlayersExceeded() && !m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
         {
             SwitchCharactersPositions();
         }
@@ -183,6 +183,12 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         while (elapsed < m_gameplayData.CooldownBeforeThrowAllowed)
         {
+            if (GameManager.Instance.GameTimeScale == 0)
+            {
+                yield return null;
+                continue;
+            }
+
             float t = elapsed / m_gameplayData.CooldownBeforeThrowAllowed;
             float curveT = m_gameplayData.JoinBackToCharacterSpeed.Evaluate(t); // To redo maybe
             Vector3 currentTarget = CameraManager.Instance.SingularityPlacementRefTransform.position;
