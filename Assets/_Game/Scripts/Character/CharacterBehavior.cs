@@ -76,7 +76,7 @@ public class CharacterBehavior : MonoBehaviour
         if (!m_isInitialized || m_isPaused) return;
 
         Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale;
-        m_rigidbody.AddForce(gravityForce * GameManager.Instance.GameTimeScale);
+        m_rigidbody.AddForce(gravityForce);
 
         // Lock the move when Singularity Jump is performed
         if (m_moveLockTimer > 0f)
