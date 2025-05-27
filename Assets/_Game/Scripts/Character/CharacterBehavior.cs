@@ -124,6 +124,11 @@ public class CharacterBehavior : MonoBehaviour
         Vector3 moveDir = (camForward * moveZ + camRight * moveX).normalized;
         Vector3 targetVelocity = moveDir * m_gameplayData.PlayerSpeed;
 
+        if (!IsGrounded())
+        {
+            targetVelocity *= m_gameplayData.AirPlayerSpeedMultiplier;
+        }
+
         m_rigidbody.linearVelocity = Vector3.SmoothDamp(m_rigidbody.linearVelocity, new Vector3(targetVelocity.x, m_rigidbody.linearVelocity.y, targetVelocity.z), ref currentVelocity, 0.1f);
     }
 
@@ -137,6 +142,13 @@ public class CharacterBehavior : MonoBehaviour
 
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
         m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
+
+        // Reset dash cooldown if jumping
+        if (m_dashCooldownCoroutine != null)
+        {
+            StopCoroutine(m_dashCooldownCoroutine);
+            m_canDash = true;
+        }
     }
 
     public void OnSingularityJump(Vector3 a_linearVelocityToApply)
@@ -153,6 +165,7 @@ public class CharacterBehavior : MonoBehaviour
     #region Dash
 
     private bool m_canDash = true;
+    private Coroutine m_dashCooldownCoroutine;
     public void OnDash()
     {
         if (!m_canDash) return;
@@ -165,7 +178,7 @@ public class CharacterBehavior : MonoBehaviour
 
         m_rigidbody.AddForce(dashDir * m_gameplayData.DashForce, ForceMode.VelocityChange);
 
-        StartCoroutine(DashCooldown());
+        m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
     }
 
     private IEnumerator DashCooldown()

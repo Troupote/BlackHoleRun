@@ -40,13 +40,14 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_DashForce: 40
+  m_DashForce: 20
   m_JumpForce: 20
   m_playerSpeed: 50
   m_jumpForce: 35
   m_dashForce: 40
   m_dashCooldown: 1.5
   m_gravityScale: 8
+  m_airPlayerSpeedMultiplier: 0.8
   m_baseFOV: 60
   m_MovingForwardFOV: 65
   m_MovingBackwardFOV: 55

@@ -60,6 +60,10 @@ public class CharacterGameplayData : ScriptableObject
     private float m_gravityScale = 8f;
     public float CharacterGravityScale => m_gravityScale;
 
+    [SerializeField]
+    private float m_airPlayerSpeedMultiplier = 0.5f;
+    public float AirPlayerSpeedMultiplier => m_airPlayerSpeedMultiplier;
+
     [Title("Camera Settings")]
     [SerializeField]
     private float m_baseFOV = 60f;
