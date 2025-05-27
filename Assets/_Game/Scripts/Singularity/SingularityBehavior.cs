@@ -150,6 +150,10 @@ public class SingularityBehavior : MonoBehaviour
 
     public void Jump()
     {
+        if (m_gameplayData.ActivateMovementsLimit && 
+            CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Jump) ||
+            CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth()) return;
+
         OnJump?.Invoke(m_rigidbody.linearVelocity);
     }
 
@@ -159,6 +163,10 @@ public class SingularityBehavior : MonoBehaviour
 
     public void Dash()
     {
+        if (m_gameplayData.ActivateMovementsLimit &&
+            CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Dash) ||
+            CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth()) return;
+
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
         Vector3 dashDir = cam.forward;

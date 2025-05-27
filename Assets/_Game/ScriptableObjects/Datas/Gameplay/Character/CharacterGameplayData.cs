@@ -16,6 +16,10 @@ public class CharacterGameplayData : ScriptableObject
 
     public float MaxDistanceBetweenPlayers => m_maxDistanceBetweenPlayers;
 
+    [SerializeField]
+    private bool m_activateMovementsLimit = false;
+    public bool ActivateMovementsLimit => m_activateMovementsLimit;
+
     [Title("Singularity Settings")]
 
     [SerializeField]

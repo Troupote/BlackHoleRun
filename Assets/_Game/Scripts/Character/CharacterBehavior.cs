@@ -149,6 +149,8 @@ public class CharacterBehavior : MonoBehaviour
             StopCoroutine(m_dashCooldownCoroutine);
             m_canDash = true;
         }
+
+        CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
     }
 
     public void OnSingularityJump(Vector3 a_linearVelocityToApply)
@@ -179,6 +181,8 @@ public class CharacterBehavior : MonoBehaviour
         m_rigidbody.AddForce(dashDir * m_gameplayData.DashForce, ForceMode.VelocityChange);
 
         m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
+
+        CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
     }
 
     private IEnumerator DashCooldown()

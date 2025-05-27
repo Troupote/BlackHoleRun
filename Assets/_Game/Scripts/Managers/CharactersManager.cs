@@ -16,6 +16,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     internal CharacterGameplayData GameplayData => m_gameplayData;
 
+    [field: SerializeField]
+    internal LimitPlayersMovementsController LimitPlayersMovements { get; private set; } = null;
+
     [SerializeField]
     private LayerMask groundLayer;
 
@@ -142,6 +145,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         ResetInputs?.Invoke();
 
         GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
+
+        LimitPlayersMovements.ClearPerformedMovements();
 
         m_characterBehavior.ImobilizeCharacter(false);
 
