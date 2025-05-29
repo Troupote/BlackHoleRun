@@ -181,6 +181,7 @@ public class CharacterBehavior : MonoBehaviour
         dashDir.Normalize();
 
         m_rigidbody.AddForce(dashDir * m_gameplayData.DashForce, ForceMode.VelocityChange);
+        m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
         _isDashing = true;
         Invoke("ResetDashing", CharactersManager.Instance.GameplayData.DashDuration);
 
