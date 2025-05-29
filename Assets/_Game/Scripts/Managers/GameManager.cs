@@ -217,7 +217,9 @@ namespace BHR
             ChangeMainPlayerState(PlayerState.UI, false);
             LaunchLevel(withStartAnimation);
         }
-#endregion
+        #endregion
+
+        #region InGame gestion
         public void CleanInGame(bool late)
         {
             if(!late)
@@ -256,17 +258,6 @@ namespace BHR
             ModuleManager.Instance.ClearNavigationHistoric();
         }
 
-        private void Chrono()
-        {
-            if (IsPlaying || IsRespawning)
-                Timer += Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
-        }
-
-        private const float _outerWildsEasterEggBonus = -0.22f;
-        public void ILoveOuterWidls()
-        {
-            Timer += _outerWildsEasterEggBonus;
-        }
 
         public void ChangeMainPlayerState(PlayerState state, bool switchActivePlayer)
         {
@@ -293,5 +284,59 @@ namespace BHR
             }
             OnMainPlayerStateChanged?.Invoke(state, switchActivePlayer);
         }
+        #endregion
+
+        #region Time gestion
+        private void Chrono()
+        {
+            if (IsPlaying || IsRespawning)
+                Timer += Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
+        }
+
+        private const float _outerWildsEasterEggBonus = -0.22f;
+        public void ILoveOuterWidls()
+        {
+            Timer += _outerWildsEasterEggBonus;
+        }
+
+
+        public bool isSlowed = true;
+        public bool isFinished = false;
+        public bool isStarted = false;
+        public IEnumerator SlowmotionSequence()
+        {
+            if (!isStarted)
+            {
+                isStarted = true;
+                isSlowed = true;
+                isFinished = false;
+
+                StartCoroutine(ChangeTimeScale(GameManager.Instance.GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, CharactersManager.Instance.GameplayData.TriggerAimDuration));
+
+                //Wait until isSlowed becomes false
+                yield return new WaitUntil(() => isSlowed == false);
+
+                StartCoroutine(ChangeTimeScale(GameManager.Instance.GameTimeScale, 1f, CharactersManager.Instance.GameplayData.TriggerAimDuration));
+
+                isFinished = true;
+            }
+        }
+
+        IEnumerator ChangeTimeScale(float start, float end, float duration)
+        {
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                _gameTimeScale = Mathf.Lerp(start, end, elapsed / duration);
+                //Time.fixedDeltaTime = Time.timeScale * 0.02f;// ? que faire
+                elapsed += Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            _gameTimeScale = end;
+        }
+
+        #endregion
     }
 }

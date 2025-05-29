@@ -31,6 +31,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public Action ResetInputs;
 
+    public bool isHumanoidAiming = false;
+
     public override void Awake()
     {
         SetInstance(false);

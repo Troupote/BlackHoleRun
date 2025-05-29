@@ -68,6 +68,15 @@ public class CharacterGameplayData : ScriptableObject
     private float m_airPlayerSpeedMultiplier = 0.5f;
     public float AirPlayerSpeedMultiplier => m_airPlayerSpeedMultiplier;
 
+    [SerializeField]
+    private float m_triggerAimDuration;
+    public float TriggerAimDuration => m_triggerAimDuration;
+
+    [SerializeField]
+    private float m_targetAimTimeScale;
+    public float TargetAimTimeScale => m_targetAimTimeScale;
+
+
     [Title("Camera Settings")]
     [SerializeField]
     private float m_baseFOV = 60f;
@@ -78,4 +87,8 @@ public class CharacterGameplayData : ScriptableObject
     [SerializeField]
     private float m_MovingBackwardFOV = 50f;
     public float MovingBackwardFOV => m_MovingBackwardFOV;
+
+    [SerializeField]
+    private float m_targetAimFOV;
+    public float TargetAimFOV => m_targetAimFOV;
 }

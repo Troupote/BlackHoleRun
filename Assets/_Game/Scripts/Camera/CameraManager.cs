@@ -1,5 +1,6 @@
 using BHR;
 using Cinemachine;
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
@@ -135,7 +136,12 @@ public class CameraManager : ManagerSingleton<CameraManager>
         
         float currentFOV = PlayerCam.m_Lens.FieldOfView;
 
-        if (moveZ > 0)
+        if(CharactersManager.Instance.isHumanoidAiming)
+        {
+            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.TargetAimFOV, (Time.deltaTime * 3) / CharactersManager.Instance.GameplayData.TriggerAimDuration);
+            //DOTween.To(() => PlayerCam.m_Lens.FieldOfView, x => PlayerCam.m_Lens.FieldOfView = x, CharactersManager.Instance.GameplayData.TargetAimFOV, CharactersManager.Instance.GameplayData.TriggerAimDuration);
+        }
+        else if (moveZ > 0)
         {
             PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingForwardFOV, Time.deltaTime * 2);
         }

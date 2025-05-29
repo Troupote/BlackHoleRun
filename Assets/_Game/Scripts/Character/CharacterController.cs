@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private TimeControl m_timeController;
     private CharacterBehavior m_characterBehavior;
     private Vector2 m_moveValue = Vector2.zero;
     private bool m_isInitialized = false;
@@ -17,7 +16,6 @@ public class PlayerController : MonoBehaviour
     private void InitializeDependencies()
     {
         m_characterBehavior = GetComponent<CharacterBehavior>();
-        m_timeController = GameManager.Instance.gameObject.GetComponent<TimeControl>();
 
         m_isInitialized = true;
     }
@@ -81,13 +79,13 @@ private void OnEnable()
 
     private void HandleThrowSingularity()
     {
-        if (!m_timeController.isFinished)
+        if (!GameManager.Instance.isFinished)
         {
-            m_timeController.isSlowed = false;
+            GameManager.Instance.isSlowed = false;
         }
 
-        m_timeController.isStarted = false;
-        m_timeController.isSlowed = false;
+        GameManager.Instance.isStarted = false;
+        GameManager.Instance.isSlowed = false;
 
         aimCallCount = 0;
         m_characterBehavior.OnThrowSingularity();
@@ -99,16 +97,17 @@ private void OnEnable()
         {
             aimCallCount++;
 
-            StartCoroutine(m_timeController.SlowmotionSequence());
-            m_timeController.isStarted = true;
-
+            StartCoroutine(GameManager.Instance.SlowmotionSequence());
+            GameManager.Instance.isStarted = true;
+            CharactersManager.Instance.isHumanoidAiming = true;
         }
         else if (aimCallCount == 1)
         {
-            m_timeController.isStarted = false;
-            m_timeController.isSlowed = false;
+            GameManager.Instance.isStarted = false;
+            GameManager.Instance.isSlowed = false;
 
             aimCallCount = 0;
+            CharactersManager.Instance.isHumanoidAiming = false;
         }
     }
 }

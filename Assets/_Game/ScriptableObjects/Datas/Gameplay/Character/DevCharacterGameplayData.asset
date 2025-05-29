@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beda91f5e784f894aa9f28a42b90336a, type: 3}
   m_Name: DevCharacterGameplayData
   m_EditorClassIdentifier: 
-  m_cooldownBeforeThrowAllowed: 2
+  m_cooldownBeforeThrowAllowed: 10
   m_maxDistanceBetweenPlayers: 125
   m_activateMovementsLimit: 0
   m_throwForce: 30
@@ -49,6 +49,9 @@ MonoBehaviour:
   m_dashCooldown: 1.5
   m_gravityScale: 8
   m_airPlayerSpeedMultiplier: 0.8
+  m_triggerAimDuration: 0.4
+  m_targetAimTimeScale: 0.2
   m_baseFOV: 60
   m_MovingForwardFOV: 65
   m_MovingBackwardFOV: 55
+  m_targetAimFOV: 30
