@@ -21,6 +21,7 @@ namespace BHR
         private const string LEFT_STICK_DEADZONE_KEY = "LSDeadzone/"; private const float DEFAULT_LEFT_STICK_DEADZONE = 0f;
         private const string RIGHT_STICK_DEADZONE_KEY = "RSDeadzone/"; private const float DEFAULT_RIGHT_STICK_DEADZONE = 0.15f;
         private const string TOGGLE_AIM_KEY = "HoldOrToggleAim/"; private const int DEFAULT_TOGGLE_AIM = 0; // 0 : Hold | 1 : Toggle
+        private const string BINDINGS_KEY = "Bindings/"; public const string DEFAULT_BINDINGS = "default";
         #endregion
 
         #region Global settings save and load
@@ -73,6 +74,9 @@ namespace BHR
         /// <param name="controller"></param>
         /// <returns></returns>
         public static int LoadToggleAim(InputDevice controller) => PlayerPrefs.GetInt(TOGGLE_AIM_KEY + GetControllerKey(controller), DEFAULT_TOGGLE_AIM);
+
+        public static void SaveBindings(InputDevice controller, string value = DEFAULT_BINDINGS) => PlayerPrefs.SetString(BINDINGS_KEY + GetControllerKey(controller), value);
+        public static string LoadBindings(InputDevice controller) => PlayerPrefs.GetString(BINDINGS_KEY + GetControllerKey(controller), DEFAULT_BINDINGS);
         #endregion
     }
 }

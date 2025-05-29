@@ -27,6 +27,9 @@ namespace BHR
 
         public override void Back()
         {
+            if (RebindInputsManager.Instance.IsRebinding)
+                return;
+
             SettingsManager.Instance.CancelUserSettings();
             BackAction();
         }
@@ -75,7 +78,13 @@ namespace BHR
             _switchSettingsButton.GetComponentInChildren<TextMeshProUGUI>().text = _controlsPanel.activeSelf ? LocalizationManager.Localize(_advancedKey) : LocalizationManager.Localize(_controlsKey);
         }
 
-        public void ResetUserSettings() => SettingsManager.Instance.ResetUserSettings(PlayersInputManager.Instance.CurrentAllowedDevice);
+        public void ResetUserSettings()
+        {
+            if (_controlsPanel.activeSelf)
+                SettingsManager.Instance.ResetBindingsSettings(PlayersInputManager.Instance.CurrentAllowedDevice);
+            else
+                SettingsManager.Instance.ResetAdvancedUserSettings(PlayersInputManager.Instance.CurrentAllowedDevice);
+        }
 
         private void UpdateControllerInfos(AllowedPlayerInput currentAllowedInput)
         {

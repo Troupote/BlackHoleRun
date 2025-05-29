@@ -30,6 +30,10 @@ public class PlayerInputController : MonoBehaviour
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
+
+        ApplyRebinding(SettingsSave.LoadBindings(_playerInput.devices[0]));
+        SettingsManager.Instance.OnUserBindingsLoaded.AddListener(ApplyRebinding);
+        SettingsManager.Instance.OnUserSettingsCanceled.AddListener(() => ApplyRebinding(SettingsSave.LoadBindings(_playerInput.devices[0])));
     }
 
     IEnumerator InactiveOnJoinDelay(PlayerState state, float delay)
@@ -57,6 +61,14 @@ public class PlayerInputController : MonoBehaviour
                 action.canceled += HandleInput;
             }
         }
+    }
+
+    private void ApplyRebinding(string jsonBindings)
+    {
+        if (jsonBindings == SettingsSave.DEFAULT_BINDINGS)
+            _playerInput.actions.RemoveAllBindingOverrides();
+        else
+            _playerInput.actions.LoadBindingOverridesFromJson(jsonBindings);
     }
 
     private void HandleInput(InputAction.CallbackContext ctx)
