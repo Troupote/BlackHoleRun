@@ -92,7 +92,7 @@ namespace BHR
         #endregion
 
         public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
-        public UnityEvent OnPaused, OnResumed;
+        public UnityEvent OnPaused, OnResumed, OnRespawn;
 
         private void Start()
         {
@@ -245,6 +245,7 @@ namespace BHR
             ModuleManager.Instance.LaunchTransitionAnimation(true, transitionDuration);
             yield return new WaitForSeconds(transitionDuration);
             CheckpointsManager.Instance.ReplacePlayer();
+            OnRespawn?.Invoke();
             ModuleManager.Instance.LaunchTransitionAnimation(false, transitionDuration);
             yield return new WaitForSeconds(transitionDuration);
             _isRespawning = false;

@@ -30,6 +30,7 @@ private void OnEnable()
         PlayersInputManager.Instance.OnHAim.AddListener(HandleAim);
         CharactersManager.Instance.ResetInputs += ResetInputs;
         GameManager.Instance.OnPaused.AddListener(ResetInputs);
+        GameManager.Instance.OnRespawn.AddListener(ResetInputs);
         //PlayersInputManager.Instance.OnHSlide.AddListener();
 
     }
@@ -44,6 +45,7 @@ private void OnEnable()
         PlayersInputManager.Instance.OnHAim.RemoveListener(HandleAim);
         CharactersManager.Instance.ResetInputs -= ResetInputs;
         GameManager.Instance.OnPaused.RemoveListener(ResetInputs);
+        GameManager.Instance.OnRespawn.RemoveListener(ResetInputs);
         //PlayersInputManager.Instance.OnHSlide.RemoveListener();
     }
 

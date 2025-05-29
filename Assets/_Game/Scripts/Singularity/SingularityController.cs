@@ -29,6 +29,7 @@ public class SingularityController : MonoBehaviour
         PlayersInputManager.Instance.OnSDash.AddListener(HandleDash);
         CharactersManager.Instance.ResetInputs += ResetInputs;
         GameManager.Instance.OnPaused.AddListener(ResetInputs);
+        GameManager.Instance.OnRespawn.AddListener(ResetInputs);
     }
 
     private void OnDisable()
@@ -40,6 +41,7 @@ public class SingularityController : MonoBehaviour
         PlayersInputManager.Instance.OnSDash.RemoveListener(HandleDash);
         CharactersManager.Instance.ResetInputs -= ResetInputs;
         GameManager.Instance.OnPaused.RemoveListener(ResetInputs);
+        GameManager.Instance.OnRespawn.RemoveListener(ResetInputs);
     }
 
     #region Life Cycle
