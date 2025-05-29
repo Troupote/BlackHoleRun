@@ -41,11 +41,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_DashForce: 20
-  m_JumpForce: 20
-  m_playerSpeed: 50
+  m_DashForce: 30
+  m_JumpForce: 35
+  m_playerSpeed: 40
   m_jumpForce: 35
-  m_dashForce: 40
+  m_dashForce: 200
+  m_dashDuration: 0.2
   m_dashCooldown: 1.5
   m_gravityScale: 8
   m_airPlayerSpeedMultiplier: 0.8

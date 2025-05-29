@@ -19,6 +19,8 @@ public class CharacterBehavior : MonoBehaviour
 
     private float m_moveLockTimer = 0f;
 
+    private bool _isDashing;
+
     public void InitializeDependencies(CharacterGameplayData a_gameplayData)
     {
         m_rigidbody = GetComponent<Rigidbody>();
@@ -75,7 +77,7 @@ public class CharacterBehavior : MonoBehaviour
     {
         if (!m_isInitialized || m_isPaused) return;
 
-        Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale;
+        Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale * (_isDashing ? 0f: 1f);
         m_rigidbody.AddForce(gravityForce);
 
         // Lock the move when Singularity Jump is performed
@@ -179,11 +181,15 @@ public class CharacterBehavior : MonoBehaviour
         dashDir.Normalize();
 
         m_rigidbody.AddForce(dashDir * m_gameplayData.DashForce, ForceMode.VelocityChange);
+        _isDashing = true;
+        Invoke("ResetDashing", CharactersManager.Instance.GameplayData.DashDuration);
 
         m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
 
         CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
     }
+
+    private void ResetDashing() => _isDashing = false;
 
     private IEnumerator DashCooldown()
     {

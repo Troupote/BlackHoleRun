@@ -57,6 +57,10 @@ public class CharacterGameplayData : ScriptableObject
     public float DashForce => m_dashForce;
 
     [SerializeField]
+    private float m_dashDuration;
+    public float DashDuration => m_dashDuration;
+
+    [SerializeField]
     private float m_dashCooldown = 1.5f;
     public float DashCooldown => m_dashCooldown;
 
