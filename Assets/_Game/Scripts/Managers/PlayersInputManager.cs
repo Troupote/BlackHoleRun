@@ -49,6 +49,8 @@ namespace BHR
             _ => null
         };
 
+        private bool _isOnlyOnePlayerInputsAllowed = false;
+
 #if UNITY_EDITOR
         [Button] private void ForceAllowedInputState(AllowedPlayerInput state) => CurrentAllowedInput = state;
 #endif
@@ -269,11 +271,11 @@ namespace BHR
 
         private void SetAllowedInput(int playerIndex, bool disconnecting)
         {
-            if (ModuleManager.Instance.CurrentModule != ModuleManager.Instance.GetModule(ModuleType.MAP_REBINDING))
+            //if (ModuleManager.Instance.CurrentModule != ModuleManager.Instance.GetModule(ModuleType.MAP_REBINDING))
             {
                 if(PlayerConnectedCount() == 0)
                     CurrentAllowedInput = AllowedPlayerInput.NONE;
-                else if (PlayerConnectedCount() == 1)
+                else if (PlayerConnectedCount() == 1 || _isOnlyOnePlayerInputsAllowed)
                     CurrentAllowedInput = playerIndex == 0 || disconnecting ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.SECOND_PLAYER;
                 else if (PlayerConnectedCount() == 2)
                     CurrentAllowedInput = AllowedPlayerInput.BOTH;
@@ -290,6 +292,7 @@ namespace BHR
             {
                 CurrentAllowedInput = PlayersInputControllerRef.Length <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.BOTH;
             }
+            _isOnlyOnePlayerInputsAllowed = enable;
         }
 
         public void ToggleCurrentAllowedInput()
