@@ -6,6 +6,8 @@ public class FmodEventsCreator : MonoBehaviour
     [field: Header("Player SFX")]
 	[field: SerializeField] public EventReference playerFootsetps {get; private set;}
 
+    [field: Header("Wind Ambient")]
+    [field: SerializeField] public EventReference windAmbient {get; private set;}
 
 	[field: Header("Throw Black Hole")]
     [field: SerializeField] public EventReference blackHoleTrowSfx {get; private set;}

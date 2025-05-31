@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
@@ -5,9 +7,12 @@ using FMOD.Studio;
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] public float SFXVolume;
+    [SerializeField] public float AmbiantVolume;
     [SerializeField] public float MusicVolume;
     [SerializeField] public float MasterVolume;
 
+    private List<EventInstance> ListEvents;
+    
     /// <summary>
     /// Instance unique de AudioManager accessible globalement
     /// </summary>
@@ -20,7 +25,10 @@ public class AudioManager : MonoBehaviour
             Debug.LogError("Tia tout chier debilus retire le component AudioManager de tous les objets et ne le met que sur un seul objet");
         }
         Instance = this;
+        
+        ListEvents = new List<EventInstance>();
     }
+   
 
     /// <summary>
     /// Joue un son une seule fois à une position spécifique
@@ -40,6 +48,7 @@ public class AudioManager : MonoBehaviour
     public EventInstance CreateEventInstance(EventReference soundReference)
     {
         EventInstance eventInstance = RuntimeManager.CreateInstance(soundReference);
+        ListEvents.Add(eventInstance);
         return eventInstance;
     }
 
@@ -81,5 +90,23 @@ public class AudioManager : MonoBehaviour
         eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject.transform.position));
     }
     
+    /// <summary>
+    /// Arrête et libère toutes les instances d'événements sonores gérées par l'AudioManager.
+    /// </summary>
+    public void Cleanup()
+    {
+        foreach (var eventInstance in ListEvents)
+        {
+            eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            eventInstance.release();
+        }
+    }
     
+    /// <summary>
+    /// Destruction de l'AudioManager, nettoie les événements en cours.
+    /// </summary>
+    private void OnDestroy()
+    {
+        Cleanup();
+    }
 }

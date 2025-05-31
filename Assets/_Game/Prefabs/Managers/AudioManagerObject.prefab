@@ -51,6 +51,13 @@ MonoBehaviour:
       Data3: -933893742
       Data4: 480699373
     Path: event:/FootstepsRunning
+  <windAmbient>k__BackingField:
+    Guid:
+      Data1: -698885676
+      Data2: 1297339234
+      Data3: -1531222855
+      Data4: 1785685218
+    Path: event:/Ambient/Wind
   <blackHoleTrowSfx>k__BackingField:
     Guid:
       Data1: 1465492879
@@ -138,6 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccb88c2acad9605428309be747639955, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SFXVolume: 1
+  SFXVolume: 0.05
+  AmbiantVolume: 0.2
   MusicVolume: 1
   MasterVolume: 1
