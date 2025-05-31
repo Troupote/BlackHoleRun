@@ -113,6 +113,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
             StopCoroutine(BringNewSingularityToNewCharacterCoroutine);
             BringNewSingularityToNewCharacterCoroutine = null;
             m_isSwitching = false;
+            m_singularityBehavior.SetIgnoreCollision(false);
         }
 
         var rbCharacter = m_characterObject.GetComponent<Rigidbody>();
@@ -180,8 +181,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         if (m_isSwitching) return;
 
-        Debug.Log("SwitchCharactersPositions called");
-
         m_isSwitching = true;
 
         HideSingularityPreview();
@@ -217,7 +216,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private void CorrectlySwitchPositionsOfPlayers(Vector3 a_singularityPosition, Vector3 a_oldCharacterPosition)
     {
-        Debug.Log("CorrectlySwitchPositionsOfPlayers called");
         var rbCharacter = m_characterObject.GetComponent<Rigidbody>();
         var rbSingularity = m_singularityObject.GetComponent<Rigidbody>();
 
@@ -242,20 +240,18 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     }
     private IEnumerator MoveSlowlySingularityToNewCharacter(Action onComplete = null)
     {
-        Debug.Log("MoveSlowlySingularityToNewCharacter called");
         m_singularityBehavior.SetIgnoreCollision(true);
 
         yield return new WaitForSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
 
         Transform targetTransform = CameraManager.Instance.SingularityPlacementRefTransform;
-        float moveSpeed = 100f;
 
         while (Vector3.Distance(m_singularityObject.transform.position, targetTransform.position) > 1f)
         {
             m_singularityObject.transform.position = Vector3.MoveTowards(
                 m_singularityObject.transform.position,
                 targetTransform.position,
-                moveSpeed * Time.deltaTime);
+                m_gameplayData.ComingBackSpeed * Time.deltaTime);
 
             yield return null;
         }
@@ -278,8 +274,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         if (!m_singularityBehavior.IsAllowedToBeThrown) return;
 
-        Debug.Log("ThrowSingularity called");
-
         m_singularityBehavior.OnThrow();
         m_characterBehavior.ImobilizeCharacter(true);
         ShowSingularityPreview();
@@ -288,7 +282,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private void OnThrowPerformed()
     {
-        Debug.Log("OnThrowPerformed called");
         CameraManager.Instance.SwitchCameraToSingularity();
     }
     #endregion
@@ -297,7 +290,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private void OnSingularityJump(Vector3 a_linearVelocityToApply)
     {
-        Debug.Log("OnSingularityJump called");
         SwitchCharactersPositions();
         m_characterBehavior.OnSingularityJump(a_linearVelocityToApply);
     }
@@ -308,7 +300,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void SingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
     {
-        Debug.Log("Singularity Dash called");
         SwitchCharactersPositions();
         m_characterBehavior.OnSingularityDash(a_linearVelocityToApply, a_direction);
     }

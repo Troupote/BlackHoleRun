@@ -110,7 +110,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.3
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2383606387045205512
 MonoBehaviour:
@@ -125,40 +125,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <SingularityCharacterFollowComponent>k__BackingField: {fileID: 3849761146508189987}
-  m_verticalVelocityCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: -0.093526065
-      outSlope: -0.093526065
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.48820955
-      value: 0.9543397
-      inSlope: -0.3124042
-      outSlope: -0.3124042
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.19904317
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -1.8647078
-      outSlope: -1.8647078
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  m_curveDuration: 5
 --- !u!54 &9170475032202126854
 Rigidbody:
   m_ObjectHideFlags: 0

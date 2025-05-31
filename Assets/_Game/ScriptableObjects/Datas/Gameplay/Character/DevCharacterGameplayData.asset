@@ -13,36 +13,15 @@ MonoBehaviour:
   m_Name: DevCharacterGameplayData
   m_EditorClassIdentifier: 
   m_cooldownBeforeThrowAllowed: 4
+  m_comingBackSpeed: 100
   m_maxDistanceBetweenPlayers: 125
   m_activateMovementsLimit: 0
   m_throwForce: 30
   m_movingCurveForce: 15
-  m_joinBackToCharacterSpeed:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1.5
-      outSlope: 1.5
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1.5
-      inSlope: 1.5
-      outSlope: 1.5
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   m_DashForce: 30
   m_JumpForce: 35
+  m_gravityDelayDuration: 0.5
+  m_gravityMultiplier: 2
   m_playerSpeed: 40
   m_jumpForce: 35
   m_dashForce: 200

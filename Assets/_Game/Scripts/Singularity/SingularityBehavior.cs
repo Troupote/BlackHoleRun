@@ -111,10 +111,6 @@ public class SingularityBehavior : MonoBehaviour
 
     #region Throw
 
-    [SerializeField]
-    private AnimationCurve m_verticalVelocityCurve;
-    [SerializeField]
-    private float m_curveDuration = 2f;
     private bool m_isThrown = false;
     private float m_throwTime = 0f;
 
@@ -134,22 +130,29 @@ public class SingularityBehavior : MonoBehaviour
 
     private void HandleThrowCurve()
     {
-        if (SingularityCharacterFollowComponent.IsPickedUp || m_ignoreUnmorph) return;
+        if (SingularityCharacterFollowComponent.IsPickedUp) return;
 
-        m_throwTime += Time.fixedDeltaTime;
-        float normalizedTime = m_throwTime / m_curveDuration;
+        Debug.Log("Handling Throw Curve for Singularity");
 
         Vector3 velocity = m_rigidbody.linearVelocity;
 
-        velocity.y += Physics.gravity.y * Time.fixedDeltaTime;
+        if (m_throwTime >= m_gameplayData.GravityDelayDuration)
+        {
+            velocity.y += Physics.gravity.y * Time.fixedDeltaTime * m_gameplayData.GravityMultiplier;
+            m_rigidbody.linearVelocity = velocity;
+        }
 
-        /* Useless for the moment, idk yet
-        float verticalMultiplier = m_verticalVelocityCurve.Evaluate(normalizedTime);
-        velocity.y *= verticalMultiplier;
-        */
+        m_throwTime += Time.fixedDeltaTime;
+
+        /*
+        var curveParam = m_gameplayData.GravityCurveMultiplier.Evaluate(m_throwTime / m_gameplayData.GravityDelayDuration);
+
+        velocity.y += Physics.gravity.y * Time.fixedDeltaTime * curveParam;
 
         m_rigidbody.linearVelocity = velocity;
 
+        Debug.DrawRay(transform.position, Vector3.down * curveParam, Color.blue, 0.1f);
+        */
     }
     #endregion
 
@@ -160,8 +163,6 @@ public class SingularityBehavior : MonoBehaviour
         if (m_gameplayData.ActivateMovementsLimit && 
             (CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Jump) ||
             CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth())) return;
-
-        Debug.Log("SJump performed");
 
         OnJump?.Invoke(m_rigidbody.linearVelocity);
     }
@@ -175,8 +176,6 @@ public class SingularityBehavior : MonoBehaviour
         if (m_gameplayData.ActivateMovementsLimit &&
             (CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Dash) ||
             CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth())) return;
-
-        Debug.Log("SDash performed");
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
@@ -204,7 +203,6 @@ public class SingularityBehavior : MonoBehaviour
     {
         if (SingularityCharacterFollowComponent.IsPickedUp || m_ignoreUnmorph) return;
 
-        Debug.Log("Singularity collided with: " + collision.gameObject.name);
         m_isThrown = false;
         OnUnmorph?.Invoke();
     }

@@ -12,6 +12,10 @@ public class CharacterGameplayData : ScriptableObject
     public float CooldownBeforeThrowAllowed => m_cooldownBeforeThrowAllowed;
 
     [SerializeField]
+    private float m_comingBackSpeed = 100f;
+    public float ComingBackSpeed => m_comingBackSpeed;
+
+    [SerializeField]
     private float m_maxDistanceBetweenPlayers = 125f;
 
     public float MaxDistanceBetweenPlayers => m_maxDistanceBetweenPlayers;
@@ -30,11 +34,6 @@ public class CharacterGameplayData : ScriptableObject
     private float m_movingCurveForce = 15f;
     public float MovingCurveForce => m_movingCurveForce;
 
-    [SerializeField] 
-    private AnimationCurve m_joinBackToCharacterSpeed;
-
-    public AnimationCurve JoinBackToCharacterSpeed => m_joinBackToCharacterSpeed;
-
     [SerializeField]
     private float m_DashForce = 40f;
     public float SingularityDashForce => m_DashForce;
@@ -42,6 +41,15 @@ public class CharacterGameplayData : ScriptableObject
     [SerializeField]
     private float m_JumpForce = 20f;
     public float SingularityJumpForce => m_JumpForce;
+
+    [SerializeField]
+    [Tooltip("The delay before the singularity starts falling after being thrown.")]
+    private float m_gravityDelayDuration = 1f;
+    public float GravityDelayDuration => m_gravityDelayDuration;
+
+    [SerializeField]
+    private float m_gravityMultiplier = 2f;
+    public float GravityMultiplier => m_gravityMultiplier;
 
     [Title("Character Settings")]
     [SerializeField]
