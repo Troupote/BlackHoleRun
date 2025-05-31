@@ -20,7 +20,7 @@ public class SingularityCharacterFollowComponent : MonoBehaviour
         SetKinematicState(true);
     }
     internal bool IsPickedUp { get => m_isPickedUp; }
-    private void SetKinematicState(bool isKinematic)
+    public void SetKinematicState(bool isKinematic)
     {
          m_rigidbody.isKinematic = isKinematic;
          m_rigidbody.detectCollisions = !isKinematic;

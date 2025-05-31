@@ -12,12 +12,18 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     private GameObject m_singularityPrefab;
 
     [SerializeField]
+    private GameObject m_singularityPreviewPrefab;
+
+    [SerializeField]
     private CharacterGameplayData m_gameplayData;
 
     internal CharacterGameplayData GameplayData => m_gameplayData;
 
     [field: SerializeField]
     internal LimitPlayersMovementsController LimitPlayersMovements { get; private set; } = null;
+
+    [field: SerializeField]
+    internal NewSingularityPreviewController SingularityPreviewController { get; private set; } = null;
 
     [SerializeField]
     private LayerMask groundLayer;
@@ -32,6 +38,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     public Action ResetInputs;
 
     public bool isHumanoidAiming = false;
+
+    internal bool CanThrow => m_singularityBehavior.IsAllowedToBeThrown;
 
     public override void Awake()
     {
@@ -68,6 +76,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.OnUnmorph += SwitchCharactersPositions;
         m_singularityBehavior.OnJump += OnSingularityJump;
         m_singularityBehavior.OnDash += SingularityDash;
+
+        GameManager.Instance.OnRespawn.AddListener(HardReset);
     }
 
     private void UnlistenToEvents()
@@ -77,6 +87,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.OnUnmorph -= SwitchCharactersPositions;
         m_singularityBehavior.OnJump -= OnSingularityJump;
         m_singularityBehavior.OnDash -= SingularityDash;
+
+        GameManager.Instance.OnRespawn.RemoveListener(HardReset);
     }
 
     private bool AreObjectsInstancied() => m_isInstancied;
@@ -91,6 +103,40 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_characterObject.transform.position = a_position;
         m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(true);
     }
+
+    public void HardReset()
+    {
+        Debug.Log("Hard Reset Characters Manager");
+
+        if (BringNewSingularityToNewCharacterCoroutine != null)
+        {
+            StopCoroutine(BringNewSingularityToNewCharacterCoroutine);
+            BringNewSingularityToNewCharacterCoroutine = null;
+            m_isSwitching = false;
+        }
+
+        var rbCharacter = m_characterObject.GetComponent<Rigidbody>();
+        rbCharacter.linearVelocity = Vector3.zero;
+        rbCharacter.angularVelocity = Vector3.zero;
+
+        var rbSingularity = m_singularityObject.GetComponent<Rigidbody>();
+        rbSingularity.linearVelocity = Vector3.zero;
+        rbSingularity.angularVelocity = Vector3.zero;
+
+        m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(true);
+
+        CameraManager.Instance.SwitchCameraToCharacter(m_characterObject.transform.position);
+        GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
+        m_characterBehavior.ImobilizeCharacter(false);
+
+        ResetInputs?.Invoke();
+
+        if (m_gameplayData.ActivateMovementsLimit)
+        {
+            LimitPlayersMovements.ClearPerformedMovements();
+        }
+    }
+
 
     private bool IsDistanceBetweenPlayersExceeded()
     {
@@ -122,14 +168,24 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     #region Switch Characters
 
+    private Coroutine BringNewSingularityToNewCharacterCoroutine;
     float GetCharacterHeight()
     {
         CapsuleCollider collider = m_characterObject.GetComponent<CapsuleCollider>();
         return collider ? collider.height : 2.0f;
     }
 
+    private bool m_isSwitching = false;
     public void SwitchCharactersPositions()
     {
+        if (m_isSwitching) return;
+
+        Debug.Log("SwitchCharactersPositions called");
+
+        m_isSwitching = true;
+
+        HideSingularityPreview();
+
         Vector3 singularityPosition = m_singularityObject.transform.position;
         var oldCharacterPosition = m_characterObject.transform.position;
 
@@ -148,11 +204,12 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
 
-        LimitPlayersMovements.ClearPerformedMovements();
+        if (m_gameplayData.ActivateMovementsLimit)
+            LimitPlayersMovements.ClearPerformedMovements();
 
         m_characterBehavior.ImobilizeCharacter(false);
 
-        StartCoroutine(MoveSlowlySingularityToNewCharacter(() =>
+        BringNewSingularityToNewCharacterCoroutine = StartCoroutine(MoveSlowlySingularityToNewCharacter(() =>
         {
             m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(true);
         }));
@@ -160,6 +217,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private void CorrectlySwitchPositionsOfPlayers(Vector3 a_singularityPosition, Vector3 a_oldCharacterPosition)
     {
+        Debug.Log("CorrectlySwitchPositionsOfPlayers called");
         var rbCharacter = m_characterObject.GetComponent<Rigidbody>();
         var rbSingularity = m_singularityObject.GetComponent<Rigidbody>();
 
@@ -177,41 +235,41 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         rbCharacter.interpolation = interpolationCharacter;
         rbSingularity.interpolation = interpolationSingularity;
-    }
 
-    internal bool SingularityMovingToCharacter { get; private set; } = false;
+        rbSingularity.isKinematic = true;
+
+        SingularityPreviewController.Deflate();
+    }
     private IEnumerator MoveSlowlySingularityToNewCharacter(Action onComplete = null)
     {
-        SingularityMovingToCharacter = true;
+        Debug.Log("MoveSlowlySingularityToNewCharacter called");
+        m_singularityBehavior.SetIgnoreUnmorph(true);
 
-        float elapsed = 0f;
+        yield return new WaitForSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
 
-        Vector3 start = m_singularityObject.transform.position;
+        Transform targetTransform = CameraManager.Instance.SingularityPlacementRefTransform;
+        float moveSpeed = 100f;
 
-        while (elapsed < m_gameplayData.CooldownBeforeThrowAllowed)
+        while (Vector3.Distance(m_singularityObject.transform.position, targetTransform.position) > 1f)
         {
-            if (GameManager.Instance.GameTimeScale == 0)
-            {
-                yield return null;
-                continue;
-            }
+            m_singularityObject.transform.position = Vector3.MoveTowards(
+                m_singularityObject.transform.position,
+                targetTransform.position,
+                moveSpeed * Time.deltaTime);
 
-            float t = elapsed / m_gameplayData.CooldownBeforeThrowAllowed;
-            float curveT = m_gameplayData.JoinBackToCharacterSpeed.Evaluate(t); // To redo maybe
-            Vector3 currentTarget = CameraManager.Instance.SingularityPlacementRefTransform.position;
-
-            m_singularityObject.transform.position = Vector3.Lerp(start, currentTarget, curveT);
-
-            elapsed += Time.deltaTime;
             yield return null;
         }
 
-        m_singularityObject.transform.position = CameraManager.Instance.SingularityPlacementRefTransform.position;
+
+        m_singularityObject.transform.position = targetTransform.position;
 
         onComplete?.Invoke();
 
-        SingularityMovingToCharacter = false;
+        m_singularityBehavior.SetIgnoreUnmorph(false);
+
+        m_isSwitching = false;
     }
+
 
     #endregion
 
@@ -220,13 +278,17 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         if (!m_singularityBehavior.IsAllowedToBeThrown) return;
 
+        Debug.Log("ThrowSingularity called");
+
         m_singularityBehavior.OnThrow();
         m_characterBehavior.ImobilizeCharacter(true);
+        ShowSingularityPreview();
         GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
     }
 
     private void OnThrowPerformed()
     {
+        Debug.Log("OnThrowPerformed called");
         CameraManager.Instance.SwitchCameraToSingularity();
     }
     #endregion
@@ -235,6 +297,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private void OnSingularityJump(Vector3 a_linearVelocityToApply)
     {
+        Debug.Log("OnSingularityJump called");
         SwitchCharactersPositions();
         m_characterBehavior.OnSingularityJump(a_linearVelocityToApply);
     }
@@ -245,8 +308,25 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void SingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
     {
+        Debug.Log("Singularity Dash called");
         SwitchCharactersPositions();
         m_characterBehavior.OnSingularityDash(a_linearVelocityToApply, a_direction);
+    }
+
+    #endregion
+
+    #region Manage Singularity Preview
+
+    private void ShowSingularityPreview()
+    {
+        SingularityPreviewController.Inflate(m_characterObject.transform);
+        m_characterObject.SetActive(false);
+    }
+
+    private void HideSingularityPreview()
+    {
+        SingularityPreviewController.Deflate();
+        m_characterObject.SetActive(true);
     }
 
     #endregion

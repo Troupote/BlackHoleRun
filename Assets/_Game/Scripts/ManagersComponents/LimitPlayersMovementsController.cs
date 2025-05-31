@@ -1,3 +1,4 @@
+using BHR;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,8 @@ public class LimitPlayersMovementsController : MonoBehaviour
 
     public void OnCharacterMovementTypePerformed(CharacterMovementType a_newMovementType)
     {
+        if (!CharactersManager.Instance.GameplayData.ActivateMovementsLimit) return;
+
         m_performedMovementTypes.Add(a_newMovementType);
     }
 

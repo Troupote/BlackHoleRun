@@ -59,6 +59,9 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayersInputManager.Instance.OnHLook.AddListener(HandleLook);
         PlayersInputManager.Instance.OnSLook.AddListener(HandleLook);
         PlayersInputManager.Instance.OnHMove.AddListener(HandlePlayerMove);
+
+        GameManager.Instance.OnRespawn.AddListener(ResetInputs);
+        GameManager.Instance.OnPaused.AddListener(ResetInputs);
     }
 
     private void OnDisable()
@@ -67,12 +70,23 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayersInputManager.Instance.OnHLook.RemoveListener(HandleLook);
         PlayersInputManager.Instance.OnSLook.RemoveListener(HandleLook);
         PlayersInputManager.Instance.OnHMove.RemoveListener(HandlePlayerMove);
+
+        GameManager.Instance.OnRespawn.RemoveListener(ResetInputs);
+        GameManager.Instance.OnPaused.RemoveListener(ResetInputs);
     }
 
     internal bool IsBlending => MainCamBrain.IsBlending;
 
+    private void ResetInputs()
+    {
+        lookValue = Vector2.zero;
+        playerMoveValue = Vector2.zero;
+    }
+
     public void SwitchCameraToSingularity()
     {
+        if (CurrentCam == SingularityCam) return;
+
         initialRotationY = transform.eulerAngles.y;
         rotationY = initialRotationY;
 
@@ -85,6 +99,8 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     public void SwitchCameraToCharacter(Vector3 a_characterPosition)
     {
+        if (CurrentCam == PlayerCam) return;
+
         PlayerCam.transform.position = a_characterPosition;
         PlayerCam.transform.rotation = SingularityCam.transform.rotation;
 

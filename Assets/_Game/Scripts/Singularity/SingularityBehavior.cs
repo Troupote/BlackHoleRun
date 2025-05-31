@@ -92,14 +92,21 @@ public class SingularityBehavior : MonoBehaviour
     #region Move
     public void Move(Vector2 a_movementValue)
     {
-        float moveX = a_movementValue.x;
-
         if (a_movementValue.x == 0) return;
 
-        Vector3 curveDirection = transform.right * moveX;
+        // Calculate current forward direction based on velocity
+        Vector3 velocity = m_rigidbody.linearVelocity;
+        if (velocity.sqrMagnitude < 0.01f) return; // Avoid division by zero or bad curve at near-zero speed
 
-        m_rigidbody.AddForce(curveDirection.normalized * CharactersManager.Instance.GameplayData.MovingCurveForce, ForceMode.Force);
+        Vector3 forwardDir = velocity.normalized;
+        Vector3 rightDir = Vector3.Cross(Vector3.up, forwardDir).normalized;
+
+        // Apply curve force
+        Vector3 curveForce = rightDir * a_movementValue.x * CharactersManager.Instance.GameplayData.MovingCurveForce;
+
+        m_rigidbody.AddForce(curveForce, ForceMode.Force);
     }
+
 
     #endregion
 
@@ -114,6 +121,7 @@ public class SingularityBehavior : MonoBehaviour
 
     public void OnThrow()
     {
+        Debug.Log("SThrow performed");
         SingularityCharacterFollowComponent.PickupSingularity(false);
 
         Vector3 throwDirection = CameraManager.Instance.MainCam.transform.forward;
@@ -127,7 +135,7 @@ public class SingularityBehavior : MonoBehaviour
 
     private void HandleThrowCurve()
     {
-        if (SingularityCharacterFollowComponent.IsPickedUp) return;
+        if (SingularityCharacterFollowComponent.IsPickedUp || m_ignoreUnmorph) return;
 
         m_throwTime += Time.fixedDeltaTime;
         float normalizedTime = m_throwTime / m_curveDuration;
@@ -151,8 +159,10 @@ public class SingularityBehavior : MonoBehaviour
     public void Jump()
     {
         if (m_gameplayData.ActivateMovementsLimit && 
-            CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Jump) ||
-            CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth()) return;
+            (CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Jump) ||
+            CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth())) return;
+
+        Debug.Log("SJump performed");
 
         OnJump?.Invoke(m_rigidbody.linearVelocity);
     }
@@ -164,8 +174,10 @@ public class SingularityBehavior : MonoBehaviour
     public void Dash()
     {
         if (m_gameplayData.ActivateMovementsLimit &&
-            CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Dash) ||
-            CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth()) return;
+            (CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Dash) ||
+            CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth())) return;
+
+        Debug.Log("SDash performed");
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
@@ -178,12 +190,21 @@ public class SingularityBehavior : MonoBehaviour
 
     #endregion
 
+    private bool m_ignoreUnmorph = false;
+
+    public void SetIgnoreUnmorph(bool shouldIgnore)
+    {
+        m_ignoreUnmorph = shouldIgnore;
+    }
+
+
     #region Collision Detection
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (SingularityCharacterFollowComponent.IsPickedUp || CharactersManager.Instance.SingularityMovingToCharacter) return;
+        if (SingularityCharacterFollowComponent.IsPickedUp || m_ignoreUnmorph) return;
 
+        Debug.Log("Singularity collided with: " + collision.gameObject.name);
         m_isThrown = false;
         OnUnmorph?.Invoke();
     }

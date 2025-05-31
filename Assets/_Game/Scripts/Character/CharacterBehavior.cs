@@ -99,6 +99,7 @@ public class CharacterBehavior : MonoBehaviour
             {
                 _dashDurationTimer = 0f;
                 _isDashing = false;
+                Debug.Log("Dash ended, resetting velocity.");
             }
         }
     }
@@ -117,6 +118,7 @@ public class CharacterBehavior : MonoBehaviour
     {
         m_rigidbody.isKinematic = a_shouldBeImobilized;
     }
+
 
     #region Movement
     public void Move(Vector2 a_moveValue)
@@ -154,6 +156,8 @@ public class CharacterBehavior : MonoBehaviour
     {
         if (!IsGrounded()) return;
 
+        Debug.Log("HJump performed");
+
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
         m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
 
@@ -169,6 +173,7 @@ public class CharacterBehavior : MonoBehaviour
 
     public void OnSingularityJump(Vector3 a_linearVelocityToApply)
     {
+        Debug.Log("Singularity Jump performed on HScript");
         m_moveLockTimer = 0.5f;
 
         m_rigidbody.linearVelocity = a_linearVelocityToApply;
@@ -186,14 +191,16 @@ public class CharacterBehavior : MonoBehaviour
     {
         if (!m_canDash) return;
 
+        Debug.Log("HDash performed");
+
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
         Vector3 dashDir = cam.forward;
         dashDir.y = 0;
         dashDir.Normalize();
 
-        m_rigidbody.AddForce(dashDir * m_gameplayData.DashForce, ForceMode.VelocityChange);
-        m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
+        Vector3 dashVelocity = dashDir * m_gameplayData.DashForce;
+        m_rigidbody.linearVelocity = new Vector3(dashVelocity.x, 0f, dashVelocity.z);
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
 
@@ -213,6 +220,7 @@ public class CharacterBehavior : MonoBehaviour
 
     public void OnSingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
     {
+        Debug.Log("Singularity Dash performed on HScript");
         m_moveLockTimer = 0.5f;
         m_rigidbody.linearVelocity = a_linearVelocityToApply;
 
@@ -225,6 +233,9 @@ public class CharacterBehavior : MonoBehaviour
 
     public void OnThrowSingularity()
     {
+        if (!CharactersManager.Instance.CanThrow) return;
+
+        Debug.Log("HThrow performed");
         ResetVelocity();
         OnThrowInput?.Invoke();
     }
