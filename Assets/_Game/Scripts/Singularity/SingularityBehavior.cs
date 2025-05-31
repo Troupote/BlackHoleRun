@@ -94,9 +94,8 @@ public class SingularityBehavior : MonoBehaviour
     {
         if (a_movementValue.x == 0) return;
 
-        // Calculate current forward direction based on velocity
         Vector3 velocity = m_rigidbody.linearVelocity;
-        if (velocity.sqrMagnitude < 0.01f) return; // Avoid division by zero or bad curve at near-zero speed
+        if (velocity.sqrMagnitude < 0.01f) return;
 
         Vector3 forwardDir = velocity.normalized;
         Vector3 rightDir = Vector3.Cross(Vector3.up, forwardDir).normalized;
@@ -192,9 +191,10 @@ public class SingularityBehavior : MonoBehaviour
 
     private bool m_ignoreUnmorph = false;
 
-    public void SetIgnoreUnmorph(bool shouldIgnore)
+    public void SetIgnoreCollision(bool shouldIgnore)
     {
         m_ignoreUnmorph = shouldIgnore;
+        m_rigidbody.detectCollisions = !shouldIgnore;
     }
 
 

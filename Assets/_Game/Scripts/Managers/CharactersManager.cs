@@ -243,7 +243,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     private IEnumerator MoveSlowlySingularityToNewCharacter(Action onComplete = null)
     {
         Debug.Log("MoveSlowlySingularityToNewCharacter called");
-        m_singularityBehavior.SetIgnoreUnmorph(true);
+        m_singularityBehavior.SetIgnoreCollision(true);
 
         yield return new WaitForSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
 
@@ -265,7 +265,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         onComplete?.Invoke();
 
-        m_singularityBehavior.SetIgnoreUnmorph(false);
+        m_singularityBehavior.SetIgnoreCollision(false);
 
         m_isSwitching = false;
     }
