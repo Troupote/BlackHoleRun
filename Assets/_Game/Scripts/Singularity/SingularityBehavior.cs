@@ -66,6 +66,9 @@ public class SingularityBehavior : MonoBehaviour
     {
         if (SingularityCharacterFollowComponent.IsPickedUp) return;
 
+        if (CharactersManager.Instance.IsCurrentlySwitching)
+            return;
+
         m_rigidbody.isKinematic = false;
         m_rigidbody.linearVelocity = m_oldVelocity;
         m_rigidbody.angularVelocity = m_oldAngularVelocity;

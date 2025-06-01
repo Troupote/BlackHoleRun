@@ -12,9 +12,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     private GameObject m_singularityPrefab;
 
     [SerializeField]
-    private GameObject m_singularityPreviewPrefab;
-
-    [SerializeField]
     private CharacterGameplayData m_gameplayData;
 
     internal CharacterGameplayData GameplayData => m_gameplayData;
@@ -177,6 +174,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     }
 
     private bool m_isSwitching = false;
+    public bool IsCurrentlySwitching => m_isSwitching;
     public void SwitchCharactersPositions()
     {
         if (m_isSwitching) return;
@@ -242,12 +240,15 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         m_singularityBehavior.SetIgnoreCollision(true);
 
-        yield return new WaitForSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
+        yield return WaitForCustomSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
 
         Transform targetTransform = CameraManager.Instance.SingularityPlacementRefTransform;
 
         while (Vector3.Distance(m_singularityObject.transform.position, targetTransform.position) > 1f)
         {
+            while (GameManager.Instance.GameTimeScale == 0)
+                yield return null;
+
             m_singularityObject.transform.position = Vector3.MoveTowards(
                 m_singularityObject.transform.position,
                 targetTransform.position,
@@ -265,6 +266,26 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         m_isSwitching = false;
     }
+
+    /// <summary>
+    /// Waits for a specified duration in seconds, while checking for game pause state. (To avoid WaitForSeconds which uses Time.timeScale)
+    /// </summary>
+    /// <param name="a_duration"></param>
+    /// <returns></returns>
+    private IEnumerator WaitForCustomSeconds(float a_duration)
+    {
+        float timer = 0f;
+
+        while (timer < a_duration)
+        {
+            while (GameManager.Instance.GameTimeScale == 0)
+                yield return null;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
+
 
 
     #endregion
