@@ -1,12 +1,15 @@
 using BHR;
 using Cinemachine;
+//using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
 public class CameraManager : ManagerSingleton<CameraManager>
 {
     [field: SerializeField]
-    internal CinemachineBrain MainCamBrain { get; private set; }
+    internal Camera MainCam { get; private set; }
+
+    private CinemachineBrain MainCamBrain;
 
     [field: SerializeField]
     internal CinemachineVirtualCamera PlayerCam { get; private set; }
@@ -25,6 +28,8 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     private PlayerControllerState currentControllerUsed = PlayerControllerState.DISCONNECTED;
 
+    public CinemachineVirtualCamera CurrentCam => (PlayerCam.Priority > SingularityCam.Priority) ? PlayerCam : SingularityCam;
+
     public override void Awake()
     {
         SetInstance(false);
@@ -32,6 +37,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     void Start()
     {
+        MainCamBrain = MainCam.GetComponent<CinemachineBrain>();
         PlayerCam.Priority = 5;
         SingularityCam.Priority = 0;
         SingularityCam.gameObject.SetActive(false);
@@ -53,6 +59,9 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayersInputManager.Instance.OnHLook.AddListener(HandleLook);
         PlayersInputManager.Instance.OnSLook.AddListener(HandleLook);
         PlayersInputManager.Instance.OnHMove.AddListener(HandlePlayerMove);
+
+        GameManager.Instance.OnRespawn.AddListener(ResetInputs);
+        GameManager.Instance.OnPaused.AddListener(ResetInputs);
     }
 
     private void OnDisable()
@@ -61,12 +70,23 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayersInputManager.Instance.OnHLook.RemoveListener(HandleLook);
         PlayersInputManager.Instance.OnSLook.RemoveListener(HandleLook);
         PlayersInputManager.Instance.OnHMove.RemoveListener(HandlePlayerMove);
+
+        GameManager.Instance.OnRespawn.RemoveListener(ResetInputs);
+        GameManager.Instance.OnPaused.RemoveListener(ResetInputs);
     }
 
     internal bool IsBlending => MainCamBrain.IsBlending;
 
+    private void ResetInputs()
+    {
+        lookValue = Vector2.zero;
+        playerMoveValue = Vector2.zero;
+    }
+
     public void SwitchCameraToSingularity()
     {
+        if (CurrentCam == SingularityCam) return;
+
         initialRotationY = transform.eulerAngles.y;
         rotationY = initialRotationY;
 
@@ -79,6 +99,8 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     public void SwitchCameraToCharacter(Vector3 a_characterPosition)
     {
+        if (CurrentCam == PlayerCam) return;
+
         PlayerCam.transform.position = a_characterPosition;
         PlayerCam.transform.rotation = SingularityCam.transform.rotation;
 
@@ -97,8 +119,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         MainCamBrain.enabled = true;
     }
 
-
-    void Update()
+    void LateUpdate()
     {
         if (!m_hasBeenInstancied || !GameManager.Instance.IsPlaying) return;
 
@@ -111,7 +132,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, -90, 90);
 
-        if (CharactersManager.Instance.isSingularityThrown)
+        if (CurrentCam == SingularityCam)
         {
             float targetRotationY = rotationY + mouseX;
             targetRotationY = Mathf.Clamp(targetRotationY, initialRotationY - 90, initialRotationY + 90);
@@ -124,14 +145,19 @@ public class CameraManager : ManagerSingleton<CameraManager>
             rotationY += mouseX;
             transform.rotation = Quaternion.Euler(0, rotationY, 0);
             PlayerCam.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-            PlayerCam.Follow.gameObject.transform.Rotate(Vector3.up * mouseX);
+            //PlayerCam.Follow.gameObject.transform.Rotate(Vector3.up * mouseX);
         }
 
         // Adjust FOV
         
         float currentFOV = PlayerCam.m_Lens.FieldOfView;
 
-        if (moveZ > 0)
+        if(CharactersManager.Instance.isHumanoidAiming)
+        {
+            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.TargetAimFOV, (Time.deltaTime * 3) / CharactersManager.Instance.GameplayData.TriggerAimDuration);
+            //DOTween.To(() => PlayerCam.m_Lens.FieldOfView, x => PlayerCam.m_Lens.FieldOfView = x, CharactersManager.Instance.GameplayData.TargetAimFOV, CharactersManager.Instance.GameplayData.TriggerAimDuration);
+        }
+        else if (moveZ > 0)
         {
             PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingForwardFOV, Time.deltaTime * 2);
         }

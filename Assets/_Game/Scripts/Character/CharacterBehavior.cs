@@ -1,50 +1,249 @@
+using BHR;
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class CharacterBehavior : MonoBehaviour
 {
-    private Rigidbody _rigidbody;
+    #region Dependencies
 
-    private bool _hasTouchedGround = true;
-    public bool HasTouchedGround => _hasTouchedGround;
+    private Rigidbody m_rigidbody;
+    private CharacterGameplayData m_gameplayData;
 
-    [SerializeField]
-    private LayerMask m_groundLayer;
+    #endregion
 
-    private void Start()
+    private Vector3 currentVelocity;
+    private bool m_isInitialized = false;
+
+    public Action OnThrowInput;
+
+    private float m_moveLockTimer = 0f;
+
+    private bool _isDashing;
+    private float _dashDurationTimer = 0f;
+
+    public void InitializeDependencies(CharacterGameplayData a_gameplayData)
     {
-        _rigidbody = GetComponent<Rigidbody>();
+        m_rigidbody = GetComponent<Rigidbody>();
+        m_gameplayData = a_gameplayData;
+
+        ListenToEvents();
+
+        m_isInitialized = true;
     }
 
-    public void TryThrowSingularity()
+    public void ListenToEvents()
     {
-        if (!_hasTouchedGround) return;
-
-        CharactersManager.Instance.TryThrowSingularity();
+        GameManager.Instance.OnPaused.AddListener(OnPaused);
+        GameManager.Instance.OnResumed.AddListener(OnResume);
     }
 
-    public void ResetVelocity()
+    public void UnlistenToEvents()
     {
-        _rigidbody.linearVelocity = Vector3.zero;
-        _rigidbody.angularVelocity = Vector3.zero;
+        GameManager.Instance.OnPaused.RemoveListener(OnPaused);
+        GameManager.Instance.OnResumed.RemoveListener(OnResume);
     }
 
-    public void ImobilizeCharacter(bool a_shouldImobilize)
-    {
-        _rigidbody.useGravity = !a_shouldImobilize;
-        _rigidbody.isKinematic = a_shouldImobilize;
+    #region On Pause
 
-        if (a_shouldImobilize)
-        { 
-            _hasTouchedGround = false;
-        }
+    private bool m_isPaused = false;
+    private Vector3 m_oldVelocity;
+    private Vector3 m_oldAngularVelocity;
+
+    private void OnPaused()
+    {
+        m_isPaused = true;
+
+        m_oldVelocity = m_rigidbody.linearVelocity;
+        m_oldAngularVelocity = m_rigidbody.angularVelocity;
+        m_rigidbody.isKinematic = true;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnResume()
     {
-        // Check if the object we collided with is part of the ground layer
-        if (((1 << collision.gameObject.layer) & m_groundLayer) != 0)
+        m_rigidbody.isKinematic = false;
+        m_rigidbody.linearVelocity = m_oldVelocity;
+        m_rigidbody.angularVelocity = m_oldAngularVelocity;
+
+        m_isPaused = false;
+    }
+
+    #endregion
+
+    #region Life Cycle
+
+    private Vector3 m_gravity = Physics.gravity;
+
+    private void FixedUpdate()
+    {
+        if (!m_isInitialized || m_isPaused) return;
+
+        Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale * (_isDashing ? 0f: 1f);
+        m_rigidbody.AddForce(gravityForce);
+
+        // Lock the move when Singularity Jump is performed
+        if (m_moveLockTimer > 0f)
         {
-            _hasTouchedGround = true;
+            m_moveLockTimer -= Time.fixedDeltaTime * GameManager.Instance.GameTimeScale;
+            if (m_moveLockTimer <= 0f)
+            {
+                m_moveLockTimer = 0f;
+            }
+        }
+
+        // Dash duration timer
+        if(_isDashing)
+        {
+            _dashDurationTimer -= Time.fixedDeltaTime * GameManager.Instance.GameTimeScale; 
+            if( _dashDurationTimer <= 0f)
+            {
+                _dashDurationTimer = 0f;
+                _isDashing = false;
+            }
         }
     }
+
+    #endregion
+
+    private void ResetVelocity()
+    {
+        if (!m_isInitialized) return;
+
+        m_rigidbody.linearVelocity = Vector3.zero;
+        m_rigidbody.angularVelocity = Vector3.zero;
+    }
+
+    public void ImobilizeCharacter(bool a_shouldBeImobilized)
+    {
+        m_rigidbody.isKinematic = a_shouldBeImobilized;
+    }
+
+
+    #region Movement
+    public void Move(Vector2 a_moveValue)
+    {
+        if (m_rigidbody.isKinematic || m_moveLockTimer > 0f) return;
+
+        float moveX = a_moveValue.x;
+        float moveZ = a_moveValue.y;
+
+        Transform cam = CameraManager.Instance.CurrentCam.transform;
+
+        Vector3 camForward = cam.forward;
+        Vector3 camRight = cam.right;
+        camForward.y = 0;
+        camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        Vector3 moveDir = (camForward * moveZ + camRight * moveX).normalized;
+        Vector3 targetVelocity = moveDir * m_gameplayData.PlayerSpeed;
+
+        if (!IsGrounded())
+        {
+            targetVelocity *= m_gameplayData.AirPlayerSpeedMultiplier;
+        }
+
+        m_rigidbody.linearVelocity = Vector3.SmoothDamp(m_rigidbody.linearVelocity, new Vector3(targetVelocity.x, m_rigidbody.linearVelocity.y, targetVelocity.z), ref currentVelocity, 0.1f);
+    }
+
+    #endregion
+
+    #region Jump
+
+    public void OnJump()
+    {
+        if (!IsGrounded()) return;
+
+        m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
+        m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
+
+        // Reset dash cooldown if jumping
+        if (m_dashCooldownCoroutine != null)
+        {
+            StopCoroutine(m_dashCooldownCoroutine);
+            m_canDash = true;
+        }
+
+        CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
+    }
+
+    public void OnSingularityJump(Vector3 a_linearVelocityToApply)
+    {
+        m_moveLockTimer = 0.5f;
+
+        m_rigidbody.linearVelocity = a_linearVelocityToApply;
+
+        m_rigidbody.AddForce(Vector3.up * m_gameplayData.SingularityJumpForce, ForceMode.Impulse);
+    }
+
+    #endregion
+
+    #region Dash
+
+    private bool m_canDash = true;
+    private Coroutine m_dashCooldownCoroutine;
+    public void OnDash()
+    {
+        if (!m_canDash) return;
+
+        Transform cam = CameraManager.Instance.CurrentCam.transform;
+
+        Vector3 dashDir = cam.forward;
+        dashDir.y = 0;
+        dashDir.Normalize();
+
+        Vector3 dashVelocity = dashDir * m_gameplayData.DashForce;
+        m_rigidbody.linearVelocity = new Vector3(dashVelocity.x, 0f, dashVelocity.z);
+        _isDashing = true;
+        _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
+
+        m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
+
+        CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
+    }
+
+    private IEnumerator DashCooldown()
+    {
+        m_canDash = false;
+
+        yield return new WaitForSeconds(m_gameplayData.DashCooldown);
+
+        m_canDash = true;
+    }
+
+    public void OnSingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
+    {
+        m_moveLockTimer = 0.5f;
+        m_rigidbody.linearVelocity = a_linearVelocityToApply;
+
+        m_rigidbody.AddForce(a_direction * m_gameplayData.SingularityDashForce, ForceMode.VelocityChange);
+    }
+
+    #endregion
+
+    #region Throw Singularity
+
+    public void OnThrowSingularity()
+    {
+        if (!CharactersManager.Instance.CanThrow) return;
+
+        ResetVelocity();
+        OnThrowInput?.Invoke();
+    }
+
+    #endregion
+
+    #region IsGrounded
+
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundDistance = 0.4f;
+    [SerializeField] private LayerMask groundMask;
+
+    public bool IsGrounded()
+    {
+        return Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+    }
+
+    #endregion
 }

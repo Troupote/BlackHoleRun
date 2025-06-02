@@ -29,7 +29,7 @@ namespace BHR
         [Required] public InputActionReference Look;
         [Required] public InputActionReference Jump;
         [Required] public InputActionReference Dash;
-        [Required] public InputActionReference Slide;
+        //[Required] public InputActionReference Slide;
         [Required] public InputActionReference Restart;
         [Required] public InputActionReference Pause;
 
@@ -37,8 +37,8 @@ namespace BHR
         [Required] public InputActionReference Aim;
         [Required] public InputActionReference Throw;
 
-        [Header("Singularity")]
-        [Required] public InputActionReference Unmorph;
+        //[Header("Singularity")]
+        //[Required] public InputActionReference Unmorph;
 
         [Header("Inactive")]
         [Required] public InputActionReference Reconnect;

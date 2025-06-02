@@ -5,10 +5,26 @@ using UnityEngine.Rendering;
 [CreateAssetMenu(fileName = "GameplayData", menuName = "Gameplay/CharacterGameplayData")]
 public class CharacterGameplayData : ScriptableObject
 {
-    [Title("Singularity Settings")]
+    [Title("General Settings")]
     [SerializeField]
-    private float m_secondsBeforeSpawningCharacterBackIfNoCollision = 4f;
-    public float SecondsBeforeSpawningCharacterBackIfNoCollision => m_secondsBeforeSpawningCharacterBackIfNoCollision;
+    private float m_cooldownBeforeThrowAllowed = 2f;
+
+    public float CooldownBeforeThrowAllowed => m_cooldownBeforeThrowAllowed;
+
+    [SerializeField]
+    private float m_comingBackSpeed = 100f;
+    public float ComingBackSpeed => m_comingBackSpeed;
+
+    [SerializeField]
+    private float m_maxDistanceBetweenPlayers = 125f;
+
+    public float MaxDistanceBetweenPlayers => m_maxDistanceBetweenPlayers;
+
+    [SerializeField]
+    private bool m_activateMovementsLimit = false;
+    public bool ActivateMovementsLimit => m_activateMovementsLimit;
+
+    [Title("Singularity Settings")]
 
     [SerializeField]
     private float m_throwForce = 30f;
@@ -17,6 +33,23 @@ public class CharacterGameplayData : ScriptableObject
     [SerializeField]
     private float m_movingCurveForce = 15f;
     public float MovingCurveForce => m_movingCurveForce;
+
+    [SerializeField]
+    private float m_DashForce = 40f;
+    public float SingularityDashForce => m_DashForce;
+
+    [SerializeField]
+    private float m_JumpForce = 20f;
+    public float SingularityJumpForce => m_JumpForce;
+
+    [SerializeField]
+    [Tooltip("The delay before the singularity starts falling after being thrown.")]
+    private float m_gravityDelayDuration = 1f;
+    public float GravityDelayDuration => m_gravityDelayDuration;
+
+    [SerializeField]
+    private float m_gravityMultiplier = 2f;
+    public float GravityMultiplier => m_gravityMultiplier;
 
     [Title("Character Settings")]
     [SerializeField]
@@ -32,8 +65,29 @@ public class CharacterGameplayData : ScriptableObject
     public float DashForce => m_dashForce;
 
     [SerializeField]
+    private float m_dashDuration;
+    public float DashDuration => m_dashDuration;
+
+    [SerializeField]
     private float m_dashCooldown = 1.5f;
     public float DashCooldown => m_dashCooldown;
+
+    [SerializeField]
+    private float m_gravityScale = 8f;
+    public float CharacterGravityScale => m_gravityScale;
+
+    [SerializeField]
+    private float m_airPlayerSpeedMultiplier = 0.5f;
+    public float AirPlayerSpeedMultiplier => m_airPlayerSpeedMultiplier;
+
+    [SerializeField]
+    private float m_triggerAimDuration;
+    public float TriggerAimDuration => m_triggerAimDuration;
+
+    [SerializeField]
+    private float m_targetAimTimeScale;
+    public float TargetAimTimeScale => m_targetAimTimeScale;
+
 
     [Title("Camera Settings")]
     [SerializeField]
@@ -45,4 +99,8 @@ public class CharacterGameplayData : ScriptableObject
     [SerializeField]
     private float m_MovingBackwardFOV = 50f;
     public float MovingBackwardFOV => m_MovingBackwardFOV;
+
+    [SerializeField]
+    private float m_targetAimFOV;
+    public float TargetAimFOV => m_targetAimFOV;
 }

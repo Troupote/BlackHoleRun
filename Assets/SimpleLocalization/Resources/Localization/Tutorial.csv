@@ -7,3 +7,9 @@ M/T/SingularityDesc,"La sphère que tu tiens est l'autre joueur, dans sa forme S
 Tu peux le lancer. Essaye !","The sphere you hold is the other player, in the form of Singularity.
 You can throw it. Try it !"
 M/T/DashDesc,"Tu peux aussi dasher tout droit, pour aller aussi vite que la lumière, même si c'est le comble pour un trou noir !","You can also dash straight ahead, moving as fast as light. Quite ironic for a black hole !"
+M/T/ThrowAim,Viser puis tirer (Maintenir),Aim then throw (Hold)
+M/T/ThrowAimDesc,"Maintiens enfoncée la touche pour tirer, cela va déclencher la visée.
+Quand tu vises, tu déformes l'espace-temps ce qui te permet de ralentir et concentrer ton tir.
+Au relâchement, la Singularité sera lancée.","Press and hold the throw button, which triggers the Aiming.
+When you aim, you distort space-time, allowing you to slow down and concentrate your shot.
+On release, the Singularity will be throwed."

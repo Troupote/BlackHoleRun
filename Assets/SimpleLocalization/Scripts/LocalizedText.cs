@@ -28,9 +28,15 @@ namespace Assets.SimpleLocalization.Scripts
         private void Localize()
         {
             if(TryGetComponent<Text>(out Text text))
+            {
                 text.text = LocalizationManager.Localize(LocalizationKey);
+                LayoutRebuilder.ForceRebuildLayoutImmediate(text.rectTransform);
+            }
             if (TryGetComponent<TextMeshProUGUI>(out TextMeshProUGUI textMeshPro))
+            {
                 textMeshPro.text = LocalizationManager.Localize(LocalizationKey);
+                LayoutRebuilder.ForceRebuildLayoutImmediate(textMeshPro.rectTransform);
+            }
         }
     }
 }

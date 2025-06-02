@@ -17,8 +17,8 @@ namespace BHR
         public static string Look;
         public static string Jump;
         public static string Dash;
-        public static string Slide;
-        public static string Unmorph;
+        //public static string Slide;
+        //public static string Unmorph;
         public static string Aim;
         public static string Throw;
         public static string Restart;
@@ -29,8 +29,6 @@ namespace BHR
         public static string Cancel;
         public static string Switch;
         public static string Rebind;
-
-        public static string[] AllActions;
 
         public static void Initialize(InputActionsSO inputActions)
         {
@@ -47,8 +45,8 @@ namespace BHR
             Look = inputActions.Look.action.name;
             Jump = inputActions.Jump.action.name;
             Dash = inputActions.Dash.action.name;
-            Slide = inputActions.Slide.action.name;
-            Unmorph = inputActions.Unmorph.action.name;
+            //Slide = inputActions.Slide.action.name;
+            //Unmorph = inputActions.Unmorph.action.name;
             Aim = inputActions.Aim.action.name;
             Throw = inputActions.Throw.action.name;
             Restart = inputActions.Restart.action.name;
@@ -59,11 +57,6 @@ namespace BHR
             Cancel = inputActions.Cancel.action.name;
             Switch = inputActions.Switch.action.name;
             Rebind = inputActions.Rebind.action.name;
-
-            AllActions = new string[]
-            {
-            Move, Look, Jump, Dash, Slide, Aim, Throw, Pause, Submit, Cancel
-            };
         }
     }
 

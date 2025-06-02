@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
-  _distanceFade: {x: 30, y: 50}
+  DistanceFade: 0
   _invert: 0
 --- !u!1 &2843122668340919995
 GameObject:
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
-  _distanceFade: {x: 30, y: 50}
+  DistanceFade: 0
   _invert: 0
 --- !u!114 &1815546589387546242
 MonoBehaviour:
@@ -1799,7 +1799,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
-  _distanceFade: {x: 30, y: 50}
+  DistanceFade: 0
   _invert: 0
 --- !u!1 &5728014336330010391
 GameObject:
@@ -2097,6 +2097,7 @@ GameObject:
   - component: {fileID: 477528519769724985}
   - component: {fileID: 9220789522373662450}
   - component: {fileID: 9166673692835934503}
+  - component: {fileID: 8330014611412872161}
   m_Layer: 5
   m_Name: Group
   m_TagString: Untagged
@@ -2138,12 +2139,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: -1
+    m_Left: 0
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: -17.22
+  m_Spacing: 0.2
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -2167,6 +2168,20 @@ MonoBehaviour:
   _duration: 0.55
   _axes: 2
   _ease: 4
+--- !u!114 &8330014611412872161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793372811879163772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 0
 --- !u!1 &5886496669270678657
 GameObject:
   m_ObjectHideFlags: 0
@@ -2215,9 +2230,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e34f0aa714bccd942a1409538b6350c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _actionRef: {fileID: 7476244043514120974, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _turorialData:
+    TutorielNameKey: 
+    ActionRef: {fileID: 0}
+    DescriptionKey: 
+    Scheme: {fileID: 0}
   _durationMinBetweenTriggers: 2
-  _tutorielDatas: {fileID: 11400000, guid: fd171007e9411cc4e8d9692a6f69aabf, type: 2}
+  _distanceFade: 0
+  _hasComposite: 0
+  _uniqueBinding: {fileID: 0}
+  _compositeBindingsParent: {fileID: 0}
 --- !u!54 &6829962503051042718
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2257,6 +2279,7 @@ GameObject:
   - component: {fileID: 6441363268559044072}
   - component: {fileID: 3559246531546936598}
   - component: {fileID: 539058907854004413}
+  - component: {fileID: 7952348196610478696}
   m_Layer: 5
   m_Name: ActionName
   m_TagString: Untagged
@@ -2278,10 +2301,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 477528519769724985}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 4.2, y: 1}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0.995, y: -0.5}
+  m_SizeDelta: {x: 1.99, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6441363268559044072
 CanvasRenderer:
@@ -2338,10 +2361,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.65
+  m_fontSize: 0.7
   m_fontSizeBase: 0.7
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 0
   m_fontSizeMax: 1
   m_fontStyle: 0
@@ -2395,8 +2418,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
-  _distanceFade: {x: 30, y: 50}
+  DistanceFade: 0
   _invert: 0
+--- !u!114 &7952348196610478696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6395524163191973115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 0
 --- !u!1 &6599464240869087673
 GameObject:
   m_ObjectHideFlags: 0
@@ -5400,5 +5437,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
-  _distanceFade: {x: 30, y: 50}
+  DistanceFade: 0
   _invert: 0
