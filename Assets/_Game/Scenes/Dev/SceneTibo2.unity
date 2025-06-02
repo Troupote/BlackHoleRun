@@ -855,10 +855,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1432342499}
     m_Modifications:
-    - target: {fileID: 1618306603207997460, guid: 75f8c23dec482e448a88e2b0c73cdd22, type: 3}
-      propertyPath: AmbiantVolume
-      value: 0.06
-      objectReference: {fileID: 0}
     - target: {fileID: 5058785138657031254, guid: 75f8c23dec482e448a88e2b0c73cdd22, type: 3}
       propertyPath: m_Name
       value: AudioManagerObject

@@ -146,6 +146,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SFXVolume: 0.05
-  AmbiantVolume: 0.2
+  AmbiantVolume: 0.06
   MusicVolume: 1
   MasterVolume: 1
