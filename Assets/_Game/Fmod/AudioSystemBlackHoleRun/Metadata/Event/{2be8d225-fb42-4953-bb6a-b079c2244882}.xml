@@ -148,7 +148,6 @@
 	<object class="MixerBusEffectChain" id="{b803724b-0633-429d-b331-b67bbb11ab8c}">
 		<relationship name="effects">
 			<destination>{d30d7039-94ad-4be4-bb73-bed7fab39486}</destination>
-			<destination>{731e39a0-7fae-41f5-b549-91ca03dc1b68}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{98586a6b-58e9-4972-895b-8d224933ad80}" />
@@ -173,41 +172,4 @@
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{d30d7039-94ad-4be4-bb73-bed7fab39486}" />
-	<object class="LowpassEffect" id="{731e39a0-7fae-41f5-b549-91ca03dc1b68}">
-		<property name="cutoff">
-			<value>2100</value>
-		</property>
-		<property name="resonance">
-			<value>3.4000001</value>
-		</property>
-		<relationship name="modulators">
-			<destination>{575c663a-f5fe-43e3-88fb-6747c9896525}</destination>
-			<destination>{4ff2183d-4313-440c-b27b-c12fffa3fe21}</destination>
-		</relationship>
-	</object>
-	<object class="LFOModulator" id="{575c663a-f5fe-43e3-88fb-6747c9896525}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>resonance</value>
-		</property>
-		<property name="rate">
-			<value>0.200000003</value>
-		</property>
-		<property name="beats">
-			<value>20</value>
-		</property>
-		<property name="phase">
-			<value>-90</value>
-		</property>
-		<property name="depth">
-			<value>66</value>
-		</property>
-	</object>
-	<object class="LFOModulator" id="{4ff2183d-4313-440c-b27b-c12fffa3fe21}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>cutoff</value>
-		</property>
-		<property name="depth">
-			<value>10</value>
-		</property>
-	</object>
 </objects>

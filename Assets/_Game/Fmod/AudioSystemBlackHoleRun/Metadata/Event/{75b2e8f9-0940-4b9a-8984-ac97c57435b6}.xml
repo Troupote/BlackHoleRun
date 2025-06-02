@@ -23,7 +23,7 @@
 			<destination>{1fed9afc-85ed-4315-a748-257518f25d84}</destination>
 		</relationship>
 		<relationship name="markerTracks">
-			<destination>{baac7240-cfa3-4503-a887-29f1289ef670}</destination>
+			<destination>{f44c7fd4-d46a-4f5a-990f-f747ebfee6a1}</destination>
 		</relationship>
 		<relationship name="groupTracks">
 			<destination>{a5c0766d-b069-4cb9-91eb-456f5f64800a}</destination>
@@ -57,7 +57,7 @@
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{1fed9afc-85ed-4315-a748-257518f25d84}" />
-	<object class="MarkerTrack" id="{baac7240-cfa3-4503-a887-29f1289ef670}" />
+	<object class="MarkerTrack" id="{f44c7fd4-d46a-4f5a-990f-f747ebfee6a1}" />
 	<object class="GroupTrack" id="{a5c0766d-b069-4cb9-91eb-456f5f64800a}">
 		<relationship name="modules">
 			<destination>{ab3df0fc-283d-4ed5-96aa-d397a24fa228}</destination>
@@ -93,8 +93,14 @@
 	<object class="MixerBusPanner" id="{03189415-4161-4505-9393-831aae419cd6}" />
 	<object class="SingleSound" id="{ab3df0fc-283d-4ed5-96aa-d397a24fa228}">
 		<property name="length">
-			<value>277.77600000000001</value>
+			<value>239.69046795827123</value>
 		</property>
+		<property name="timelockedOffset">
+			<value>38.085532041728754</value>
+		</property>
+		<relationship name="fadeInCurve">
+			<destination>{2d84298d-94f0-4a5c-b01c-1c3e515ba9d8}</destination>
+		</relationship>
 		<relationship name="audioFile">
 			<destination>{2bb9936e-8f4b-42e4-8053-54f677f1009d}</destination>
 		</relationship>
@@ -118,13 +124,13 @@
 			<value>0</value>
 		</property>
 		<property name="length">
-			<value>277.77600000000001</value>
+			<value>239.69046795827074</value>
 		</property>
 		<relationship name="timeline">
 			<destination>{00c85f6d-3152-448d-8fd4-64a05c33ffa8}</destination>
 		</relationship>
 		<relationship name="markerTrack">
-			<destination>{baac7240-cfa3-4503-a887-29f1289ef670}</destination>
+			<destination>{f44c7fd4-d46a-4f5a-990f-f747ebfee6a1}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusEffectChain" id="{5a6d49cd-f1b1-46da-a285-fcecf76088c4}">
@@ -134,6 +140,14 @@
 	</object>
 	<object class="MixerBusPanner" id="{4eabfdf8-89ef-4b9e-b122-35ce3ab1dc1b}" />
 	<object class="MixerBusFader" id="{a98c75a4-86cc-4795-b1a3-5ddf1831bcc8}" />
+	<object class="FadeCurve" id="{2d84298d-94f0-4a5c-b01c-1c3e515ba9d8}">
+		<relationship name="startPoint">
+			<destination>{e34853fb-da16-4da5-af56-f06c2b2e4892}</destination>
+		</relationship>
+		<relationship name="endPoint">
+			<destination>{75973056-ac31-458b-865b-ddfa75ebf833}</destination>
+		</relationship>
+	</object>
 	<object class="MixerBusEffectChain" id="{80064092-a208-41a6-9c58-3dec3c6ef58c}">
 		<relationship name="effects">
 			<destination>{3ed98cd8-a832-4258-98e8-9e9607ac450b}</destination>
@@ -142,51 +156,32 @@
 	</object>
 	<object class="MixerBusPanner" id="{09bd7473-c2b6-4c67-815d-9d3713fa14bf}" />
 	<object class="MixerBusFader" id="{0656be46-682b-4eed-8dbc-abc665587f94}" />
+	<object class="AutomationPoint" id="{e34853fb-da16-4da5-af56-f06c2b2e4892}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<property name="value">
+			<value>0</value>
+		</property>
+		<property name="curveShape">
+			<value>-0.2547189</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{75973056-ac31-458b-865b-ddfa75ebf833}">
+		<property name="position">
+			<value>4.9987260804768994</value>
+		</property>
+		<property name="value">
+			<value>1</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{3ed98cd8-a832-4258-98e8-9e9607ac450b}" />
 	<object class="LowpassEffect" id="{e863df12-a33a-40f0-a78d-a0e5d9803fba}">
 		<property name="cutoff">
-			<value>4200</value>
+			<value>22000</value>
 		</property>
-		<relationship name="modulators">
-			<destination>{34c22347-0853-476d-9c63-5ac0c2a12b8b}</destination>
-			<destination>{5fafca47-9057-4ece-b5c7-0a61286a1c5b}</destination>
-		</relationship>
-	</object>
-	<object class="LFOModulator" id="{34c22347-0853-476d-9c63-5ac0c2a12b8b}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>cutoff</value>
-		</property>
-		<property name="isTempoSync">
-			<value>true</value>
-		</property>
-		<property name="rate">
-			<value>0.109999999</value>
-		</property>
-		<property name="beats">
-			<value>20</value>
-		</property>
-		<property name="phase">
-			<value>90</value>
-		</property>
-		<property name="direction">
-			<value>-8</value>
-		</property>
-	</object>
-	<object class="LFOModulator" id="{5fafca47-9057-4ece-b5c7-0a61286a1c5b}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>resonance</value>
-		</property>
-		<property name="isTempoSync">
-			<value>true</value>
-		</property>
-		<property name="rate">
-			<value>0.114999995</value>
-		</property>
-		<property name="beats">
-			<value>20</value>
-		</property>
-		<property name="phase">
-			<value>-90</value>
+		<property name="resonance">
+			<value>2</value>
 		</property>
 	</object>
 </objects>

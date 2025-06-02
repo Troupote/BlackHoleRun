@@ -138,6 +138,7 @@
 		<relationship name="effects">
 			<destination>{76743c90-57ed-4388-804e-6c8413715a50}</destination>
 			<destination>{6694c822-3423-466d-a493-047a60590354}</destination>
+			<destination>{07586273-ee97-4379-a08b-131c9ef0fb2d}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{547dd72b-6def-4d0c-80d8-300e53994792}" />
@@ -145,54 +146,18 @@
 	<object class="MixerBusFader" id="{76743c90-57ed-4388-804e-6c8413715a50}" />
 	<object class="LowpassEffect" id="{6694c822-3423-466d-a493-047a60590354}">
 		<property name="cutoff">
-			<value>4200</value>
+			<value>22000</value>
 		</property>
 		<property name="resonance">
-			<value>3.4000001</value>
-		</property>
-		<relationship name="modulators">
-			<destination>{5e8f1e6d-dc6e-463f-9ad7-f11221ad779c}</destination>
-			<destination>{3c176413-2ede-47be-931c-ad086a3c6ed7}</destination>
-		</relationship>
-	</object>
-	<object class="LFOModulator" id="{5e8f1e6d-dc6e-463f-9ad7-f11221ad779c}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>cutoff</value>
-		</property>
-		<property name="rate">
-			<value>0.200000003</value>
-		</property>
-		<property name="beats">
-			<value>20</value>
-		</property>
-		<property name="phase">
-			<value>90</value>
-		</property>
-		<property name="depth">
-			<value>84.5</value>
-		</property>
-		<property name="direction">
-			<value>-8</value>
+			<value>1.43999994</value>
 		</property>
 	</object>
-	<object class="LFOModulator" id="{3c176413-2ede-47be-931c-ad086a3c6ed7}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>resonance</value>
+	<object class="PannerEffect" id="{07586273-ee97-4379-a08b-131c9ef0fb2d}">
+		<property name="surroundLFELevel">
+			<value>-18.5</value>
 		</property>
-		<property name="rate">
-			<value>0.200000003</value>
-		</property>
-		<property name="beats">
-			<value>20</value>
-		</property>
-		<property name="phase">
-			<value>-90</value>
-		</property>
-		<property name="depth">
-			<value>37</value>
-		</property>
-		<property name="direction">
-			<value>-72</value>
+		<property name="LFEUpmixEnabled">
+			<value>true</value>
 		</property>
 	</object>
 </objects>

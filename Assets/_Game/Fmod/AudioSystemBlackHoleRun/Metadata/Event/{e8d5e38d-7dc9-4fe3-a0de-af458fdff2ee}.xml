@@ -100,6 +100,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{fe3b517c-ff0f-4cea-b2d5-989286043f27}">
+		<property name="volume">
+			<value>10</value>
+		</property>
 		<property name="name">
 			<value>Audio 1</value>
 		</property>
@@ -137,59 +140,9 @@
 	<object class="MixerBusEffectChain" id="{e84ccfcb-b0cd-4e62-8d35-4a36440cca57}">
 		<relationship name="effects">
 			<destination>{0ab20852-d44b-4231-a063-09e701d980ac}</destination>
-			<destination>{992a6fce-7b79-4424-a4e5-3b569b249cf3}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{f7b5f742-689e-490c-92ee-4aadc6d4e973}" />
 	<object class="MixerBusFader" id="{a9517697-9b04-4b02-9580-8674b25c2be2}" />
 	<object class="MixerBusFader" id="{0ab20852-d44b-4231-a063-09e701d980ac}" />
-	<object class="LowpassEffect" id="{992a6fce-7b79-4424-a4e5-3b569b249cf3}">
-		<property name="cutoff">
-			<value>4200</value>
-		</property>
-		<property name="resonance">
-			<value>3.4000001</value>
-		</property>
-		<relationship name="modulators">
-			<destination>{c3147cc4-7b52-411a-9831-cff415e0da4a}</destination>
-			<destination>{2df3eb72-4092-4d92-aae5-4fb5f9b4d5eb}</destination>
-		</relationship>
-	</object>
-	<object class="LFOModulator" id="{c3147cc4-7b52-411a-9831-cff415e0da4a}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>cutoff</value>
-		</property>
-		<property name="rate">
-			<value>0.200000003</value>
-		</property>
-		<property name="beats">
-			<value>20</value>
-		</property>
-		<property name="phase">
-			<value>90</value>
-		</property>
-		<property name="depth">
-			<value>84.5</value>
-		</property>
-		<property name="direction">
-			<value>-8</value>
-		</property>
-	</object>
-	<object class="LFOModulator" id="{2df3eb72-4092-4d92-aae5-4fb5f9b4d5eb}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>resonance</value>
-		</property>
-		<property name="rate">
-			<value>0.200000003</value>
-		</property>
-		<property name="beats">
-			<value>20</value>
-		</property>
-		<property name="phase">
-			<value>-90</value>
-		</property>
-		<property name="depth">
-			<value>63</value>
-		</property>
-	</object>
 </objects>
