@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
     private CharacterBehavior m_characterBehavior;
     private Vector2 m_moveValue = Vector2.zero;
     private bool m_isInitialized = false;
-    private int aimCallCount = 0;
+    private bool _hasAlreadyCallAim = false;
 
     void Start()
     {
@@ -63,6 +63,7 @@ private void OnEnable()
     private void ResetInputs()
     {
         m_moveValue = Vector2.zero;
+        CancelAim();
     }
     private void HandleMove(Vector2 a_movementValue)
     {
@@ -89,27 +90,38 @@ private void OnEnable()
         GameManager.Instance.isStarted = false;
         GameManager.Instance.isSlowed = false;
 
-        aimCallCount = 0;
+        CancelAim();
         m_characterBehavior.OnThrowSingularity();
     }
 
     private void HandleAim()
     {
-        if (aimCallCount == 0)
-        {
-            aimCallCount++;
+        _hasAlreadyCallAim = !_hasAlreadyCallAim;
 
-            StartCoroutine(GameManager.Instance.SlowmotionSequence());
-            GameManager.Instance.isStarted = true;
-            CharactersManager.Instance.isHumanoidAiming = true;
-        }
-        else if (aimCallCount == 1)
+        if (_hasAlreadyCallAim && CharactersManager.Instance.CanThrow)
         {
-            GameManager.Instance.isStarted = false;
-            GameManager.Instance.isSlowed = false;
-
-            aimCallCount = 0;
-            CharactersManager.Instance.isHumanoidAiming = false;
+            StartAim();
         }
+        else if(!_hasAlreadyCallAim)
+        {
+            CancelAim();
+        }
+
+    }
+
+    private void StartAim()
+    {
+        StartCoroutine(GameManager.Instance.SlowmotionSequence());
+        GameManager.Instance.isStarted = true;
+        CharactersManager.Instance.isHumanoidAiming = true;
+    }
+
+    private void CancelAim()
+    {
+        GameManager.Instance.isStarted = false;
+        GameManager.Instance.isSlowed = false;
+
+        _hasAlreadyCallAim = false;
+        CharactersManager.Instance.isHumanoidAiming = false;
     }
 }
