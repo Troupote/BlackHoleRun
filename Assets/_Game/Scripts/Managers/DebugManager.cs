@@ -25,6 +25,9 @@ namespace BHR
         private TextMeshProUGUI _checkpointHUDInfosText; 
         public TextMeshProUGUI CheckpointHUDInfosText => _checkpointHUDInfosText;
         public bool CheckpointInfosTextEnabled => _enableCheckpointInfosText && _debug;
+        [SerializeField]
+        private bool _disableTutorielPopup = false;
+        public bool DisableTutorielPopup => _disableTutorielPopup && _debug;
 
         private void Start()
         {

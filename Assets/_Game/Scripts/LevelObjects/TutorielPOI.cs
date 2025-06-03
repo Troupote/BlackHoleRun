@@ -38,6 +38,9 @@ namespace BHR
 
         private void OnTriggerEnter(Collider other)
         {
+#if UNITY_EDITOR
+            if (DebugManager.Instance.DisableTutorielPopup) return;
+#endif
             // @todo remove tuto if level completed ? -> make a settings option ?
             if(other.CompareTag("Player") && !_isOn)
             {
