@@ -100,6 +100,13 @@ MonoBehaviour:
       Data3: -687674495
       Data4: 49901630
     Path: event:/dash
+  <musicBeatRigolo>k__BackingField:
+    Guid:
+      Data1: -388635763
+      Data2: 1340308937
+      Data3: 1169153696
+      Data4: -286072945
+    Path: event:/Music/Music1
 --- !u!1 &5058785138657031254
 GameObject:
   m_ObjectHideFlags: 0

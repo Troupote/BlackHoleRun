@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beda91f5e784f894aa9f28a42b90336a, type: 3}
   m_Name: DevCharacterGameplayData
   m_EditorClassIdentifier: 
-  m_cooldownBeforeThrowAllowed: 4
+  m_cooldownBeforeThrowAllowed: 2
   m_comingBackSpeed: 100
   m_maxDistanceBetweenPlayers: 125
   m_activateMovementsLimit: 0
