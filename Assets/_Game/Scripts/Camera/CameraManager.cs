@@ -159,15 +159,15 @@ public class CameraManager : ManagerSingleton<CameraManager>
         }
         else if (moveZ > 0)
         {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingForwardFOV, Time.deltaTime * 2);
+            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingForwardFOV, Time.deltaTime * CharactersManager.Instance.GameplayData.BaseFOVTransitionTimeCoef);
         }
         else if (moveZ < 0)
         {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingBackwardFOV, Time.deltaTime * 2);
+            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingBackwardFOV, Time.deltaTime * CharactersManager.Instance.GameplayData.BaseFOVTransitionTimeCoef);
         }
         else
         {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.BaseFOV, Time.deltaTime * 2);
+            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.BaseFOV, Time.deltaTime * CharactersManager.Instance.GameplayData.BaseFOVTransitionTimeCoef);
         }
         
     }
