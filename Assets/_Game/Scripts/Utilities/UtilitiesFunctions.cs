@@ -40,6 +40,21 @@ namespace BHR
             (vector.z >= Mathf.Min(min.z, max.z) && vector.z <= Mathf.Max(min.z, max.z));
         }
 
+        #region Text format
         public static string ToLowerWithFirstUpper(string text) => char.ToUpper(text[0]) + text.Substring(1);
+
+        /// <summary>
+        /// Change font of the tmp text. Also can apply bold
+        /// </summary>
+        /// <param name="text">The text to change</param>
+        /// <param name="font">The font asset name to apply</param>
+        /// <param name="b">Apply bold or not</param>
+        /// <returns></returns>
+        public static string TMPBalises(string text, string font, bool b = false) =>
+            (b ? "<b>" : "") +
+            $"<font=\"{font}\">" +
+            text
+            + (b ? "</b>" : "") + "</font>";
+        #endregion
     }
 }
