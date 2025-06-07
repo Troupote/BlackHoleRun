@@ -150,7 +150,6 @@ namespace BHR
 
         public void StartLevel()
         {
-            Cursor.lockState = CursorLockMode.Locked;
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
         }
@@ -165,7 +164,6 @@ namespace BHR
 
         public void Pause(GameObject moduleToLoad)
         {
-            Cursor.lockState = CursorLockMode.None;
             OnPaused?.Invoke();
             if(!IsPaused)
             {
@@ -181,7 +179,6 @@ namespace BHR
         {
             OnResumed?.Invoke();
             IsPlaying = true;
-            Cursor.lockState = CursorLockMode.Locked;
             ChangeMainPlayerState(_savedPausedState, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.HUD));
             ModuleManager.Instance.ClearNavigationHistoric();
@@ -263,6 +260,8 @@ namespace BHR
         public void ChangeMainPlayerState(PlayerState state, bool switchActivePlayer)
         {
             if(switchActivePlayer) _mainPlayerIsPlayerOne = !_mainPlayerIsPlayerOne;
+
+            Cursor.lockState = state == PlayerState.UI ? CursorLockMode.None : CursorLockMode.Locked;
 
             _activePlayerState = state;
 
