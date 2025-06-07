@@ -140,7 +140,7 @@ public class EndLevelModuleUI : MonoBehaviour
     private void DisplayData()
     {
         MedalsType currentMedal = (MedalsType)_currentMedalDisplayed;
-        _medalNameText.text = LocalizationManager.Localize(UtilitiesFunctions.ToLowerWithFirstUpper(currentMedal.ToString()));
+        _medalNameText.text = LocalizationManager.Localize(UtilitiesFunctions.ToLowerWithFirstUpper(currentMedal.ToString())).ToUpper();
 
         float time = _currentLevel.Times[currentMedal];
         _medalTimeText.text = UtilitiesFunctions.TimeFormat(time);

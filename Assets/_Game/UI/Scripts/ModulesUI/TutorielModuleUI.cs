@@ -32,11 +32,15 @@ namespace BHR
 
         private void LoadBindings(InputActionReference actionRef)
         {
-            List<InputBinding> bindings = actionRef.action.bindings.ToList();
-            if(!PlayersInputManager.Instance.PlayersControllerState.Contains(PlayerControllerState.GAMEPAD))
-                bindings = bindings.Where(b => b.effectivePath.Contains("Keyboard") || b.effectivePath.Contains("Mouse") || b.effectivePath.Contains("Pointer")).ToList();
-            if (!PlayersInputManager.Instance.PlayersControllerState.Contains(PlayerControllerState.KEYBOARD))
-                bindings = bindings.Where(b => b.effectivePath.Contains("Gamepad") || b.effectivePath.Contains("*")).ToList();
+            List<InputBinding> bindings = new List<InputBinding>();
+            if (actionRef != null)
+            {
+                bindings = actionRef.action.bindings.ToList();
+                if(!PlayersInputManager.Instance.PlayersControllerState.Contains(PlayerControllerState.GAMEPAD))
+                    bindings = bindings.Where(b => b.effectivePath.Contains("Keyboard") || b.effectivePath.Contains("Mouse") || b.effectivePath.Contains("Pointer")).ToList();
+                if (!PlayersInputManager.Instance.PlayersControllerState.Contains(PlayerControllerState.KEYBOARD))
+                    bindings = bindings.Where(b => b.effectivePath.Contains("Gamepad") || b.effectivePath.Contains("*")).ToList();
+            }
 
             var spriteFinder = PlayersInputManager.Instance.ActionsSO.BindingsControlPathToSprite;
 

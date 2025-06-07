@@ -186,6 +186,7 @@ namespace BHR
 
         public void EndLevel()
         {
+            OnPaused?.Invoke();
             CleanInGame(false);
             IsPlaying = false;
             bool newBestTime = false;
@@ -301,15 +302,15 @@ namespace BHR
 
 
         public bool isSlowed = true;
-        public bool isFinished = false;
-        public bool isStarted = false;
+        public bool isSlowMotionSequenceFinished = false;
+        public bool isSlowMotionSequenceStarted = false;
         public IEnumerator SlowmotionSequence()
         {
-            if (!isStarted)
+            if (!isSlowMotionSequenceStarted)
             {
-                isStarted = true;
+                isSlowMotionSequenceStarted = true;
                 isSlowed = true;
-                isFinished = false;
+                isSlowMotionSequenceFinished = false;
 
                 StartCoroutine(ChangeTimeScale(GameManager.Instance.GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, CharactersManager.Instance.GameplayData.TriggerAimDuration));
 
@@ -318,7 +319,7 @@ namespace BHR
 
                 StartCoroutine(ChangeTimeScale(GameManager.Instance.GameTimeScale, 1f, CharactersManager.Instance.GameplayData.TriggerAimDuration));
 
-                isFinished = true;
+                isSlowMotionSequenceFinished = true;
             }
         }
 

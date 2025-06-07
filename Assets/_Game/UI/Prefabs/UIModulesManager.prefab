@@ -30330,7 +30330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocalizationKey: Controls
-  textCase: 0
+  textCase: 1
 --- !u!1 &7358305098166241811
 GameObject:
   m_ObjectHideFlags: 0

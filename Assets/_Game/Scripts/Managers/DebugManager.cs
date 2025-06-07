@@ -10,7 +10,7 @@ namespace BHR
         [SerializeField, Tooltip("Enable DebugManager")]
         private bool _debug;
 
-        [Header("Debug Keyboard Shortcuts"), Tooltip("Set true to enable keyboard debug shortcuts"), SerializeField]
+        [Header("Debug Keyboard Shortcuts"), Tooltip("Set true to enable keyboard debug shortcuts"), SerializeField, ShowIf(nameof(_debug))]
         private bool _enableDebugKeyboardShortcuts;
         public bool DebugKeyboardShortcutsEnabled => _enableDebugKeyboardShortcuts && _debug;
 
@@ -25,9 +25,13 @@ namespace BHR
         private TextMeshProUGUI _checkpointHUDInfosText; 
         public TextMeshProUGUI CheckpointHUDInfosText => _checkpointHUDInfosText;
         public bool CheckpointInfosTextEnabled => _enableCheckpointInfosText && _debug;
-        [SerializeField]
+        [SerializeField, ShowIf(nameof(_debug))]
         private bool _disableTutorielPopup = false;
         public bool DisableTutorielPopup => _disableTutorielPopup && _debug;
+
+        [Header("Rebinding"), SerializeField, ShowIf(nameof(_debug))]
+        private bool _showControllerKeyinRebinding;
+        public bool ShowControllerKeyinRebinding => _showControllerKeyinRebinding && _debug;
 
         private void Start()
         {

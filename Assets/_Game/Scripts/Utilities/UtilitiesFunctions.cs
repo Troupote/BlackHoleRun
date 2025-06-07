@@ -41,7 +41,7 @@ namespace BHR
         }
 
         #region Text format
-        public static string ToLowerWithFirstUpper(string text) => char.ToUpper(text[0]) + text.Substring(1);
+        public static string ToLowerWithFirstUpper(string text) => char.ToUpper(text[0]) + text.Substring(1).ToLower();
 
         /// <summary>
         /// Change font of the tmp text. Also can apply bold
