@@ -93,6 +93,10 @@ public class CharacterGameplayData : ScriptableObject
     [SerializeField]
     private float m_baseFOV = 60f;
     public float BaseFOV => m_baseFOV;
+
+    [SerializeField]
+    private float m_baseFOVTransitionTimeCoef = 2f;
+    public float BaseFOVTransitionTimeCoef => m_baseFOVTransitionTimeCoef;
     [SerializeField]
     private float m_MovingForwardFOV = 70f;
     public float MovingForwardFOV => m_MovingForwardFOV;

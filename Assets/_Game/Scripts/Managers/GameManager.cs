@@ -150,7 +150,6 @@ namespace BHR
 
         public void StartLevel()
         {
-            Cursor.lockState = CursorLockMode.Locked;
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
         }
@@ -165,7 +164,6 @@ namespace BHR
 
         public void Pause(GameObject moduleToLoad)
         {
-            Cursor.lockState = CursorLockMode.None;
             OnPaused?.Invoke();
             if(!IsPaused)
             {
@@ -181,7 +179,6 @@ namespace BHR
         {
             OnResumed?.Invoke();
             IsPlaying = true;
-            Cursor.lockState = CursorLockMode.Locked;
             ChangeMainPlayerState(_savedPausedState, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.HUD));
             ModuleManager.Instance.ClearNavigationHistoric();
@@ -189,6 +186,7 @@ namespace BHR
 
         public void EndLevel()
         {
+            OnPaused?.Invoke();
             CleanInGame(false);
             IsPlaying = false;
             bool newBestTime = false;
@@ -264,6 +262,8 @@ namespace BHR
         {
             if(switchActivePlayer) _mainPlayerIsPlayerOne = !_mainPlayerIsPlayerOne;
 
+            Cursor.lockState = state == PlayerState.UI ? CursorLockMode.None : CursorLockMode.Locked;
+
             _activePlayerState = state;
 
             // SoloMode version
@@ -302,15 +302,15 @@ namespace BHR
 
 
         public bool isSlowed = true;
-        public bool isFinished = false;
-        public bool isStarted = false;
+        public bool isSlowMotionSequenceFinished = false;
+        public bool isSlowMotionSequenceStarted = false;
         public IEnumerator SlowmotionSequence()
         {
-            if (!isStarted)
+            if (!isSlowMotionSequenceStarted)
             {
-                isStarted = true;
+                isSlowMotionSequenceStarted = true;
                 isSlowed = true;
-                isFinished = false;
+                isSlowMotionSequenceFinished = false;
 
                 StartCoroutine(ChangeTimeScale(GameManager.Instance.GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, CharactersManager.Instance.GameplayData.TriggerAimDuration));
 
@@ -319,7 +319,7 @@ namespace BHR
 
                 StartCoroutine(ChangeTimeScale(GameManager.Instance.GameTimeScale, 1f, CharactersManager.Instance.GameplayData.TriggerAimDuration));
 
-                isFinished = true;
+                isSlowMotionSequenceFinished = true;
             }
         }
 

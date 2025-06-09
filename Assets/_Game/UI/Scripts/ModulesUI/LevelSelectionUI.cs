@@ -81,7 +81,7 @@ public class LevelSelectionUI : AModuleUI
         UtilitiesFunctions.DisplayMedals((int)data.MedalObtained(), data, _medalsSprite, _medalsTimeText);
 
         // @todo Localization
-        _bestTimeText.text = LocalizationManager.Localize("Best").ToUpper() + " : " + (data.BestTime() == float.MaxValue ? LocalizationManager.Localize(_notCompletedYetLocalizationKey) : UtilitiesFunctions.TimeFormat(data.BestTime()));
+        _bestTimeText.text = LocalizationManager.Localize("Best").ToUpper() + " : " + (data.BestTime() == float.MaxValue ? LocalizationManager.Localize(_notCompletedYetLocalizationKey) : UtilitiesFunctions.TMPBalises(UtilitiesFunctions.TimeFormat(data.BestTime()), "OverpassMono-VariableFont_wght SDF", true));
 
         _levelSelectionPanel.SetActive(false);
         _levelSelectedPanel.SetActive(true);

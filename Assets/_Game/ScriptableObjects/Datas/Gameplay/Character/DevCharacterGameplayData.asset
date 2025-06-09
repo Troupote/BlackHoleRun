@@ -32,6 +32,7 @@ MonoBehaviour:
   m_triggerAimDuration: 0.4
   m_targetAimTimeScale: 0.2
   m_baseFOV: 60
+  m_baseFOVTransitionTimeCoef: 2
   m_MovingForwardFOV: 65
   m_MovingBackwardFOV: 55
   m_targetAimFOV: 30

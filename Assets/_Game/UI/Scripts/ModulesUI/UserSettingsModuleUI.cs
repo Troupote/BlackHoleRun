@@ -66,9 +66,10 @@ namespace BHR
 
         public void TogglePanels()
         {
-            _controlsPanel.SetActive(!_controlsPanel.activeSelf);
-            _advancedPanel.SetActive(!_controlsPanel.activeSelf);
-            _switchSettingsButton.GetComponentInChildren<TextMeshProUGUI>().text = _controlsPanel.activeSelf ? LocalizationManager.Localize(_advancedKey) : LocalizationManager.Localize(_controlsKey);
+            bool changeToAdvanced = _controlsPanel.activeSelf;
+            _advancedPanel.SetActive(changeToAdvanced);
+            _controlsPanel.SetActive(!changeToAdvanced);
+            _switchSettingsButton.GetComponentInChildren<TextMeshProUGUI>().text = !changeToAdvanced ? LocalizationManager.Localize(_advancedKey) : LocalizationManager.Localize(_controlsKey);
         }
 
         public void TogglePanels(bool advanced)
@@ -107,6 +108,11 @@ namespace BHR
             controllersName = controllersName.Remove(controllersName.Length - 2);
 
             _activeControllerText.text = LocalizationManager.Localize(_currentControllerKey) + " : " + controllersName;
+
+#if UNITY_EDITOR
+            if(DebugManager.Instance.ShowControllerKeyinRebinding)
+                _activeControllerText.text = _activeControllerText.text + $"\n{SettingsSave.GetControllerKey(activePlayerInput.GetComponent<PlayerInput>().devices[0])}";
+#endif
 
             // Switch input indication if two players
             UpdateControllerSwitchInfos(activePlayerInput.playerIndex);
