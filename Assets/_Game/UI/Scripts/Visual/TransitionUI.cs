@@ -15,10 +15,10 @@ public class TransitionUI : MonoBehaviour
     [SerializeField, Required, FoldoutGroup("Settings")] private float _maxScale;
     [SerializeField, Required, FoldoutGroup("Settings")] private Ease _ease;
 
-    public void LaunchTransitionAnimation(bool state)
+    public void LaunchTransitionAnimation(bool state, float duration = float.MaxValue)
     {
         gameObject.SetActive(true); _counter.gameObject.SetActive(false);
-        StartCoroutine(TransitionAnimation(state));
+        StartCoroutine(TransitionAnimation(state, duration == float.MaxValue ? ModuleManager.Instance.DefaultTransitionDuration : duration));
     }
 
     public void LaunchStartAnimation()
@@ -35,13 +35,13 @@ public class TransitionUI : MonoBehaviour
         StartCoroutine(StartAnimation());
     }
 
-    IEnumerator TransitionAnimation(bool starting)
+    IEnumerator TransitionAnimation(bool starting, float duration)
     {
         float targetScale = starting ? _maxScale : 0f;
         transform.localScale = starting ? Vector3.zero : _maxScale * Vector3.one;
 
-        transform.DOScale(targetScale, ModuleManager.Instance.TransitionDuration).SetEase(_ease);
-        yield return new WaitForSeconds(ModuleManager.Instance.TransitionDuration);
+        transform.DOScale(targetScale, duration).SetEase(_ease);
+        yield return new WaitForSeconds(duration);
         if (!starting) gameObject.SetActive(false);
     }
 
@@ -89,19 +89,5 @@ public class TransitionUI : MonoBehaviour
         gameObject.SetActive(false);
         _counter.gameObject.SetActive(false);
         GameManager.Instance.StartLevel();
-    }
-
-    [Button] void TestAnim()
-    {
-        gameObject.SetActive(true);
-
-        StartCoroutine(TestCoroutine());
-    }
-
-    IEnumerator TestCoroutine()
-    {
-        LaunchTransitionAnimation(true);
-        yield return new WaitForSeconds(ModuleManager.Instance.TransitionDuration);
-        LaunchTransitionAnimation(false);
     }
 }

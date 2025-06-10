@@ -1,3 +1,4 @@
+using Assets.SimpleLocalization.Scripts;
 using BHR;
 using DG.Tweening;
 using NUnit.Framework;
@@ -32,9 +33,11 @@ public class EndLevelModuleUI : MonoBehaviour
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _hideMove;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _revealMove;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _switchDuration;
-    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private string _successLevelText;
-    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private string _failedLevelText;
-    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private string _soloModeLevelEndText;
+
+    [SerializeField, Required, FoldoutGroup("Localization")] private string _newBestLocalizationKey;
+    [SerializeField, Required, FoldoutGroup("Localization")] private string _successLocalizationKey;
+    [SerializeField, Required, FoldoutGroup("Localization")] private string _failedLocalizationKey;
+    [SerializeField, Required, FoldoutGroup("Localization")] private string _soloModeLocalizationKey;
     private int _medalObtainedId;
     private int _currentMedalDisplayed;
 
@@ -74,9 +77,9 @@ public class EndLevelModuleUI : MonoBehaviour
     #region Run infos UI
     private void UpdateRunInfos(bool newBest)
     {
-        _levelNameText.text = $"Level {_currentLevel.ID.ToString("D2")} - {_currentLevel.LevelName}";
-        _currentTimeText.text = "TIME : " + UtilitiesFunctions.TimeFormat(_endTimer);
-        _bestTimeText.text = newBest ? "NEW BEST TIME !" : "BEST : " + (_currentLevel.BestTime()==float.MaxValue ? "Not completed" : UtilitiesFunctions.TimeFormat(_currentLevel.BestTime()));
+        _levelNameText.text = $"{LocalizationManager.Localize("Level")} {_currentLevel.ID.ToString("D2")} - {_currentLevel.LevelName}"; // @todo localization level name
+        _currentTimeText.text = LocalizationManager.Localize("Time").ToUpper() + " : " + UtilitiesFunctions.TMPBalises(UtilitiesFunctions.TimeFormat(_endTimer), "OverpassMono-VariableFont_wght SDF", true);
+        _bestTimeText.text = newBest ? LocalizationManager.Localize(_newBestLocalizationKey).ToUpper() : LocalizationManager.Localize("Best").ToUpper() + " : " + UtilitiesFunctions.TMPBalises(UtilitiesFunctions.TimeFormat(_currentLevel.BestTime()), "OverpassMono-VariableFont_wght SDF", true);
     }
     #endregion
 
@@ -111,10 +114,10 @@ public class EndLevelModuleUI : MonoBehaviour
 
     private void UpdateEndLevelInfosText(bool hasPlayedInSolo)
     {
-        string endTextInfos = MedalObtainedId == 0 ? _failedLevelText : _successLevelText;
+        string endTextInfosKey = MedalObtainedId == 0 ? _failedLocalizationKey : _successLocalizationKey;
         if (hasPlayedInSolo)
-            endTextInfos = _soloModeLevelEndText;
-        _endLevelText.text = endTextInfos;
+            endTextInfosKey = _soloModeLocalizationKey;
+        _endLevelText.text = LocalizationManager.Localize(endTextInfosKey).ToUpper();
     }
 
     public void ChangeMedal(int move)
@@ -137,7 +140,7 @@ public class EndLevelModuleUI : MonoBehaviour
     private void DisplayData()
     {
         MedalsType currentMedal = (MedalsType)_currentMedalDisplayed;
-        _medalNameText.text = currentMedal.ToString();
+        _medalNameText.text = LocalizationManager.Localize(UtilitiesFunctions.ToLowerWithFirstUpper(currentMedal.ToString())).ToUpper();
 
         float time = _currentLevel.Times[currentMedal];
         _medalTimeText.text = UtilitiesFunctions.TimeFormat(time);

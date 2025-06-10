@@ -15,6 +15,10 @@ namespace BHR.UILinkers
 
         protected override int LoadSetting()
         {
+            if(SettingsSave.LoadLanguage() == SettingsSave.START_LANGUAGE) // First time -> detected system language
+                SettingsSave.SaveLanguage(Application.systemLanguage switch { SystemLanguage.English => "English", SystemLanguage.French => "Français", _ => SettingsSave.DEFAULT_LANGUAGE });
+
+
             TMP_Dropdown dropdown = GetComponent<TMP_Dropdown>();
 
             TMP_Dropdown.OptionData currentLanguage = dropdown.options.FirstOrDefault(o => o.text == SettingsSave.LoadLanguage());

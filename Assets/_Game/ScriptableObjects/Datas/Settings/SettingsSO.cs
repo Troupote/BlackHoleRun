@@ -14,6 +14,8 @@ namespace BHR
         private Vector2 gamepadBaseSensitivity;
         public Vector2 GamepadSensitivity => gamepadBaseSensitivity;
 
-        //[Header("Users")]
+        [Header("InGame"), SerializeField]
+        private float _respawningDuration;
+        public float RespawningDuration => _respawningDuration;
     }
 }

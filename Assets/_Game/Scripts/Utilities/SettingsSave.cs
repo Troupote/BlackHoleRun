@@ -8,7 +8,7 @@ namespace BHR
         #region Global settings keys and default values
         private const string RESOLUTION_KEY = "Resolution"; private const string DEFAULT_RESOLUTION = "default"; public const char RESOLUTION_CAST = 'x';
         private const string IS_WINDOWED_KEY = "Windowed"; private const int DEFAULT_IS_WINDOWED = -1; // -1 : default detected | 0 : False | 1 : True
-        private const string LANGUAGE_KEY = "Language"; private const string DEFAULT_LANGUAGE = "English";
+        private const string LANGUAGE_KEY = "Language"; public const string DEFAULT_LANGUAGE = "English"; public const string START_LANGUAGE = "";
         private const string MASTER_VOLUME_KEY = "MasterVolume"; private const float DEFAULT_MASTER_VOLUME = 0.5f;
         private const string MUSIC_VOLUME_KEY = "MusicVolume"; private const float DEFAULT_MUSIC_VOLUME = 0.5f;
         private const string MASTER_SOUND_KEY = "MasterVolume"; private const float DEFAULT_SOUND_VOLUME = 0.5f;
@@ -21,6 +21,7 @@ namespace BHR
         private const string LEFT_STICK_DEADZONE_KEY = "LSDeadzone/"; private const float DEFAULT_LEFT_STICK_DEADZONE = 0f;
         private const string RIGHT_STICK_DEADZONE_KEY = "RSDeadzone/"; private const float DEFAULT_RIGHT_STICK_DEADZONE = 0.15f;
         private const string TOGGLE_AIM_KEY = "HoldOrToggleAim/"; private const int DEFAULT_TOGGLE_AIM = 0; // 0 : Hold | 1 : Toggle
+        private const string BINDINGS_KEY = "Bindings/"; public const string DEFAULT_BINDINGS = "default";
         #endregion
 
         #region Global settings save and load
@@ -31,7 +32,7 @@ namespace BHR
         public static int LoadIsWindowed() => PlayerPrefs.GetInt(IS_WINDOWED_KEY, DEFAULT_IS_WINDOWED);
 
         public static void SaveLanguage(string language = DEFAULT_LANGUAGE) => PlayerPrefs.SetString(LANGUAGE_KEY, language);
-        public static string LoadLanguage() => PlayerPrefs.GetString(LANGUAGE_KEY, DEFAULT_LANGUAGE);
+        public static string LoadLanguage() => PlayerPrefs.GetString(LANGUAGE_KEY, START_LANGUAGE);
 
         public static void SaveMasterVolume(float value = DEFAULT_MASTER_VOLUME) => PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, value);
         public static float LoadMasterVolume() => PlayerPrefs.GetFloat(MASTER_SOUND_KEY, DEFAULT_MASTER_VOLUME);
@@ -73,6 +74,9 @@ namespace BHR
         /// <param name="controller"></param>
         /// <returns></returns>
         public static int LoadToggleAim(InputDevice controller) => PlayerPrefs.GetInt(TOGGLE_AIM_KEY + GetControllerKey(controller), DEFAULT_TOGGLE_AIM);
+
+        public static void SaveBindings(InputDevice controller, string value = DEFAULT_BINDINGS) => PlayerPrefs.SetString(BINDINGS_KEY + GetControllerKey(controller), value);
+        public static string LoadBindings(InputDevice controller) => PlayerPrefs.GetString(BINDINGS_KEY + GetControllerKey(controller), DEFAULT_BINDINGS);
         #endregion
     }
 }

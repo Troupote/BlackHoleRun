@@ -32,6 +32,15 @@ namespace BHR
         public override void Awake()
         {
             base.Awake();
+#if UNITY_EDITOR
+            if(_startSceneData == null)
+            {
+                LevelDataSO debugScene = ScriptableObject.CreateInstance<LevelDataSO>();
+                debugScene.SceneName = SceneManager.GetActiveScene().name;
+                GameManager.Instance.SelectedLevel = debugScene;
+                _startSceneData = debugScene;
+            }
+#endif
             CurrentSceneData = _startSceneData;
         }
 
@@ -101,7 +110,7 @@ namespace BHR
         {
             // Start transition animation
             ModuleManager.Instance.LaunchTransitionAnimation(true);
-            yield return new WaitForSeconds(ModuleManager.Instance.TransitionDuration);
+            yield return new WaitForSeconds(ModuleManager.Instance.DefaultTransitionDuration);
 
             // Scene loading
             AsyncOperation loading = SceneManager.LoadSceneAsync(sceneName);
@@ -111,7 +120,7 @@ namespace BHR
             if(withEndTransition)
             {
                 ModuleManager.Instance.LaunchTransitionAnimation(false);
-                yield return new WaitForSeconds(ModuleManager.Instance.TransitionDuration);
+                yield return new WaitForSeconds(ModuleManager.Instance.DefaultTransitionDuration);
             }
             else
             {

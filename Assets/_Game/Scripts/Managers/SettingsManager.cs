@@ -1,3 +1,5 @@
+using Assets.SimpleLocalization.Scripts;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -6,8 +8,12 @@ namespace BHR
 {
     public class SettingsManager : ManagerSingleton<SettingsManager>
     {
+        [Required]
+        public SettingsSO BaseSettings;
+
         public UnityEvent OnGlobalDatasLoaded;
         public UnityEvent OnUserDatasLoaded;
+        public UnityEvent<string> OnUserBindingsLoaded;
 
         public UnityEvent OnUserSettingsApplied;
         public UnityEvent OnUserSettingsCanceled;
@@ -36,7 +42,7 @@ namespace BHR
 
         public void UpdateLanguage()
         {
-            // @todo Language update (not now)
+            LocalizationManager.Language = SettingsSave.LoadLanguage();
         }
 
         public void UpdateVolume()
@@ -59,7 +65,7 @@ namespace BHR
             LoadAllSavedData();
         }
 
-        public void ResetUserSettings(InputDevice controller)
+        public void ResetAdvancedUserSettings(InputDevice controller)
         {
             SettingsSave.SaveSensitivityX(controller);
             SettingsSave.SaveSensitivityY(controller);
@@ -69,6 +75,12 @@ namespace BHR
             SettingsSave.SaveToggleAim(controller);
 
             LoadUserData(controller);
+        }
+
+        public void ResetBindingsSettings(InputDevice controller)
+        {
+            SettingsSave.SaveBindings(controller);
+            OnUserBindingsLoaded?.Invoke(SettingsSave.LoadBindings(controller));
         }
 
         private void LoadAllSavedData()

@@ -5,48 +5,79 @@ using UnityEngine.Scripting.APIUpdating;
 
 public class SingularityController : MonoBehaviour
 {
-    [SerializeField]
-    private Rigidbody rb;
-    private Vector2 moveValue;
+    private SingularityBehavior m_singularityBehavior;
+    private Vector2 m_moveValue = Vector2.zero;
+    private bool m_isInitialized = false;
+    void Start()
+    {
+        InitializeDependencies();
+    }
+
+    private void InitializeDependencies()
+    {
+        m_singularityBehavior = GetComponent<SingularityBehavior>();
+
+        m_isInitialized = true;
+    }
 
     private void OnEnable()
     {
         // Bind inputs
-        PlayersInputManager.Instance.OnSMove.AddListener(HandleSingulairtyMove);
+        PlayersInputManager.Instance.OnSMove.AddListener(HandleSingularityMove);
         PlayersInputManager.Instance.OnSUnmorph.AddListener(HandleUnMorphEarly);
-        // Bind toout le reste la
-
+        PlayersInputManager.Instance.OnSJump.AddListener(HandleJump);
+        PlayersInputManager.Instance.OnSDash.AddListener(HandleDash);
+        CharactersManager.Instance.ResetInputs += ResetInputs;
+        GameManager.Instance.OnPaused.AddListener(ResetInputs);
+        GameManager.Instance.OnRespawn.AddListener(ResetInputs);
     }
 
     private void OnDisable()
     {
         // Debind inputs
-        PlayersInputManager.Instance.OnSMove.RemoveListener(HandleSingulairtyMove);
+        PlayersInputManager.Instance.OnSMove.RemoveListener(HandleSingularityMove);
         PlayersInputManager.Instance.OnSUnmorph.RemoveListener(HandleUnMorphEarly);
-        // Debing le reste
+        PlayersInputManager.Instance.OnSJump.RemoveListener(HandleJump);
+        PlayersInputManager.Instance.OnSDash.RemoveListener(HandleDash);
+        CharactersManager.Instance.ResetInputs -= ResetInputs;
+        GameManager.Instance.OnPaused.RemoveListener(ResetInputs);
+        GameManager.Instance.OnRespawn.RemoveListener(ResetInputs);
     }
 
-    void FixedUpdate()
+    #region Life Cycle
+
+    private void FixedUpdate()
     {
-        if (!GameManager.Instance.IsPlaying || !CharactersManager.Instance.isSingularityThrown) return;
-        Move();
+        if (!m_isInitialized) return;
+
+        m_singularityBehavior.Move(m_moveValue);
     }
 
-    private void Move()
+    #endregion
+
+    private void ResetInputs()
     {
-        float moveX = moveValue.x;
-
-        if (moveValue.x == 0 && moveValue.y == 0) return;
-
-        Vector3 curveDirection = transform.right * moveX;
-
-        rb.AddForce(curveDirection.normalized * CharactersManager.Instance.GameplayData.MovingCurveForce, ForceMode.Force);
+        m_moveValue = Vector2.zero;
     }
 
-    public void HandleSingulairtyMove(Vector2 value) => moveValue = value;
+    private void HandleSingularityMove(Vector2 a_movementValue)
+    {
+        m_moveValue = a_movementValue;
+    }
 
     private void HandleUnMorphEarly()
     {
-        CharactersManager.Instance.TryThrowSingularity();
+        m_singularityBehavior.OnUnmorph?.Invoke();
     }
+
+    private void HandleJump()
+    {
+        m_singularityBehavior.Jump();
+    }
+
+    private void HandleDash()
+    {
+        m_singularityBehavior.Dash();
+    }
+
 }

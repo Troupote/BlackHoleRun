@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace BHR
@@ -6,8 +7,8 @@ namespace BHR
     {
         private void OnTriggerEnter(Collider other)
         {
-            // @todo process player "death" -> malus ? etc
-            CheckpointsManager.Instance.RespawnPlayer();
+            if (!GameManager.Instance.IsPaused)
+                GameManager.Instance.Respawning();
         }
     }
 }

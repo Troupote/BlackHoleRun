@@ -249,7 +249,6 @@ GameObject:
   - component: {fileID: 2256550512557629699}
   - component: {fileID: 4846799805334316505}
   - component: {fileID: 391594483695264458}
-  - component: {fileID: 4775512395861546102}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -285,8 +284,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0c71de25bbb1274da51d6732e564162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameSettings: {fileID: 11400000, guid: d697f5838b1aa13499844a902c809e6f, type: 2}
+  GameSettings: {fileID: 11400000, guid: 49f454b3b4a35104f81eacf0200146b0, type: 2}
   _activePlayerState: 0
+  _selectedLevel: {fileID: 0}
+  _currentLevel: {fileID: 0}
   _soloMode: 1
   OnLaunchLevel:
     m_PersistentCalls:
@@ -300,9 +301,24 @@ MonoBehaviour:
   OnTimerChanged:
     m_PersistentCalls:
       m_Calls: []
-  OnPlayerStateChanged:
+  _isPlaying: 0
+  _isPaused: 0
+  _gameTimeScale: 0
+  OnMainPlayerStateChanged:
     m_PersistentCalls:
       m_Calls: []
+  OnPaused:
+    m_PersistentCalls:
+      m_Calls: []
+  OnResumed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRespawn:
+    m_PersistentCalls:
+      m_Calls: []
+  isSlowed: 1
+  isFinished: 0
+  isStarted: 0
 --- !u!114 &391594483695264458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,16 +336,3 @@ MonoBehaviour:
   _disableStartAnimation: 1
   _enableCheckpointInfosText: 1
   _checkpointHUDInfosText: {fileID: 5398624772312287453}
---- !u!114 &4775512395861546102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4942750028036633372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aafc1af531436d74d8354fc851b73afe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aimTime: 2

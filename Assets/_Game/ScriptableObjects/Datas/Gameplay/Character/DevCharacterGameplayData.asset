@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: beda91f5e784f894aa9f28a42b90336a, type: 3}
+  m_Name: DevCharacterGameplayData
+  m_EditorClassIdentifier: 
+  m_cooldownBeforeThrowAllowed: 4
+  m_comingBackSpeed: 100
+  m_maxDistanceBetweenPlayers: 125
+  m_activateMovementsLimit: 0
+  m_throwForce: 30
+  m_movingCurveForce: 15
+  m_DashForce: 30
+  m_JumpForce: 35
+  m_gravityDelayDuration: 0.5
+  m_gravityMultiplier: 2
+  m_playerSpeed: 40
+  m_jumpForce: 35
+  m_dashForce: 200
+  m_dashDuration: 0.2
+  m_dashCooldown: 1.5
+  m_gravityScale: 8
+  m_airPlayerSpeedMultiplier: 0.8
+  m_triggerAimDuration: 0.4
+  m_targetAimTimeScale: 0.2
+  m_baseFOV: 60
+  m_baseFOVTransitionTimeCoef: 2
+  m_MovingForwardFOV: 65
+  m_MovingBackwardFOV: 55
+  m_targetAimFOV: 30
