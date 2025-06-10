@@ -15,7 +15,7 @@ namespace BHR
 
         private void Start()
         {
-            CameraManager.Instance.MainCam.transform.rotation = _modulesRotation[ModuleManager.Instance.ModulesRef[ModuleManager.Instance.CurrentModule]];
+            GameObject.FindWithTag("MainCamera").transform.rotation = _modulesRotation[ModuleManager.Instance.ModulesRef[ModuleManager.Instance.CurrentModule]];
         }
 
         public void LaunchTransition(bool back) => StartCoroutine(Transition(back));

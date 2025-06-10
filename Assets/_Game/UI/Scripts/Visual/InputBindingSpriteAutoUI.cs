@@ -75,6 +75,12 @@ namespace BHR
             else if (currentActivePlayerController == PlayerControllerState.GAMEPAD)
                 controlPaths = BindingsToSprite.GamepadBindings(_actionRef.action.bindings.ToList());
 
+            if(controlPaths.Count <= 0)
+            {
+                Debug.LogWarning($"No control path found on {gameObject.name}");
+                return;
+            }
+
             string controlPathKey = controlPaths[0].effectivePath;
 
             if (_useComposite && _directionIsNotNone)

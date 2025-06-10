@@ -9,5 +9,9 @@ namespace BHR
         [Header("InGame"), SerializeField]
         private float _respawningDuration;
         public float RespawningDuration => _respawningDuration;
+
+        [SerializeField]
+        private float _playerSizeForRespawn;
+        public float PlayerSizeForRespawn => _playerSizeForRespawn;
     }
 }

@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: DevGameSettingsData
   m_EditorClassIdentifier: 
   _respawningDuration: 1.2
+  _playerSizeForRespawn: 4.3

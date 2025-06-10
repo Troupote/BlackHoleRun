@@ -929,7 +929,7 @@
                 {
                     "name": "",
                     "id": "b436fb5a-4f1e-430f-a561-8963efa5b294",
-                    "path": "<Keyboard>/escape",
+                    "path": "<Keyboard>/p",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardMouse",

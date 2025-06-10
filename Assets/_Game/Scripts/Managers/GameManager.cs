@@ -150,6 +150,7 @@ namespace BHR
 
         public void StartLevel()
         {
+            CheckpointsManager.Instance.ReplacePlayer();
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
         }
