@@ -332,8 +332,10 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     private void ShowSingularityPreview()
     {
         SingularityPreviewController.Inflate(m_characterObject.transform);
-        m_characterObject.SetActive(false);
+        Invoke("DisableCharacterObject", 0.05f);
     }
+
+    private void DisableCharacterObject() => m_characterObject.SetActive(false);
 
     private void HideSingularityPreview()
     {

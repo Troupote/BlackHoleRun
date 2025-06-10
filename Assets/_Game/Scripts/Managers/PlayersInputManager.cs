@@ -151,7 +151,7 @@ namespace BHR
         public UnityEvent OnHJump, OnHDash, OnHSlide, OnHThrow, OnSJump, OnSDash, OnSUnmorph, OnPause, OnIReconnect; // Performed events
         public UnityEvent<Vector2> OnHMove, OnSMove; // Vector2 value events
         public UnityEvent<Vector2, PlayerControllerState> OnHLook, OnSLook; // Vector2 value events depending of the controller used
-        public UnityEvent OnHAim; // Multiple callbacks events (Hold throw, Hold/toggle aim)
+        public UnityEvent<bool> OnHAim; // Multiple callbacks events (Hold throw, Hold/toggle aim)
         public UnityEvent OnRestartLevel, OnRespawn; // Interactions performed events
 
         private void SendInputEvent(InputAction.CallbackContext ctx, int playerIndex)
@@ -202,7 +202,7 @@ namespace BHR
                 }
 
                 else if (ctx.action.name == InputActions.Aim && (ctx.performed || ctx.canceled && SettingsSave.LoadToggleAim(CurrentActivePlayerDevice) == 0) || ctx.action.name == InputActions.Throw && ctx.canceled)
-                    OnHAim.Invoke();
+                    OnHAim.Invoke(ctx.action.name == InputActions.Throw && ctx.canceled);
 
                 if (ctx.performed)
                 {

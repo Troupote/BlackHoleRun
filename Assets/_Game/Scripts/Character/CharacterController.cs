@@ -63,7 +63,8 @@ private void OnEnable()
     private void ResetInputs()
     {
         m_moveValue = Vector2.zero;
-        CancelAim();
+        if (!GameManager.Instance.isSlowMotionSequenceFinished)
+            CancelAim();
     }
     private void HandleMove(Vector2 a_movementValue)
     {
@@ -82,25 +83,18 @@ private void OnEnable()
 
     private void HandleThrowSingularity()
     {
-        if (!GameManager.Instance.isFinished)
-        {
-            GameManager.Instance.isSlowed = false;
-        }
-
-        GameManager.Instance.isStarted = false;
-        GameManager.Instance.isSlowed = false;
-
-        CancelAim();
+        if (!GameManager.Instance.isSlowMotionSequenceFinished)
+            CancelAim();
         m_characterBehavior.OnThrowSingularity();
     }
 
-    private void HandleAim()
+    private void HandleAim(bool withThrow)
     {
         _hasAlreadyCallAim = !_hasAlreadyCallAim;
 
         if (_hasAlreadyCallAim && CharactersManager.Instance.CanThrow)
         {
-            StartAim();
+            StartAim(withThrow);
         }
         else if(!_hasAlreadyCallAim)
         {
@@ -109,19 +103,20 @@ private void OnEnable()
 
     }
 
-    private void StartAim()
+    private void StartAim(bool withThrow)
     {
-        StartCoroutine(GameManager.Instance.SlowmotionSequence());
-        GameManager.Instance.isStarted = true;
+        float duration = CharactersManager.Instance.GameplayData.TriggerAimDuration;
+        StartCoroutine(GameManager.Instance.SlowmotionSequence(duration, duration * (withThrow ? 0f : 1f)));
+        GameManager.Instance.isSlowMotionSequenceStarted = true;
         CharactersManager.Instance.isHumanoidAiming = true;
     }
 
     private void CancelAim()
     {
-        GameManager.Instance.isStarted = false;
-        GameManager.Instance.isSlowed = false;
-
         _hasAlreadyCallAim = false;
+        GameManager.Instance.isSlowMotionSequenceStarted = false;
+        GameManager.Instance.isTimeSlowed = false;
+
         CharactersManager.Instance.isHumanoidAiming = false;
     }
 }

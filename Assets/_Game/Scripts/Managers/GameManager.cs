@@ -302,23 +302,23 @@ namespace BHR
         }
 
 
-        public bool isSlowed = true;
+        public bool isTimeSlowed = true;
         public bool isSlowMotionSequenceFinished = false;
         public bool isSlowMotionSequenceStarted = false;
-        public IEnumerator SlowmotionSequence()
+        public IEnumerator SlowmotionSequence(float inDuration, float outDuration)
         {
             if (!isSlowMotionSequenceStarted)
             {
                 isSlowMotionSequenceStarted = true;
-                isSlowed = true;
+                isTimeSlowed = true;
                 isSlowMotionSequenceFinished = false;
 
-                StartCoroutine(ChangeTimeScale(GameManager.Instance.GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, CharactersManager.Instance.GameplayData.TriggerAimDuration));
+                StartCoroutine(ChangeTimeScale(GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, inDuration));
 
                 //Wait until isSlowed becomes false
-                yield return new WaitUntil(() => isSlowed == false);
+                yield return new WaitUntil(() => isTimeSlowed == false);
 
-                StartCoroutine(ChangeTimeScale(GameManager.Instance.GameTimeScale, 1f, CharactersManager.Instance.GameplayData.TriggerAimDuration));
+                StartCoroutine(ChangeTimeScale(GameTimeScale, 1f, outDuration));
 
                 isSlowMotionSequenceFinished = true;
             }

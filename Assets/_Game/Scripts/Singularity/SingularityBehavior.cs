@@ -135,7 +135,7 @@ public class SingularityBehavior : MonoBehaviour
     {
         if (SingularityCharacterFollowComponent.IsPickedUp) return;
 
-        Debug.Log("Handling Throw Curve for Singularity");
+        //Debug.Log("Handling Throw Curve for Singularity");
 
         Vector3 velocity = m_rigidbody.linearVelocity;
 
