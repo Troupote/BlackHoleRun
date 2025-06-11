@@ -109,6 +109,9 @@ public class CharacterBehavior : MonoBehaviour
 
     private bool m_isGrounded;
     private bool m_isGroundedForJump;
+    [SerializeField]
+    private float m_coyotteTimeTimer = 0f;
+
 
     private void Update()
     {
@@ -116,6 +119,7 @@ public class CharacterBehavior : MonoBehaviour
 
         m_isGrounded = IsGrounded();
         m_isGroundedForJump = IsGroundedForJump();
+        CheckCoyotteTime();
     }
 
     #endregion
@@ -168,7 +172,8 @@ public class CharacterBehavior : MonoBehaviour
 
     public void OnJump()
     {
-        if (!m_isGroundedForJump) return;
+        if (!m_isGroundedForJump && m_coyotteTimeTimer <= 0f) return;
+
 
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
         m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
@@ -181,7 +186,21 @@ public class CharacterBehavior : MonoBehaviour
         }
 
         CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
+        m_coyotteTimeTimer = -1f;
+        Invoke("ResetCoyotteTimer", 0.2f);
     }
+
+    private void CheckCoyotteTime()
+    {
+        if(m_coyotteTimeTimer < 0f) return;
+
+        if (m_isGroundedForJump && m_coyotteTimeTimer != CharactersManager.Instance.GameplayData.CoyotteTime)
+            m_coyotteTimeTimer = CharactersManager.Instance.GameplayData.CoyotteTime;
+        else if (!m_isGroundedForJump && m_coyotteTimeTimer > 0f)
+            m_coyotteTimeTimer -= Time.deltaTime * GameManager.Instance.GameTimeScale;
+    }
+
+    private void ResetCoyotteTimer() => m_coyotteTimeTimer = 0f;
 
     public void OnSingularityJump(Vector3 a_linearVelocityToApply)
     {

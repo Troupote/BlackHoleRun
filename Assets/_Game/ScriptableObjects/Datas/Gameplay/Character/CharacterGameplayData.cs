@@ -61,6 +61,10 @@ public class CharacterGameplayData : ScriptableObject
     public float JumpForce => m_jumpForce;
 
     [SerializeField]
+    private float m_coyotteTime = 0.15f;
+    public float CoyotteTime => m_coyotteTime;
+
+    [SerializeField]
     private float m_dashForce = 5f;
     public float DashForce => m_dashForce;
 

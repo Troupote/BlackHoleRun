@@ -24,6 +24,7 @@ MonoBehaviour:
   m_gravityMultiplier: 2
   m_playerSpeed: 40
   m_jumpForce: 35
+  m_coyotteTime: 0.15
   m_dashForce: 200
   m_dashDuration: 0.2
   m_dashCooldown: 1.5
