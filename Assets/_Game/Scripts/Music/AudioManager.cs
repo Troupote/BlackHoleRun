@@ -7,7 +7,6 @@ using FMOD.Studio;
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] public float SFXVolume;
-    [SerializeField] public float AmbiantVolume;
     [SerializeField] public float MusicVolume;
     [SerializeField] public float MasterVolume;
 
@@ -108,5 +107,23 @@ public class AudioManager : MonoBehaviour
     private void OnDestroy()
     {
         Cleanup();
+    }
+    
+    /// <summary>
+    /// Applique le volume approprié à chaque événement selon sa catégorie.
+    /// </summary>
+    public void ApplyVolumesToAllEvents()
+    {
+        foreach (var eventInstance in ListEvents)
+        {
+            string path = "";
+            eventInstance.getDescription(out var desc);
+            if (desc.isValid()) desc.getPath(out path);
+            
+            if (path.Contains("music", System.StringComparison.OrdinalIgnoreCase))
+                eventInstance.setVolume(MusicVolume * MasterVolume);
+            else
+                eventInstance.setVolume(SFXVolume * MasterVolume);
+        }
     }
 }

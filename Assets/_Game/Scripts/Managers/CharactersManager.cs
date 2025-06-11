@@ -165,11 +165,11 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         {
             AudioManager.Instance.Set3DAttributesFromGameObject(m_ambienceInstance, m_characterObject);
             if (!m_isFadingAmbience)
-                m_ambienceInstance.setVolume(AudioManager.Instance.AmbiantVolume);
+                m_ambienceInstance.setVolume(AudioManager.Instance.SFXVolume * AudioManager.Instance.MasterVolume);
         }
         if (m_musicStarted)
         {
-            m_musicInstance.setVolume(AudioManager.Instance.MusicVolume);
+            m_musicInstance.setVolume(AudioManager.Instance.MusicVolume * AudioManager.Instance.MasterVolume);
         }
 
         // Check if the distance between players is exceeded
@@ -381,7 +381,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         Debug.Log("Starting ambience");
         if (m_ambienceStarted) return;
         m_ambienceInstance = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.windAmbient);
-        m_ambienceInstance.setVolume(AudioManager.Instance.AmbiantVolume);
         m_ambienceInstance.start();
         m_ambienceStarted = true;
     }
