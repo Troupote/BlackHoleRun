@@ -31,6 +31,11 @@ MonoBehaviour:
   m_airPlayerSpeedMultiplier: 0.8
   m_triggerAimDuration: 0.4
   m_targetAimTimeScale: 0.2
+  m_groundMask:
+    serializedVersion: 2
+    m_Bits: 64
+  m_capsuleGroundDistance: 0.5
+  m_raycastGroundDistance: 2
   m_baseFOV: 60
   m_baseFOVTransitionTimeCoef: 2
   m_MovingForwardFOV: 65

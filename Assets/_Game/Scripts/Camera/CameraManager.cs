@@ -94,7 +94,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
     {
         if (CurrentCam == SingularityCam) return;
 
-        initialRotationY = transform.eulerAngles.y;
+        initialRotationY = PlayerCam.transform.eulerAngles.y;
         rotationY = initialRotationY;
 
         SingularityCam.transform.rotation = PlayerCam.transform.rotation;

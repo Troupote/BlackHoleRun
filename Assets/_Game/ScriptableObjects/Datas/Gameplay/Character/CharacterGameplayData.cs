@@ -88,6 +88,20 @@ public class CharacterGameplayData : ScriptableObject
     private float m_targetAimTimeScale;
     public float TargetAimTimeScale => m_targetAimTimeScale;
 
+    [SerializeField]
+    [Tooltip("The layer used for ground to check if the character is grounded using a raycast/checkSphere.")]
+    private LayerMask m_groundMask;
+    public LayerMask GroundMask => m_groundMask;
+
+    [SerializeField]
+    [Tooltip("The distance from the ground at which the character is considered grounded for the CAPSULE COLLIDER (red gizmo)")]
+    private float m_capsuleGroundDistance = 0.4f;
+    public float CapsuleGroundDistance => m_capsuleGroundDistance;
+
+    [SerializeField]
+    [Tooltip("The distance from the ground at which the character is considered grounded for the RAYCAST (green gizmo)")]
+    private float m_raycastGroundDistance = 2f;
+    public float RaycastGroundDistance => m_raycastGroundDistance;
 
     [Title("Camera Settings")]
     [SerializeField]

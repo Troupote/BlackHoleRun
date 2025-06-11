@@ -1,6 +1,7 @@
 using BHR;
 using System;
 using System.Collections;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class CharacterBehavior : MonoBehaviour
@@ -78,8 +79,11 @@ public class CharacterBehavior : MonoBehaviour
     {
         if (!m_isInitialized || m_isPaused) return;
 
-        Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale * (_isDashing ? 0f: 1f);
-        m_rigidbody.AddForce(gravityForce);
+        if (!m_isGrounded)
+        {
+            Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale * (_isDashing ? 0f : 1f);
+            m_rigidbody.AddForce(gravityForce);
+        }
 
         // Lock the move when Singularity Jump is performed
         if (m_moveLockTimer > 0f)
@@ -101,6 +105,17 @@ public class CharacterBehavior : MonoBehaviour
                 _isDashing = false;
             }
         }
+    }
+
+    private bool m_isGrounded;
+    private bool m_isGroundedForJump;
+
+    private void Update()
+    {
+        if (!m_isInitialized || m_isPaused) return;
+
+        m_isGrounded = IsGrounded();
+        m_isGroundedForJump = IsGroundedForJump();
     }
 
     #endregion
@@ -139,7 +154,7 @@ public class CharacterBehavior : MonoBehaviour
         Vector3 moveDir = (camForward * moveZ + camRight * moveX).normalized;
         Vector3 targetVelocity = moveDir * m_gameplayData.PlayerSpeed;
 
-        if (!IsGrounded())
+        if (!m_isGrounded)
         {
             targetVelocity *= m_gameplayData.AirPlayerSpeedMultiplier;
         }
@@ -153,7 +168,7 @@ public class CharacterBehavior : MonoBehaviour
 
     public void OnJump()
     {
-        if (!IsGrounded()) return;
+        if (!m_isGroundedForJump) return;
 
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
         m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
@@ -190,11 +205,12 @@ public class CharacterBehavior : MonoBehaviour
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
         Vector3 dashDir = cam.forward;
-        dashDir.y = 0;
+        dashDir.y = 0f;
         dashDir.Normalize();
 
         Vector3 dashVelocity = dashDir * m_gameplayData.DashForce;
-        m_rigidbody.linearVelocity = new Vector3(dashVelocity.x, 0f, dashVelocity.z);
+        m_rigidbody.linearVelocity = new Vector3(dashVelocity.x, m_rigidbody.linearVelocity.y, dashVelocity.z);
+
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
 
@@ -236,13 +252,30 @@ public class CharacterBehavior : MonoBehaviour
 
     #region IsGrounded
 
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundDistance = 0.4f;
-    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private Transform m_groundCheck;
 
     public bool IsGrounded()
     {
-        return Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        bool defaultCheck = Physics.CheckSphere(m_groundCheck.position, m_gameplayData.CapsuleGroundDistance, m_gameplayData.GroundMask);
+
+        return defaultCheck;
+    }
+
+    public bool IsGroundedForJump()
+    {
+        return Physics.Raycast(m_groundCheck.position, Vector3.down, m_gameplayData.CapsuleGroundDistance + m_gameplayData.RaycastGroundDistance, m_gameplayData.GroundMask);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (m_groundCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(m_groundCheck.position, m_gameplayData.CapsuleGroundDistance);
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawRay(m_groundCheck.position, Vector3.down * (m_gameplayData.CapsuleGroundDistance + m_gameplayData.RaycastGroundDistance));
+        }
     }
 
     #endregion
