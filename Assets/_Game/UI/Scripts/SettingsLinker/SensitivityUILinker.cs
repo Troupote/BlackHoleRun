@@ -23,6 +23,7 @@ namespace BHR.UILinkers
 
         protected override float LoadSetting()
         {
+            if( _registered ) return _savedValue;
             InputDevice controller = PlayersInputManager.Instance.CurrentAllowedDevice;
             return _axe switch
             {

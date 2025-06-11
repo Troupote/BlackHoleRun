@@ -14,7 +14,7 @@ namespace BHR.UILinkers
         protected override string LoadSetting()
         {
             InputDevice controller = PlayersInputManager.Instance.CurrentAllowedDevice;
-            return SettingsSave.LoadBindings(controller);
+            return _registered ? _savedValue : SettingsSave.LoadBindings(controller);
         }
 
         protected override void UpdateUI()

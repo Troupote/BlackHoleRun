@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,16 +7,16 @@ namespace BHR
 {
     public class RebindInputsManager : ManagerSingleton<RebindInputsManager>
     {
+        public List<string> RegisterednewPath = new List<string>();
 
-        private void OnEnable()
+        private void Start()
         {
             PlayersInputManager.Instance.OnUIInput.AddListener(HandleInput);
+            SettingsManager.Instance.OnUserSettingsApplied.AddListener(ClearRegisteredPath);
+            SettingsManager.Instance.OnUserSettingsCanceled.AddListener(ClearRegisteredPath);
         }
 
-        private void OnDisable()
-        {
-            PlayersInputManager.Instance.OnUIInput.RemoveListener(HandleInput);
-        }
+        private void ClearRegisteredPath() => RegisterednewPath.Clear();
 
         private void HandleInput(InputAction.CallbackContext ctx)
         {

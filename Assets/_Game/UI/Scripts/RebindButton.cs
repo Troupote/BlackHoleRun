@@ -83,6 +83,7 @@ public class RebindButton : MonoBehaviour
 
             .OnComplete(operation =>
             {
+                RebindInputsManager.Instance.RegisterednewPath.Add(_action.bindings[bindingId].effectivePath);
                 DuplicateBinding(bindingId, _action.bindings[bindingId].effectivePath);
                 Debug.Log("Rebind successfull. New bindings : " + operation.selectedControl.path);
                 operation.Dispose();
@@ -140,6 +141,10 @@ public class RebindButton : MonoBehaviour
                 foreach (var binding in map.bindings)
                     if (binding.groups.Contains(PlayersInputManager.Instance.CurrentAllowedPlayerInput.currentControlScheme))
                         allPaths.Remove(binding.effectivePath);
+
+        // Remove already used path but not saved yet
+        foreach (string path in RebindInputsManager.Instance.RegisterednewPath)
+            allPaths.Remove(path);
 
         bool authorized = false;
         foreach(string path in allPaths)

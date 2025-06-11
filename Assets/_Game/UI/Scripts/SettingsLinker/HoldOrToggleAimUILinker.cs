@@ -21,7 +21,7 @@ namespace BHR.UILinkers
         protected override bool LoadSetting()
         {
             InputDevice controller = PlayersInputManager.Instance.CurrentAllowedDevice;
-            return SettingsSave.LoadToggleAim(controller)==1;
+            return _registered ? _savedValue : SettingsSave.LoadToggleAim(controller)==1;
         }
 
         protected override void UpdateUI()

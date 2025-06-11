@@ -36,7 +36,7 @@ namespace BHR
             }
         }
 
-        public InputDevice CurrentAllowedDevice => CurrentAllowedPlayerInput.devices[0];
+        public InputDevice CurrentAllowedDevice => CurrentAllowedPlayerInput?.devices[0];
 
         public InputDevice CurrentActivePlayerDevice => CurrentActivePlayerInput.devices[0];
         public PlayerControllerState CurrentActiveControllerState => PlayersControllerState[GameManager.Instance.ActivePlayerIndex];
@@ -286,11 +286,11 @@ namespace BHR
         {
             if(enable)
             {
-                CurrentAllowedInput = LastPlayerIndexUIInput == 0 || PlayersInputControllerRef.Length <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.SECOND_PLAYER;
+                CurrentAllowedInput = LastPlayerIndexUIInput == 0 || PlayerConnectedCount() <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.SECOND_PLAYER;
             }
             else
             {
-                CurrentAllowedInput = PlayersInputControllerRef.Length <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.BOTH;
+                CurrentAllowedInput = PlayerConnectedCount() <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.BOTH;
             }
             _isOnlyOnePlayerInputsAllowed = enable;
         }
