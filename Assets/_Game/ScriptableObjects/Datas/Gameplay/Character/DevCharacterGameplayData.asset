@@ -41,3 +41,9 @@ MonoBehaviour:
   m_MovingForwardFOV: 65
   m_MovingBackwardFOV: 55
   m_targetAimFOV: 30
+  m_playerOneColors:
+    Exterior: {r: 1, g: 0, b: 0, a: 0}
+    Interior: {r: 1, g: 1, b: 1, a: 0}
+  m_playerTwoColors:
+    Exterior: {r: 0, g: 0.42937565, b: 1, a: 0}
+    Interior: {r: 1, g: 1, b: 1, a: 0}

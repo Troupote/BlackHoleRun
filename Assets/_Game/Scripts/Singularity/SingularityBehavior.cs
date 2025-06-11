@@ -14,6 +14,9 @@ public class SingularityBehavior : MonoBehaviour
     [field: SerializeField]
     internal SingularityCharacterFollowComponent SingularityCharacterFollowComponent { get; private set; } = null;
 
+    [field: SerializeField]
+    internal SingularityShaderColorController ShaderColorController;
+
     public Action OnThrowPerformed;
     public Action OnUnmorph;
     public Action<Vector3> OnJump;

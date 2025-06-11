@@ -121,4 +121,24 @@ public class CharacterGameplayData : ScriptableObject
     [SerializeField]
     private float m_targetAimFOV;
     public float TargetAimFOV => m_targetAimFOV;
+
+
+
+    [System.Serializable]
+    public class PlayerColors
+    {
+        public Color Exterior;
+        public Color Interior;
+    }
+
+    [Title("Players Colors")]
+    [SerializeField]
+    private PlayerColors m_playerOneColors;
+
+    public PlayerColors PlayerOneColors => m_playerOneColors;
+
+    [SerializeField]
+    private PlayerColors m_playerTwoColors;
+    public PlayerColors PlayerTwoColors => m_playerTwoColors;
+
 }
