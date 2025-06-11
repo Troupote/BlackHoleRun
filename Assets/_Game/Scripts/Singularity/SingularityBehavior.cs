@@ -125,7 +125,7 @@ public class SingularityBehavior : MonoBehaviour
         Vector3 throwDirection = CameraManager.Instance.MainCam.transform.forward;
 
         m_rigidbody.AddForce(throwDirection * m_gameplayData.ThrowForce, ForceMode.Impulse);
-
+        
         m_throwTime = 0f;
 
         OnThrowPerformed?.Invoke();
@@ -208,6 +208,23 @@ public class SingularityBehavior : MonoBehaviour
 
         m_isThrown = false;
         OnUnmorph?.Invoke();
+    }
+
+    public bool IsOverlapping()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, 0.9f, ~0, QueryTriggerInteraction.Ignore);
+        foreach (var hit in hits)
+        {
+            if (hit.attachedRigidbody != m_rigidbody) // ignore self
+                return true;
+        }
+        return false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 0.9f);
     }
 
     #endregion

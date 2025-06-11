@@ -295,6 +295,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         if (!m_singularityBehavior.IsAllowedToBeThrown) return;
 
+        if (m_singularityBehavior.IsOverlapping()) return;
+
         m_singularityBehavior.OnThrow();
         m_characterBehavior.ImobilizeCharacter(true);
         ShowSingularityPreview();
