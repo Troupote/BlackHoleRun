@@ -74,7 +74,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.OnJump += OnSingularityJump;
         m_singularityBehavior.OnDash += SingularityDash;
 
-        GameManager.Instance.OnRespawn.AddListener(HardReset);
+        GameManager.Instance.OnRespawned.AddListener(HardReset);
     }
 
     private void UnlistenToEvents()
@@ -85,7 +85,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.OnJump -= OnSingularityJump;
         m_singularityBehavior.OnDash -= SingularityDash;
 
-        GameManager.Instance.OnRespawn.RemoveListener(HardReset);
+        GameManager.Instance.OnRespawned.RemoveListener(HardReset);
     }
 
     private bool AreObjectsInstancied() => m_isInstancied;

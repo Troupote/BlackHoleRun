@@ -27,6 +27,7 @@ namespace BHR
 
         private void Start()
         {
+            GameManager.Instance.OnRespawned.AddListener(ReplacePlayer);
             SetCheckpoint(_currentCheckpoint);
         }
 
@@ -49,6 +50,7 @@ namespace BHR
         {
             CharactersManager.Instance.CharacterObject.transform.position = _currentCheckpoint.position;
             CharactersManager.Instance.CharacterObject.transform.rotation = _currentCheckpoint.rotation;
+            CameraManager.Instance.ForceCameraLookAt(_currentCheckpoint.forward);
         }
 
 #if UNITY_EDITOR

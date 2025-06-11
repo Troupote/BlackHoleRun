@@ -92,7 +92,7 @@ namespace BHR
         #endregion
 
         public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
-        public UnityEvent OnPaused, OnResumed, OnRespawn;
+        public UnityEvent OnPaused, OnResumed, OnRespawned;
 
         private void Start()
         {
@@ -234,21 +234,36 @@ namespace BHR
             }
         }
 
-        public void Respawning() => StartCoroutine(RespawnPlayer(GameSettings.RespawningDuration));
+        public void Respawning()
+        {
+            ApplyRespawn();
+            //Coroutine respawnPlayer = StartCoroutine(RespawnPlayerAnimation(() => ApplyRespawn()));
+        }
 
-        IEnumerator RespawnPlayer(float duration)
+        private void ApplyRespawn()
+        {
+            OnRespawned?.Invoke();
+            //ModuleManager.Instance.LaunchTransitionAnimation(false, GameSettings.RespawningDuration / 2f);
+            //_isRespawning = false;
+            //Invoke("Play", GameSettings.RespawningDuration / 2f);
+        }
+
+        private void Play() => IsPlaying = true;
+
+        IEnumerator RespawnPlayerAnimation(Action onComplete = null)
         {
             float transitionDuration = GameSettings.RespawningDuration / 2f;
             IsPaused = true;
             _isRespawning = true;
             ModuleManager.Instance.LaunchTransitionAnimation(true, transitionDuration);
-            yield return new WaitForSeconds(transitionDuration);
-            CheckpointsManager.Instance.ReplacePlayer();
-            OnRespawn?.Invoke();
-            ModuleManager.Instance.LaunchTransitionAnimation(false, transitionDuration);
-            yield return new WaitForSeconds(transitionDuration);
-            _isRespawning = false;
-            IsPlaying = true;
+            yield return new WaitForSeconds(transitionDuration + 0.5f);
+            onComplete?.Invoke();
+            //CheckpointsManager.Instance.ReplacePlayer();
+            //OnRespawn?.Invoke();
+            //ModuleManager.Instance.LaunchTransitionAnimation(false, transitionDuration);
+            //yield return new WaitForSeconds(transitionDuration);
+            //_isRespawning = false;
+            //IsPlaying = true;
         }
 
         public void LoadTutorielData(TutorielData data)

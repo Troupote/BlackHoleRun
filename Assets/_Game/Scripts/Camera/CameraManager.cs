@@ -60,7 +60,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayersInputManager.Instance.OnSLook.AddListener(HandleLook);
         PlayersInputManager.Instance.OnHMove.AddListener(HandlePlayerMove);
 
-        GameManager.Instance.OnRespawn.AddListener(ResetInputs);
+        GameManager.Instance.OnRespawned.AddListener(ResetInputs);
         GameManager.Instance.OnPaused.AddListener(ResetInputs);
     }
 
@@ -71,7 +71,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayersInputManager.Instance.OnSLook.RemoveListener(HandleLook);
         PlayersInputManager.Instance.OnHMove.RemoveListener(HandlePlayerMove);
 
-        GameManager.Instance.OnRespawn.RemoveListener(ResetInputs);
+        GameManager.Instance.OnRespawned.RemoveListener(ResetInputs);
         GameManager.Instance.OnPaused.RemoveListener(ResetInputs);
     }
 
@@ -81,6 +81,13 @@ public class CameraManager : ManagerSingleton<CameraManager>
     {
         lookValue = Vector2.zero;
         playerMoveValue = Vector2.zero;
+    }
+
+    public void ForceCameraLookAt(Vector2 targetLook)
+    {
+        PlayerCam.transform.localRotation = Quaternion.Euler(lookValue);
+        rotationX = PlayerCam.transform.localRotation.x;
+        rotationY = PlayerCam.transform.localRotation.y;
     }
 
     public void SwitchCameraToSingularity()
@@ -143,8 +150,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         else
         {
             rotationY += mouseX;
-            transform.rotation = Quaternion.Euler(0, rotationY, 0);
-            PlayerCam.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+            PlayerCam.transform.localRotation = Quaternion.Euler(rotationX, rotationY, 0);
             //PlayerCam.Follow.gameObject.transform.Rotate(Vector3.up * mouseX);
         }
 
