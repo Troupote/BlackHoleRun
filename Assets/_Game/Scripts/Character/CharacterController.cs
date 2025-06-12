@@ -6,7 +6,6 @@ public class PlayerController : MonoBehaviour
     private CharacterBehavior m_characterBehavior;
     private Vector2 m_moveValue = Vector2.zero;
     private bool m_isInitialized = false;
-    private bool _hasAlreadyCallAim = false;
 
     void Start()
     {
@@ -64,7 +63,7 @@ private void OnEnable()
     {
         m_moveValue = Vector2.zero;
         if (!GameManager.Instance.isSlowMotionSequenceFinished)
-            CancelAim();
+            CharactersManager.Instance.CancelAim();
     }
     private void HandleMove(Vector2 a_movementValue)
     {
@@ -83,40 +82,12 @@ private void OnEnable()
 
     private void HandleThrowSingularity()
     {
-        if (!GameManager.Instance.isSlowMotionSequenceFinished)
-            CancelAim();
         m_characterBehavior.OnThrowSingularity();
     }
 
-    private void HandleAim(bool withThrow)
+    private void HandleAim(bool a_withThrow)
     {
-        _hasAlreadyCallAim = !_hasAlreadyCallAim;
+        CharactersManager.Instance.HandleAim(a_withThrow);
 
-        if (_hasAlreadyCallAim && CharactersManager.Instance.CanThrow)
-        {
-            StartAim(withThrow);
-        }
-        else if(!_hasAlreadyCallAim)
-        {
-            CancelAim();
-        }
-
-    }
-
-    private void StartAim(bool withThrow)
-    {
-        float duration = CharactersManager.Instance.GameplayData.TriggerAimDuration;
-        StartCoroutine(GameManager.Instance.SlowmotionSequence(duration, duration * (withThrow ? 0f : 1f)));
-        GameManager.Instance.isSlowMotionSequenceStarted = true;
-        CharactersManager.Instance.isHumanoidAiming = true;
-    }
-
-    private void CancelAim()
-    {
-        _hasAlreadyCallAim = false;
-        GameManager.Instance.isSlowMotionSequenceStarted = false;
-        GameManager.Instance.isTimeSlowed = false;
-
-        CharactersManager.Instance.isHumanoidAiming = false;
     }
 }

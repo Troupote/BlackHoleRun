@@ -45,8 +45,8 @@ MonoBehaviour:
   _defaultFOVTransitionEase: 0
   _aimFOVTransitionEase: 10
   m_playerOneColors:
-    Exterior: {r: 1, g: 0, b: 0, a: 0}
-    Interior: {r: 1, g: 1, b: 1, a: 0}
+    Exterior: {r: 1, g: 0, b: 0, a: 1}
+    Interior: {r: 1, g: 1, b: 1, a: 1}
   m_playerTwoColors:
-    Exterior: {r: 0, g: 0.42937565, b: 1, a: 0}
-    Interior: {r: 1, g: 1, b: 1, a: 0}
+    Exterior: {r: 0, g: 0.42937565, b: 1, a: 1}
+    Interior: {r: 1, g: 1, b: 1, a: 1}

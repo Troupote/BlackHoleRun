@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb1efd9577f7d346b7f32865ee1c139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_coyotteTimeTimer: 0
   m_groundCheck: {fileID: 2544190674258019164}
 --- !u!114 &537670741482726889
 MonoBehaviour:

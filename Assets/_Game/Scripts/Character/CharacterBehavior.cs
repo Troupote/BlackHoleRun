@@ -194,8 +194,8 @@ public class CharacterBehavior : MonoBehaviour
     {
         if(m_coyotteTimeTimer < 0f) return;
 
-        if (m_isGroundedForJump && m_coyotteTimeTimer != CharactersManager.Instance.GameplayData.CoyotteTime)
-            m_coyotteTimeTimer = CharactersManager.Instance.GameplayData.CoyotteTime;
+        if (m_isGroundedForJump && m_coyotteTimeTimer != m_gameplayData.CoyotteTime)
+            m_coyotteTimeTimer = m_gameplayData.CoyotteTime;
         else if (!m_isGroundedForJump && m_coyotteTimeTimer > 0f)
             m_coyotteTimeTimer -= Time.deltaTime * GameManager.Instance.GameTimeScale;
     }
@@ -228,7 +228,7 @@ public class CharacterBehavior : MonoBehaviour
         dashDir.Normalize();
 
         Vector3 dashVelocity = dashDir * m_gameplayData.DashForce;
-        m_rigidbody.linearVelocity = new Vector3(dashVelocity.x, m_rigidbody.linearVelocity.y, dashVelocity.z);
+        m_rigidbody.linearVelocity = new Vector3(dashVelocity.x, 0f, dashVelocity.z);
 
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
@@ -264,6 +264,7 @@ public class CharacterBehavior : MonoBehaviour
         if (!CharactersManager.Instance.CanThrow) return;
 
         ResetVelocity();
+        ResetGroundedStates();
         OnThrowInput?.Invoke();
     }
 
@@ -283,6 +284,13 @@ public class CharacterBehavior : MonoBehaviour
     public bool IsGroundedForJump()
     {
         return Physics.Raycast(m_groundCheck.position, Vector3.down, m_gameplayData.CapsuleGroundDistance + m_gameplayData.RaycastGroundDistance, m_gameplayData.GroundMask);
+    }
+
+    public void ResetGroundedStates()
+    {
+        m_isGrounded = false;
+        m_isGroundedForJump = false;
+        ResetCoyotteTimer();
     }
 
     private void OnDrawGizmos()

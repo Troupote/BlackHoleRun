@@ -132,6 +132,10 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         CameraManager.Instance.SwitchCameraToCharacter(m_characterObject.transform.position);
         GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
+
+        if (!m_characterObject.activeInHierarchy)
+            HideSingularityPreview();
+
         m_characterBehavior.ImobilizeCharacter(false);
 
         ResetInputs?.Invoke();
@@ -329,6 +333,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_characterBehavior.ImobilizeCharacter(true);
         ShowSingularityPreview();
         GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
+
+        if (!GameManager.Instance.isSlowMotionSequenceFinished)
+            CancelAim();
     }
 
     private void OnThrowPerformed()
@@ -336,6 +343,44 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         CameraManager.Instance.SwitchCameraToSingularity();
         SetMusicLowFilterTo0();
     }
+    #endregion
+
+    #region Character Aim
+    private bool m_hasAlreadyCallAim = false;
+    internal bool HasAlreadyCalledAim => m_hasAlreadyCallAim;
+
+    public void HandleAim(bool withThrow)
+    {
+        m_hasAlreadyCallAim = !m_hasAlreadyCallAim;
+
+        if (m_hasAlreadyCallAim && CanThrow)
+        {
+            StartAim(withThrow);
+        }
+        else if (!m_hasAlreadyCallAim)
+        {
+            CancelAim();
+        }
+
+    }
+
+    public void StartAim(bool a_withThrow)
+    {
+        float duration = m_gameplayData.TriggerAimDuration;
+        StartCoroutine(GameManager.Instance.SlowmotionSequence(duration, duration * (a_withThrow ? 0f : 1f)));
+        GameManager.Instance.isSlowMotionSequenceStarted = true;
+        isHumanoidAiming = true;
+    }
+
+    public void CancelAim()
+    {
+        m_hasAlreadyCallAim = false;
+        GameManager.Instance.isSlowMotionSequenceStarted = false;
+        GameManager.Instance.isTimeSlowed = false;
+
+        isHumanoidAiming = false;
+    }
+
     #endregion
 
     #region Singularity Jump
@@ -363,7 +408,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     private void ShowSingularityPreview()
     {
         SingularityPreviewController.Inflate(m_characterObject.transform);
-        Invoke("DisableCharacterObject", 0.05f);
+        //Invoke("DisableCharacterObject", 0.05f);
+        m_characterObject.SetActive(false);
     }
 
     private void DisableCharacterObject() => m_characterObject.SetActive(false);

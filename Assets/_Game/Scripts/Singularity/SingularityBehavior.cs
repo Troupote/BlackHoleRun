@@ -215,7 +215,7 @@ public class SingularityBehavior : MonoBehaviour
 
     public bool IsOverlapping()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, 0.9f, ~0, QueryTriggerInteraction.Ignore);
+        Collider[] hits = Physics.OverlapSphere(transform.position, 1f, ~0, QueryTriggerInteraction.Ignore);
         foreach (var hit in hits)
         {
             if (hit.attachedRigidbody != m_rigidbody) // ignore self
@@ -227,7 +227,7 @@ public class SingularityBehavior : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, 0.9f);
+        Gizmos.DrawWireSphere(transform.position, 1f);
     }
 
     #endregion
