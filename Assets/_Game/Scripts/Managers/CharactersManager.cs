@@ -165,11 +165,11 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         {
             AudioManager.Instance.Set3DAttributesFromGameObject(m_ambienceInstance, m_characterObject);
             if (!m_isFadingAmbience)
-                m_ambienceInstance.setVolume(AudioManager.Instance.SFXVolume * AudioManager.Instance.MasterVolume);
+                m_ambienceInstance.setVolume(AudioManager.Instance.SFXVolume);
         }
         if (m_musicStarted)
         {
-            m_musicInstance.setVolume(AudioManager.Instance.MusicVolume * AudioManager.Instance.MasterVolume);
+            m_musicInstance.setVolume(AudioManager.Instance.MusicVolume);
         }
 
         // Check if the distance between players is exceeded

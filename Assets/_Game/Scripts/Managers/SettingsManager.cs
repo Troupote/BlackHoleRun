@@ -48,9 +48,6 @@ namespace BHR
         public void UpdateVolume()
         {
             if (AudioManager.Instance == null) return;
-            AudioManager.Instance.MasterVolume = SettingsSave.LoadMasterVolume();
-            AudioManager.Instance.MusicVolume = SettingsSave.LoadMusicVolume();
-            AudioManager.Instance.SFXVolume = SettingsSave.LoadSoundsVolume();
             AudioManager.Instance.ApplyVolumesToAllEvents();
         }
 
