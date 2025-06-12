@@ -14,6 +14,10 @@ namespace BHR
         private bool _enableDebugKeyboardShortcuts;
         public bool DebugKeyboardShortcutsEnabled => _enableDebugKeyboardShortcuts && _debug;
 
+        [Header("Cheat"), SerializeField]
+        private bool _unlockedAllLevels;
+        public bool UnlockedAllLevels => _unlockedAllLevels && _debug;
+
         [Header("HUD"), Tooltip("Enable/Disable start animation"), ShowIf(nameof(_debug)), SerializeField]
         private bool _disableStartAnimation;
 

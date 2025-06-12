@@ -28,10 +28,12 @@ Tu peux changer le mode de visée (Maintenir ou Basculer) dans les paramètres.
 Quand tu vises, tu déformes l'espace-temps ce qui te permet de ralentir et concentrer ton tir.","You can also aim without throwing the Singularity on release.
 You can change the aim mode (Hold or Toggle) in settings.
 When you aim, you distort space-time, allowing you to slow down and concentrate your shot."
+M/T/GoBeyond,Plus loin !,Go beyond !
+M/T/GoBeyondDesc,"Tu peux viser et lancer la singularité à n'importe quel moment, même après avoir sauter et dasher !","You can aim and throw the singularity at any time, even after jumping and dashing !"
 M/T/UnmorphDesc,"Quand tu es en Singularité après avoir été lancée, tu peux en jaillir avec un saut ou un dash.
 Cela qui te permet d'aller plus haut ou plus loin, avec plus de contrôle !
 Cependant, tes actions sont contraintes par le lanceur : si ce dernier avait déjà sauté ou dashé, tu ne pourras pas jaillir de la singularité en sautant ou dashant.
-Dans tous les cas, la Singularité s'arrête au bout d'un certain temps ou si elle se cogne contre un astéroïde.
+Dans tous les cas, la Singularité s'arrête au bout d'un certain temps ou en se cognant contre un astéroïde.
 Vous avez toutes les informations nécéssaire, maintenant, élancez-vous pour atteindre le bout de cette ceinture à temps pour sauver ces planètes de leur collision !","When you are in Singularity after been throwed, you can unmorph from it by jumping or dashing.
 This let you go higher or farther with more control !
 However, your actions are constrained by the thrower : if this one already has jumped or dashed, you won't be able to jump or dash.

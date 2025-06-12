@@ -23,6 +23,7 @@ public class LevelSelectionUI : AModuleUI
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private Image[] _medalsSprite;
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private TextMeshProUGUI[] _medalsTimeText;
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private Button _playButton;
+    [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private GameObject _tutorielSet;
     [SerializeField, Required, FoldoutGroup("Level Infos/Localization")] private string _notCompletedYetLocalizationKey;
 
     [SerializeField, Required, FoldoutGroup("Settings")] private Color _hideColor;
@@ -74,8 +75,18 @@ public class LevelSelectionUI : AModuleUI
 
     public void LoadLevel(LevelDataSO data)
     {
+        // Enable tutoriel set if level one
+        _tutorielSet.SetActive(data.ID == 0);
+
         _playButton.onClick.RemoveListener(() => GameManager.Instance.SaveSelectedLevel(data));
         _playButton.onClick.AddListener(() => GameManager.Instance.SaveSelectedLevel(data));
+
+        if (data.ID == 0)
+        {
+            _playButton.onClick.RemoveListener(() => GameManager.Instance.SetTutoriel(_tutorielSet.GetComponentInChildren<Toggle>().isOn));
+            _playButton.onClick.AddListener(() => GameManager.Instance.SetTutoriel(_tutorielSet.GetComponentInChildren<Toggle>().isOn));
+        }
+
         _levelNameText.text = $"{data.LevelName}\n{data.ID.ToString("D2")}";
 
         UtilitiesFunctions.DisplayMedals((int)data.MedalObtained(), data, _medalsSprite, _medalsTimeText);

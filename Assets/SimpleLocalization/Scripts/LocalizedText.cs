@@ -16,7 +16,11 @@ namespace Assets.SimpleLocalization.Scripts
         public string LocalizationKey;
         protected enum TextCase { NONE, UPPERCASE, LOWERCASE, NOUN}
         [SerializeField, Tooltip("None will apply nothing on the localized text. Noun put the first letter in capital and the left in lowercase")] 
-        private TextCase textCase = TextCase.NONE;
+        private TextCase _textCase = TextCase.NONE;
+        [SerializeField, Tooltip("Add a fixed text after the localized one")]
+        private string _addedText;
+        [SerializeField, HideIf(nameof(_addedText), null)]
+        private bool _addedTextBeforeLocalizedText = false;
 
         public void Start()
         {
@@ -32,7 +36,8 @@ namespace Assets.SimpleLocalization.Scripts
         private void Localize()
         {
             string locText = LocalizationManager.Localize(LocalizationKey);
-            string outputText = textCase switch { TextCase.UPPERCASE => locText.ToUpper(), TextCase.LOWERCASE => locText.ToLower(), TextCase.NOUN => UtilitiesFunctions.ToLowerWithFirstUpper(locText), _  => locText };
+            string entireText = (_addedTextBeforeLocalizedText ? _addedText : "") + locText + (!_addedTextBeforeLocalizedText ? _addedText : "");
+            string outputText = _textCase switch { TextCase.UPPERCASE => entireText.ToUpper(), TextCase.LOWERCASE => entireText.ToLower(), TextCase.NOUN => UtilitiesFunctions.ToLowerWithFirstUpper(entireText), _  => entireText };
             if (TryGetComponent<Text>(out Text text))
             {
                 text.text = outputText;

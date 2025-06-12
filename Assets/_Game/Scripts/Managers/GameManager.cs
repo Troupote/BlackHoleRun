@@ -37,7 +37,8 @@ namespace BHR
         public bool HasPlayedInSolo => _hasPlayedInSolo;
 
         public LevelDataSO CurrentLevel => _currentLevel;
-        public UnityEvent<bool> OnLaunchLevel;
+        public UnityEvent<bool> OnLaunchLevel, OnTutorielSet;
+        private bool _tutorielEnable;
         public UnityEvent OnStartLevel;
         /// <summary>
         /// Float End timer, bool HasHitNewBestTime, bool HasPlayedSolo
@@ -117,6 +118,8 @@ namespace BHR
         #region Level gestion
         public void SaveSelectedLevel(LevelDataSO data) => SelectedLevel = data;
 
+        public void SetTutoriel(bool enable) => _tutorielEnable = enable;
+
         public void LaunchLevel(bool firstStart = true)
         {
             SoloMode = PlayersInputManager.Instance.SoloModeEnabled;
@@ -152,6 +155,8 @@ namespace BHR
         {
             CheckpointsManager.Instance.ReplacePlayer();
             IsPlaying = true; OnStartLevel.Invoke();
+            OnTutorielSet?.Invoke(_tutorielEnable);
+            _tutorielEnable = false;
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
         }
 
