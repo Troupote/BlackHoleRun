@@ -38,10 +38,12 @@ MonoBehaviour:
   m_capsuleGroundDistance: 0.5
   m_raycastGroundDistance: 2
   m_baseFOV: 60
-  m_baseFOVTransitionTimeCoef: 2
-  m_MovingForwardFOV: 65
-  m_MovingBackwardFOV: 55
+  m_baseFOVTransitionDuration: 1
+  m_MovingForwardFOV: 67
+  m_MovingBackwardFOV: 53
   m_targetAimFOV: 30
+  _defaultFOVTransitionEase: 0
+  _aimFOVTransitionEase: 10
   m_playerOneColors:
     Exterior: {r: 1, g: 0, b: 0, a: 0}
     Interior: {r: 1, g: 1, b: 1, a: 0}

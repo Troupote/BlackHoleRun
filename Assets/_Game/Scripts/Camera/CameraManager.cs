@@ -1,5 +1,7 @@
 using BHR;
 using Cinemachine;
+using DG.Tweening;
+
 //using DG.Tweening;
 using System.Collections;
 using UnityEngine;
@@ -25,6 +27,10 @@ public class CameraManager : ManagerSingleton<CameraManager>
     private float initialRotationY;
     private Vector2 lookValue;
     private Vector2 playerMoveValue;
+
+    protected enum FOVState { NONE, BASE, FORWARD, BACK, AIM}
+    private FOVState _fovState = FOVState.NONE;
+    private Tween _fovTransitionTween = null;
 
     private PlayerControllerState currentControllerUsed = PlayerControllerState.DISCONNECTED;
 
@@ -158,24 +164,48 @@ public class CameraManager : ManagerSingleton<CameraManager>
         
         float currentFOV = PlayerCam.m_Lens.FieldOfView;
 
-        if(CharactersManager.Instance.isHumanoidAiming)
-        {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.TargetAimFOV, (Time.deltaTime * 3) / CharactersManager.Instance.GameplayData.TriggerAimDuration);
-            //DOTween.To(() => PlayerCam.m_Lens.FieldOfView, x => PlayerCam.m_Lens.FieldOfView = x, CharactersManager.Instance.GameplayData.TargetAimFOV, CharactersManager.Instance.GameplayData.TriggerAimDuration);
-        }
+        if (CharactersManager.Instance.isHumanoidAiming)
+            ChangeFOVState(FOVState.AIM);
         else if (moveZ > 0)
-        {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingForwardFOV, Time.deltaTime * CharactersManager.Instance.GameplayData.BaseFOVTransitionTimeCoef);
-        }
+            ChangeFOVState(FOVState.FORWARD);
         else if (moveZ < 0)
-        {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingBackwardFOV, Time.deltaTime * CharactersManager.Instance.GameplayData.BaseFOVTransitionTimeCoef);
-        }
+            ChangeFOVState(FOVState.BACK);
         else
-        {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.BaseFOV, Time.deltaTime * CharactersManager.Instance.GameplayData.BaseFOVTransitionTimeCoef);
-        }
+            ChangeFOVState(FOVState.BASE);
         
+    }
+
+    private void ChangeFOVState(FOVState newState)
+    {
+        if (newState == _fovState) return;
+
+        CharacterGameplayData data = CharactersManager.Instance.GameplayData;
+
+        // Time transition
+        float tweenDuration = (newState == FOVState.AIM || _fovState == FOVState.AIM) ? data.TriggerAimDuration : data.BaseFOVTransitionDuration;
+
+        // Set ease
+        Ease ease = (newState == FOVState.AIM || _fovState == FOVState.AIM) ? data.AimFOVTransitionEase : data.DefaultFOVTransitionEase;
+
+        // Choose target FOV
+        float targetFOV = newState switch
+        {
+            FOVState.BASE => data.BaseFOV,
+            FOVState.FORWARD => data.MovingForwardFOV,
+            FOVState.BACK => data.MovingBackwardFOV,
+            FOVState.AIM => data.TargetAimFOV,
+            _ => data.BaseFOV
+        };
+
+        // Launch transition (and kill if there is one at the moment)
+        if (_fovTransitionTween != null)
+            _fovTransitionTween.Kill();
+
+        _fovTransitionTween = DOTween.To(() => PlayerCam.m_Lens.FieldOfView, x => PlayerCam.m_Lens.FieldOfView = x, targetFOV, tweenDuration).SetEase(ease);
+
+        //Debug.Log($"From {_fovState} to {newState}, with new FOV set at {targetFOV} in {tweenDuration} seconds");
+
+        _fovState = newState;
     }
 
     public void HandleLook(Vector2 value, PlayerControllerState controller)

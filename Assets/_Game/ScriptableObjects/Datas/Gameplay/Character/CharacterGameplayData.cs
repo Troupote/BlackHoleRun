@@ -1,6 +1,7 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Rendering;
+using DG.Tweening;
 
 [CreateAssetMenu(fileName = "GameplayData", menuName = "Gameplay/CharacterGameplayData")]
 public class CharacterGameplayData : ScriptableObject
@@ -113,8 +114,8 @@ public class CharacterGameplayData : ScriptableObject
     public float BaseFOV => m_baseFOV;
 
     [SerializeField]
-    private float m_baseFOVTransitionTimeCoef = 2f;
-    public float BaseFOVTransitionTimeCoef => m_baseFOVTransitionTimeCoef;
+    private float m_baseFOVTransitionDuration = 2f;
+    public float BaseFOVTransitionDuration => m_baseFOVTransitionDuration;
     [SerializeField]
     private float m_MovingForwardFOV = 70f;
     public float MovingForwardFOV => m_MovingForwardFOV;
@@ -125,6 +126,13 @@ public class CharacterGameplayData : ScriptableObject
     [SerializeField]
     private float m_targetAimFOV;
     public float TargetAimFOV => m_targetAimFOV;
+
+    [SerializeField]
+    private Ease _defaultFOVTransitionEase = Ease.Unset;
+    public Ease DefaultFOVTransitionEase => _defaultFOVTransitionEase;
+    [SerializeField]
+    private Ease _aimFOVTransitionEase = Ease.InOutCubic;
+    public Ease AimFOVTransitionEase => _aimFOVTransitionEase;
 
 
 
