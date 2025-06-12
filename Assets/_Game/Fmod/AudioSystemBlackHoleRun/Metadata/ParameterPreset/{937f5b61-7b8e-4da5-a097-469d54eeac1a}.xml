@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{937f5b61-7b8e-4da5-a097-469d54eeac1a}">
+		<property name="name">
+			<value>MusicLowFilter</value>
+		</property>
+		<relationship name="folder">
+			<destination>{ccbec0e1-8693-402c-bf04-d0ef60a5ae39}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{f9cebe48-eb11-4118-9942-27311ff8fd3f}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{f9cebe48-eb11-4118-9942-27311ff8fd3f}">
+		<property name="initialValue">
+			<value>1</value>
+		</property>
+	</object>
+</objects>

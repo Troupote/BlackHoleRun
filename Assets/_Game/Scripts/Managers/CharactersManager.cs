@@ -1,7 +1,10 @@
 using BHR;
 using System;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
+using FMOD.Studio;
+using FMODUnity;
 
 public class CharactersManager : ManagerSingleton<CharactersManager>
 {
@@ -99,12 +102,16 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         m_characterObject.transform.position = a_position;
         m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(true);
+        StartAmbience();
+        StartMusic();
     }
 
     public void HardReset()
     {
         Debug.Log("Hard Reset Characters Manager");
 
+        ResetAmbience();
+        ResetMusic();
         if (BringNewSingularityToNewCharacterCoroutine != null)
         {
             StopCoroutine(BringNewSingularityToNewCharacterCoroutine);
@@ -149,10 +156,21 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         if (!AreObjectsInstancied()) return;
 
     }
-
+    
     private void Update()
     {
         if (!AreObjectsInstancied()) return;
+
+        if (m_ambienceStarted)
+        {
+            AudioManager.Instance.Set3DAttributesFromGameObject(m_ambienceInstance, m_characterObject);
+            if (!m_isFadingAmbience)
+                m_ambienceInstance.setVolume(AudioManager.Instance.SFXVolume * AudioManager.Instance.MasterVolume);
+        }
+        if (m_musicStarted)
+        {
+            m_musicInstance.setVolume(AudioManager.Instance.MusicVolume * AudioManager.Instance.MasterVolume);
+        }
 
         // Check if the distance between players is exceeded
         if (IsDistanceBetweenPlayersExceeded() && !m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
@@ -161,6 +179,11 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         }
     }
 
+    private void OnDestroy()
+    {
+        StopAmbience();
+        StopMusic();
+    }
 
     #endregion
 
@@ -196,6 +219,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         CorrectlySwitchPositionsOfPlayers(singularityPosition, oldCharacterPosition);
 
         CameraManager.Instance.SwitchCameraToCharacter(m_characterObject.transform.position);
+        
+        // Correct the filter when returning to character
+        SetMusicLowFilterTo1();
 
         ResetInputs?.Invoke();
 
@@ -308,6 +334,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     private void OnThrowPerformed()
     {
         CameraManager.Instance.SwitchCameraToSingularity();
+        SetMusicLowFilterTo0();
     }
     #endregion
 
@@ -347,5 +374,134 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_characterObject.SetActive(true);
     }
 
+    #endregion
+    
+    #region Audio
+    #region Ambiant
+    private EventInstance m_ambienceInstance;
+    private bool m_ambienceStarted = false;
+    private bool m_isFadingAmbience = false;
+
+    public void StartAmbience()
+    {
+        Debug.Log("Starting ambience");
+        if (m_ambienceStarted) return;
+        m_ambienceInstance = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.windAmbient);
+        m_ambienceInstance.start();
+        m_ambienceStarted = true;
+    }
+
+    public void StopAmbience()
+    {
+        if (!m_ambienceStarted) return;
+        m_ambienceInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        m_ambienceInstance.release();
+        m_ambienceStarted = false;
+    }
+
+    public void ResetAmbience()
+    {
+        if (!m_ambienceStarted) return;
+        float strtVolume;
+        m_ambienceInstance.getVolume(out strtVolume);
+        float fadeDuration = 0.2f;
+        float minVolume = strtVolume * 0.2f;
+
+        m_isFadingAmbience = true;
+        DOTween.To(
+            () => strtVolume,
+            v => {
+                m_ambienceInstance.setVolume(v);
+            },
+            minVolume,
+            fadeDuration
+        ).OnComplete(() => {
+            DOTween.To(
+                () => minVolume,
+                v => {
+                    m_ambienceInstance.setVolume(v);
+                },
+                strtVolume,
+                fadeDuration
+            ).OnComplete(() => {
+                m_isFadingAmbience = false;
+            });
+        });
+    }
+    #endregion
+
+    #region SFX
+    // Ajoute ici les méthodes et variables pour la gestion des SFX
+    #endregion
+
+    #region Music
+    private EventInstance m_musicInstance;
+    private bool m_musicStarted = false;
+
+    public void StartMusic()
+    {
+        if (m_musicStarted) return;
+        m_musicInstance = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.musicBeatRigolo);
+        m_musicInstance.setVolume(AudioManager.Instance.MusicVolume);
+        m_musicInstance.start();
+        m_musicStarted = true;
+    }
+
+    public void StopMusic()
+    {
+        if (!m_musicStarted) return;
+        m_musicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        m_musicInstance.release();
+        m_musicStarted = false;
+    }
+
+    public void ResetMusic()
+    {
+        if (!m_musicStarted) return;
+        float fadeDuration = 0.5f;
+        float minValue = 0f;
+        float maxValue = 1f;
+
+        DOTween.To(
+            () => maxValue,
+            v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+            minValue,
+            fadeDuration +0.2f
+        ).OnComplete(() => { 
+            DOTween.To(
+                () => minValue,
+                v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+                maxValue,
+                fadeDuration
+            );
+        });
+    }
+
+    public void SetMusicLowFilterTo0(float duration = 0.2f)
+    {
+        if (!m_musicStarted) return;
+        float currentValue;
+        m_musicInstance.getParameterByName("MusicLowFilter", out currentValue);
+        DG.Tweening.DOTween.To(
+            () => currentValue,
+            v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+            0f,
+            duration
+        );
+    }
+
+    public void SetMusicLowFilterTo1(float duration = 0.2f)
+    {
+        if (!m_musicStarted) return;
+        float currentValue;
+        m_musicInstance.getParameterByName("MusicLowFilter", out currentValue);
+        DG.Tweening.DOTween.To(
+            () => currentValue,
+            v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+            1f,
+            duration
+        );
+    }
+    #endregion
     #endregion
 }

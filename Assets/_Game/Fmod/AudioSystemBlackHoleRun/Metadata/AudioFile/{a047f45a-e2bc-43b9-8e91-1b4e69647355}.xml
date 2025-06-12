@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{a047f45a-e2bc-43b9-8e91-1b4e69647355}">
+		<property name="assetPath">
+			<value>sfx/pas/footstep 1-E-Piano Blue Cmin9.flac</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>96</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.375</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{fa2c411b-8b8a-463a-9fb0-fcf74de25967}</destination>
+		</relationship>
+	</object>
+</objects>
