@@ -157,6 +157,10 @@ namespace BHR
             IsPlaying = true; OnStartLevel.Invoke();
             OnTutorielSet?.Invoke(_tutorielEnable);
             _tutorielEnable = false;
+#if UNITY_EDITOR
+            if(DebugManager.Instance.ForceTutoriel)
+                OnTutorielSet?.Invoke(true);
+#endif
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
         }
 

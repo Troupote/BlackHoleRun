@@ -39,3 +39,8 @@ This let you go higher or farther with more control !
 However, your actions are constrained by the thrower : if this one already has jumped or dashed, you won't be able to jump or dash.
 In every case, the Singularity will stop after a certain amount of time or if it hits an asteroid.
 You now have all the information you need, so, take off and reach the end of this belt in time to save those planets from colliding !"
+M/T/Restart,Recommencer (maintenir),Restart (hold)
+M/T/RestartDesc,Tu peux recommencer le niveau depuis le menu pause mais aussi de manière rapide en maintenant cette touche.,You can restart level from pause menu but also faster by holding this input.
+M/T/Respawn,Réapparaître (double click),Respawn (double tap)
+M/T/RespawnDesc,Tu peux réapparaître au dernier checkpoint en double cliquant sur cette touche.,You can respawn at last checkpoint by double tap this input.
+M/T/PauseDesc,Met le jeu en pause à n'importe quel moment !,Pause the game at anytime !

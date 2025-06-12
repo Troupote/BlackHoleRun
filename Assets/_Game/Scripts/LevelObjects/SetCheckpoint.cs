@@ -1,25 +1,17 @@
-using BHR;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class SetCheckpoint : MonoBehaviour
+namespace BHR
 {
-    private Transform _targetCheckpoint;
-
-
-#if UNITY_EDITOR
-    [Button]
-#endif
-    private void Start()
+    public class SetCheckpoint : MonoBehaviour
     {
-        Physics.Raycast(transform.position, Vector3.down, out RaycastHit raycast);
-        transform.position = new Vector3(raycast.point.x, raycast.point.y + GameManager.Instance.GameSettings.PlayerSizeForRespawn, raycast.point.z);
+        [SerializeField, Required]
+        private Transform _targetCheckpoint;
 
-        _targetCheckpoint = transform;
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if(CheckpointsManager.Instance.CurrentCheckpoint != _targetCheckpoint && other.CompareTag("Player"))
-            CheckpointsManager.Instance.SetCheckpoint(_targetCheckpoint);
+        private void OnCollisionEnter(Collision collision)
+        {
+            if(CheckpointsManager.Instance.CurrentCheckpoint != _targetCheckpoint && collision.body.CompareTag("Player") && CharactersManager.Instance.isCharacterGrounded)
+                CheckpointsManager.Instance.SetCheckpoint(_targetCheckpoint);
+        }
     }
 }

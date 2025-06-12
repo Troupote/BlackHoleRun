@@ -38,6 +38,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     public Action ResetInputs;
 
     public bool isHumanoidAiming = false;
+    public bool isCharacterGrounded => m_characterBehavior.IsGrounded();
 
     internal bool CanThrow => m_singularityBehavior.IsAllowedToBeThrown;
 

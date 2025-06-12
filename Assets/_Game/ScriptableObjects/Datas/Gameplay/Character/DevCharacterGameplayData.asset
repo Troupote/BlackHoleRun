@@ -17,12 +17,12 @@ MonoBehaviour:
   m_maxDistanceBetweenPlayers: 100
   m_activateMovementsLimit: 1
   m_throwForce: 30
-  m_movingCurveForce: 15
-  m_DashForce: 30
+  m_movingCurveForce: 10
+  m_DashForce: 20
   m_JumpForce: 35
   m_gravityDelayDuration: 0.5
   m_gravityMultiplier: 2
-  m_playerSpeed: 40
+  m_playerSpeed: 35
   m_jumpForce: 35
   m_coyotteTime: 0.15
   m_dashForce: 200
@@ -36,7 +36,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   m_capsuleGroundDistance: 0.5
-  m_raycastGroundDistance: 2
+  m_raycastGroundDistance: 1
   m_baseFOV: 60
   m_baseFOVTransitionDuration: 1
   m_MovingForwardFOV: 67

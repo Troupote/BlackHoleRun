@@ -22,16 +22,13 @@ namespace BHR
         private bool _disableStartAnimation;
 
         public bool DisableStartAnimation => _disableStartAnimation && _debug;
-
-        [Header("InGame"), Tooltip("Enable/disable phase/checkpoint data text"), ShowIf(nameof(_debug)), SerializeField]
-        private bool _enableCheckpointInfosText;
-        [SerializeField, Required, ShowIf(nameof(_debug))]
-        private TextMeshProUGUI _checkpointHUDInfosText; 
-        public TextMeshProUGUI CheckpointHUDInfosText => _checkpointHUDInfosText;
-        public bool CheckpointInfosTextEnabled => _enableCheckpointInfosText && _debug;
+        [SerializeField]
+        private bool _forceTutoriel;
+        public bool ForceTutoriel => _forceTutoriel && _debug;
         [SerializeField, ShowIf(nameof(_debug))]
         private bool _disableTutorielPopup = false;
         public bool DisableTutorielPopup => _disableTutorielPopup && _debug;
+
 
         [Header("Rebinding"), SerializeField, ShowIf(nameof(_debug))]
         private bool _showControllerKeyinRebinding;
@@ -39,15 +36,7 @@ namespace BHR
 
         private void Start()
         {
-            transform.GetChild(0).gameObject.SetActive(_debug);
-            ModuleManager.Instance.OnModuleEnabled.AddListener(OnModuleEnabled);
-        }
-
-        private void OnModuleEnabled(GameObject module, bool withBack)
-        {
-            if (CheckpointInfosTextEnabled && CheckpointHUDInfosText != null)
-                CheckpointHUDInfosText.gameObject.SetActive(ModuleManager.Instance.ModulesRef[module] == ModuleType.HUD);
-           
+            //transform.GetChild(0).gameObject.SetActive(_debug);
         }
     }
 }
