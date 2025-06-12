@@ -79,9 +79,9 @@ public class CharacterBehavior : MonoBehaviour
     {
         if (!m_isInitialized || m_isPaused) return;
 
-        if (!m_isGrounded)
+        if (!m_isGrounded || !m_isGroundedForJump)
         {
-            Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale * (_isDashing ? 0f : 1f);
+            Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale * GameManager.Instance.GameTimeScale * (_isDashing ? 0f : 1f);
             m_rigidbody.AddForce(gravityForce);
         }
 
@@ -103,6 +103,14 @@ public class CharacterBehavior : MonoBehaviour
             {
                 _dashDurationTimer = 0f;
                 _isDashing = false;
+            }
+        }
+
+        if (_isDashing) // Probably not the best way to fix issue of high Y velocity when dashing on curved platforms, but that seems to work
+        {
+            if (m_rigidbody.linearVelocity.y >= 10f)
+            {
+                m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 10f, m_rigidbody.linearVelocity.z);
             }
         }
     }
@@ -156,7 +164,7 @@ public class CharacterBehavior : MonoBehaviour
         camRight.Normalize();
 
         Vector3 moveDir = (camForward * moveZ + camRight * moveX).normalized;
-        Vector3 targetVelocity = moveDir * m_gameplayData.PlayerSpeed;
+        Vector3 targetVelocity = moveDir * m_gameplayData.PlayerSpeed * GameManager.Instance.GameTimeScale;
 
         if (!m_isGrounded)
         {
@@ -176,7 +184,7 @@ public class CharacterBehavior : MonoBehaviour
 
 
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
-        m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
+        m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce * GameManager.Instance.GameTimeScale, ForceMode.Impulse);
 
         // Reset dash cooldown if jumping
         if (m_dashCooldownCoroutine != null)
@@ -208,7 +216,7 @@ public class CharacterBehavior : MonoBehaviour
 
         m_rigidbody.linearVelocity = a_linearVelocityToApply;
 
-        m_rigidbody.AddForce(Vector3.up * m_gameplayData.SingularityJumpForce, ForceMode.Impulse);
+        m_rigidbody.AddForce(Vector3.up * m_gameplayData.SingularityJumpForce * GameManager.Instance.GameTimeScale, ForceMode.Impulse);
     }
 
     #endregion
@@ -242,7 +250,7 @@ public class CharacterBehavior : MonoBehaviour
     {
         m_canDash = false;
 
-        yield return new WaitForSeconds(m_gameplayData.DashCooldown);
+        yield return new WaitForSeconds(m_gameplayData.DashCooldown / GameManager.Instance.GameTimeScale);
 
         m_canDash = true;
     }
