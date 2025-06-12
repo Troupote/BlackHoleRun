@@ -265,6 +265,8 @@ public class CharacterBehavior : MonoBehaviour
 
         ResetVelocity();
         ResetGroundedStates();
+        m_canDash = true;
+
         OnThrowInput?.Invoke();
     }
 
