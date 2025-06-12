@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_cooldownBeforeThrowAllowed: 2
   m_comingBackSpeed: 100
-  m_maxDistanceBetweenPlayers: 125
-  m_activateMovementsLimit: 0
+  m_maxDistanceBetweenPlayers: 100
+  m_activateMovementsLimit: 1
   m_throwForce: 30
   m_movingCurveForce: 15
   m_DashForce: 30

@@ -250,7 +250,12 @@ public class CharacterBehavior : MonoBehaviour
     public void OnSingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
     {
         m_moveLockTimer = 0.5f;
-        m_rigidbody.linearVelocity = a_linearVelocityToApply;
+        m_rigidbody.linearVelocity = new Vector3(a_linearVelocityToApply.x, a_linearVelocityToApply.y * 0f, a_linearVelocityToApply.z);
+
+
+        _isDashing = true;
+        _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
+        m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
 
         m_rigidbody.AddForce(a_direction * m_gameplayData.SingularityDashForce, ForceMode.VelocityChange);
     }
