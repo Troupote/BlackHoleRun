@@ -308,6 +308,7 @@ public class CharacterBehavior : MonoBehaviour
         ResetCoyotteTimer();
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         if (m_groundCheck != null)
@@ -319,6 +320,6 @@ public class CharacterBehavior : MonoBehaviour
             Gizmos.DrawRay(m_groundCheck.position, Vector3.down * (m_gameplayData.CapsuleGroundDistance + m_gameplayData.RaycastGroundDistance));
         }
     }
-
-    #endregion
+#endif
+#endregion
 }

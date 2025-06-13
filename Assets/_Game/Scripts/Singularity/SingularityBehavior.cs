@@ -247,11 +247,12 @@ public class SingularityBehavior : MonoBehaviour
         return false;
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, 1f);
     }
-
-    #endregion
+#endif
+#endregion
 }
