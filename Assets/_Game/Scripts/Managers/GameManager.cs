@@ -67,7 +67,7 @@ namespace BHR
                 _isPlaying = value;
                 if (_isPlaying)
                     IsPaused = false;
-                _gameTimeScale = _isPlaying ? _savedGameTimeScale : 0f;
+                GameTimeScale = _isPlaying ? _savedGameTimeScale : 0f;
             }
         }
         [SerializeField, ReadOnly]
@@ -89,7 +89,16 @@ namespace BHR
         private float _savedGameTimeScale = 1f;
         [SerializeField, ReadOnly]
         private float _gameTimeScale;
-        public float GameTimeScale => _gameTimeScale;
+        public float GameTimeScale
+        {
+            get => _gameTimeScale;
+            private set
+            {
+                _gameTimeScale = value;
+                OnGameTimeScaleChanged?.Invoke(_gameTimeScale);
+            }
+        }
+        public UnityEvent<float> OnGameTimeScaleChanged;
         #endregion
 
         public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
@@ -329,6 +338,7 @@ namespace BHR
         public bool isTimeSlowed = true;
         public bool isSlowMotionSequenceFinished = false;
         public bool isSlowMotionSequenceStarted = false;
+
         public IEnumerator SlowmotionSequence(float inDuration, float outDuration)
         {
             if (!isSlowMotionSequenceStarted)
@@ -354,13 +364,13 @@ namespace BHR
 
             while (elapsed < duration)
             {
-                _gameTimeScale = Mathf.Lerp(start, end, elapsed / duration);
+                GameTimeScale = Mathf.Lerp(start, end, elapsed / duration);
                 //Time.fixedDeltaTime = Time.timeScale * 0.02f;// ? que faire
                 elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }
 
-            _gameTimeScale = end;
+            GameTimeScale = end;
         }
 
         #endregion
