@@ -96,9 +96,20 @@ public class CameraManager : ManagerSingleton<CameraManager>
         rotationY = PlayerCam.transform.localRotation.y;
     }
 
+    public void ForceSingularityCamLookAt()
+    {
+        PlayerCam.transform.rotation = Quaternion.Euler(lookValue);
+        initialRotationY = PlayerCam.transform.eulerAngles.y;
+        rotationY = initialRotationY;
+
+        SingularityCam.transform.rotation = PlayerCam.transform.rotation;
+    }
+
     public void SwitchCameraToSingularity()
     {
         if (CurrentCam == SingularityCam) return;
+
+        Debug.Log("Switching camera to Singularity...");
 
         initialRotationY = PlayerCam.transform.eulerAngles.y;
         rotationY = initialRotationY;
@@ -129,6 +140,18 @@ public class CameraManager : ManagerSingleton<CameraManager>
         SingularityCam.Priority = 0;
         SingularityCam.gameObject.SetActive(false);
 
+        MainCamBrain.enabled = true;
+    }
+
+    public void InstantBlendPlayerToSingularity()
+    {
+        StartCoroutine(InstantBlendPlayerToSingularityCoroutine());
+    }
+
+    private IEnumerator InstantBlendPlayerToSingularityCoroutine()
+    {
+        MainCamBrain.enabled = false;
+        yield return new WaitForEndOfFrame();
         MainCamBrain.enabled = true;
     }
 
