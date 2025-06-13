@@ -143,10 +143,10 @@ public class SingularityBehavior : MonoBehaviour
         Vector3 startPos = transform.position;
         Vector3 targetPos = CameraManager.Instance.MainCam.transform.position + direction * m_gameplayData.ThrowingCenterDistanceMultiplier;
 
-        while (elapsedTime < m_gameplayData.ThrowingCenterDistanceMultiplier)
+        while (elapsedTime < m_gameplayData.TimeTakenToGoToCenter)
         {
-            transform.position = Vector3.Lerp(startPos, targetPos, elapsedTime / m_gameplayData.ThrowingCenterDistanceMultiplier);
-            elapsedTime += Time.deltaTime;
+            transform.position = Vector3.Lerp(startPos, targetPos, elapsedTime / m_gameplayData.TimeTakenToGoToCenter);
+            elapsedTime += Time.deltaTime * GameManager.Instance.GameTimeScale;
             yield return null;
         }
 
