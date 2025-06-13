@@ -44,6 +44,14 @@ public class CharacterGameplayData : ScriptableObject
     public float SingularityJumpForce => m_JumpForce;
 
     [SerializeField]
+    private float m_throwingCenterDistanceMultiplier = 10f;
+    public float ThrowingCenterDistanceMultiplier => m_throwingCenterDistanceMultiplier;
+
+    [SerializeField]
+    private float m_timeTakenToGoToCenter = 0.1f;
+    public float TimeTakenToGoToCenter => m_timeTakenToGoToCenter;
+
+    [SerializeField]
     [Tooltip("The delay before the singularity starts falling after being thrown.")]
     private float m_gravityDelayDuration = 1f;
     public float GravityDelayDuration => m_gravityDelayDuration;

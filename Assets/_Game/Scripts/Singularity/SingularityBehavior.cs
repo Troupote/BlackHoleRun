@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using BHR;
 using Cinemachine;
@@ -127,12 +128,34 @@ public class SingularityBehavior : MonoBehaviour
 
         Vector3 throwDirection = CameraManager.Instance.MainCam.transform.forward;
 
-        m_rigidbody.AddForce(throwDirection * m_gameplayData.ThrowForce, ForceMode.Impulse);
-        
-        m_throwTime = 0f;
+        StartCoroutine(AlignAndThrow(throwDirection));
 
+        m_throwTime = 0f;
         OnThrowPerformed?.Invoke();
     }
+
+    private IEnumerator AlignAndThrow(Vector3 direction)
+    {
+        m_rigidbody.isKinematic = true;
+
+        float elapsedTime = 0f;
+
+        Vector3 startPos = transform.position;
+        Vector3 targetPos = CameraManager.Instance.MainCam.transform.position + direction * m_gameplayData.ThrowingCenterDistanceMultiplier;
+
+        while (elapsedTime < m_gameplayData.ThrowingCenterDistanceMultiplier)
+        {
+            transform.position = Vector3.Lerp(startPos, targetPos, elapsedTime / m_gameplayData.ThrowingCenterDistanceMultiplier);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = targetPos;
+
+        m_rigidbody.isKinematic = false;
+        m_rigidbody.AddForce(direction * m_gameplayData.ThrowForce, ForceMode.Impulse);
+    }
+
 
     private void HandleThrowCurve()
     {
