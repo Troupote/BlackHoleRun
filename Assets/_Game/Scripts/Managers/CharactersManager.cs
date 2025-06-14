@@ -287,20 +287,27 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         m_singularityBehavior.SetIgnoreCollision(true);
 
-        yield return WaitForCustomSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
+        //yield return WaitForCustomSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
 
         Transform targetTransform = CameraManager.Instance.SingularityPlacementRefTransform;
+
+        float timer = 0f;
 
         while (Vector3.Distance(m_singularityObject.transform.position, targetTransform.position) > 1f)
         {
             while (GameManager.Instance.GameTimeScale == 0)
                 yield return null;
 
+            float speed = m_gameplayData.ComingBackCurve.Evaluate(timer);
+
             m_singularityObject.transform.position = Vector3.MoveTowards(
                 m_singularityObject.transform.position,
                 targetTransform.position,
-                m_gameplayData.ComingBackSpeed * Time.deltaTime);
+                speed * Time.deltaTime * GameManager.Instance.GameTimeScale);
 
+            timer += Time.deltaTime * GameManager.Instance.GameTimeScale;
+            if (timer > m_gameplayData.ComingBackCurve.keys[m_gameplayData.ComingBackCurve.length - 1].time)
+                timer = m_gameplayData.ComingBackCurve.keys[m_gameplayData.ComingBackCurve.length - 1].time;
             yield return null;
         }
 
