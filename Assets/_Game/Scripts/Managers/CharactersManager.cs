@@ -570,6 +570,15 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
                 0f,
                 duration
             );
+            
+            float currentValue2;
+            m_musicInstance.getParameterByName("MusicSpeed", out currentValue2);
+            DG.Tweening.DOTween.To(
+                () => currentValue2,
+                v => m_musicInstance.setParameterByName("MusicSpeed", v),
+                0f,
+                duration
+            );
         }
         if (m_ambienceStarted)
         {
@@ -593,6 +602,15 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
             DG.Tweening.DOTween.To(
                 () => currentValue,
                 v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+                1f,
+                duration
+            );
+            
+            float currentValue2;
+            m_musicInstance.getParameterByName("MusicSpeed", out currentValue2);
+            DG.Tweening.DOTween.To(
+                () => currentValue2,
+                v => m_musicInstance.setParameterByName("MusicSpeed", v),
                 1f,
                 duration
             );
