@@ -20,6 +20,8 @@ MonoBehaviour:
   m_movingCurveForce: 10
   m_DashForce: 20
   m_JumpForce: 35
+  m_throwingCenterDistanceMultiplier: 10
+  m_timeTakenToGoToCenter: 0.05
   m_gravityDelayDuration: 0.5
   m_gravityMultiplier: 2
   m_playerSpeed: 35
