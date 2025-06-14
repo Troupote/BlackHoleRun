@@ -451,10 +451,10 @@ MonoBehaviour:
   m_Name: FMODStudioSettings
   m_EditorClassIdentifier: 
   switchSettingsMigration: 1
-  HasSourceProject: 0
-  HasPlatforms: 0
+  HasSourceProject: 1
+  HasPlatforms: 1
   sourceProjectPath: Assets/_Game/Fmod/AudioSystemBlackHoleRun/AudioSystemBlackHoleRun.fspro
-  sourceBankPath: Assets/_Game/Fmod/AudioSystemBlackHoleRun/Build/Desktop
+  sourceBankPath: Assets/_Game/Fmod/AudioSystemBlackHoleRun/Build
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 1
   ShowBankRefreshWindow: 1

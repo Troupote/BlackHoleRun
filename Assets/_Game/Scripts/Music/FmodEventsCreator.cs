@@ -18,10 +18,7 @@ public class FmodEventsCreator : MonoBehaviour
 
     [field: FoldoutGroup("SFX"), Header("Exit Singularity")]
     [field: SerializeField] public EventReference exitSingularity { get; private set; }
-
-    [field: FoldoutGroup("SFX"), Header("Standby Singularity")]
-    [field: SerializeField] public EventReference standbySingularity { get; private set; }
-
+    
     [field: FoldoutGroup("SFX"), Header("Jump")]
     [field: SerializeField] public EventReference jump { get; private set; }
 

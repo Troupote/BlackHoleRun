@@ -46,11 +46,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <playerFootsetps>k__BackingField:
     Guid:
-      Data1: 378771528
-      Data2: 1187137504
-      Data3: -933893742
-      Data4: 480699373
-    Path: event:/FootstepsRunning
+      Data1: 1384894447
+      Data2: 1259609214
+      Data3: 1393470892
+      Data4: 670296185
+    Path: event:/FOOTSTEPS
   <windAmbient>k__BackingField:
     Guid:
       Data1: -698885676
@@ -79,13 +79,6 @@ MonoBehaviour:
       Data3: 337486757
       Data4: 496839982
     Path: event:/ExitSingularity
-  <standbySingularity>k__BackingField:
-    Guid:
-      Data1: -834204294
-      Data2: 1307304861
-      Data3: 428545711
-      Data4: 416473508
-    Path: event:/SingularityStandby
   <jump>k__BackingField:
     Guid:
       Data1: 2138630273
@@ -152,7 +145,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccb88c2acad9605428309be747639955, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SFXVolume: 0.05
-  AmbiantVolume: 0.06
-  MusicVolume: 1
-  MasterVolume: 1

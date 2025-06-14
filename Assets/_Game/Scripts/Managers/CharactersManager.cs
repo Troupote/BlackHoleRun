@@ -166,6 +166,20 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         if (!AreObjectsInstancied()) return;
 
+        // Gestion du son des pas (footsteps)
+        Vector3 currentPosition = m_characterObject.transform.position;
+        bool isMoving = (currentPosition - m_lastPosition).sqrMagnitude > 0.0001f && m_characterBehavior.IsGrounded();
+        if (isMoving && !m_wasMovingLastFrame)
+        {
+            PlayFootsteps();
+        }
+        else if (!isMoving && m_wasMovingLastFrame)
+        {
+            StopFootsteps();
+        }
+        m_wasMovingLastFrame = isMoving;
+        m_lastPosition = currentPosition;
+
         if (m_ambienceStarted)
         {
             AudioManager.Instance.Set3DAttributesFromGameObject(m_ambienceInstance, m_characterObject);
@@ -478,7 +492,27 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     #endregion
 
     #region SFX
-    // Ajoute ici les méthodes et variables pour la gestion des SFX
+    private EventInstance m_footstepsInstance;
+    private bool m_isFootstepsPlaying = false;
+    private Vector3 m_lastPosition;
+    private bool m_wasMovingLastFrame = false;
+
+    public void PlayFootsteps()
+    {
+        if (m_isFootstepsPlaying) return;
+        m_footstepsInstance = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.playerFootsetps);
+        m_footstepsInstance.setVolume(AudioManager.Instance.SFXVolume);
+        m_footstepsInstance.start();
+        m_isFootstepsPlaying = true;
+    }
+
+    public void StopFootsteps()
+    {
+        if (!m_isFootstepsPlaying) return;
+        m_footstepsInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        m_footstepsInstance.release();
+        m_isFootstepsPlaying = false;
+    }
     #endregion
 
     #region Music
@@ -526,28 +560,54 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void SetMusicLowFilterTo0(float duration = 0.2f)
     {
-        if (!m_musicStarted) return;
-        float currentValue;
-        m_musicInstance.getParameterByName("MusicLowFilter", out currentValue);
-        DG.Tweening.DOTween.To(
-            () => currentValue,
-            v => m_musicInstance.setParameterByName("MusicLowFilter", v),
-            0f,
-            duration
-        );
+        if (m_musicStarted)
+        {
+            float currentValue;
+            m_musicInstance.getParameterByName("MusicLowFilter", out currentValue);
+            DG.Tweening.DOTween.To(
+                () => currentValue,
+                v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+                0f,
+                duration
+            );
+        }
+        if (m_ambienceStarted)
+        {
+            float currentValue;
+            m_ambienceInstance.getParameterByName("MusicLowFilter", out currentValue);
+            DG.Tweening.DOTween.To(
+                () => currentValue,
+                v => m_ambienceInstance.setParameterByName("MusicLowFilter", v),
+                0f,
+                duration
+            );
+        }
     }
 
     public void SetMusicLowFilterTo1(float duration = 0.2f)
     {
-        if (!m_musicStarted) return;
-        float currentValue;
-        m_musicInstance.getParameterByName("MusicLowFilter", out currentValue);
-        DG.Tweening.DOTween.To(
-            () => currentValue,
-            v => m_musicInstance.setParameterByName("MusicLowFilter", v),
-            1f,
-            duration
-        );
+        if (m_musicStarted)
+        {
+            float currentValue;
+            m_musicInstance.getParameterByName("MusicLowFilter", out currentValue);
+            DG.Tweening.DOTween.To(
+                () => currentValue,
+                v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+                1f,
+                duration
+            );
+        }
+        if (m_ambienceStarted)
+        {
+            float currentValue;
+            m_ambienceInstance.getParameterByName("MusicLowFilter", out currentValue);
+            DG.Tweening.DOTween.To(
+                () => currentValue,
+                v => m_ambienceInstance.setParameterByName("MusicLowFilter", v),
+                1f,
+                duration
+            );
+        }
     }
     #endregion
     #endregion
