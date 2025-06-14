@@ -348,11 +348,17 @@ namespace BHR
                 isSlowMotionSequenceFinished = false;
 
                 StartCoroutine(ChangeTimeScale(GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, inDuration));
-
+                
+                //Slow down music, warn: synced method with CharactersManager and frames, do not make async
+                CharactersManager.Instance.SlowMusic();
+                
                 //Wait until isSlowed becomes false
                 yield return new WaitUntil(() => isTimeSlowed == false);
 
                 StartCoroutine(ChangeTimeScale(GameTimeScale, 1f, outDuration));
+                
+                //Speed up music speed, warn: synced method with CharactersManager and frames, do not make async
+                CharactersManager.Instance.SpeedUpMusic();
 
                 isSlowMotionSequenceFinished = true;
             }
