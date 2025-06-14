@@ -309,7 +309,8 @@ namespace BHR
         public void OnPlayerJoined(PlayerInput playerInput)
         {
             // Resolve switch bug
-            RemoveSwitchXInput(playerInput.devices[0]);
+            if (playerInput.devices[0].name.Contains("Switch") && playerInput.devices[0].name.Contains("Pro"))
+                RemoveSwitchXInput(playerInput.devices[0]);
 
             if(PlayerConnectedCount()>=2 || !AssignPlayerIndex(playerInput)) // Max players connected at the same time
             {
