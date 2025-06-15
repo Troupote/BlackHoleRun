@@ -30,8 +30,8 @@ namespace BHR
         private bool _disableTutorielPopup = false;
         public bool DisableTutorielPopup => _disableTutorielPopup && _debug;
         [SerializeField, ShowIf(nameof(_debug))]
-        private bool _playableZoneDisabled;
-        public bool PlayableZoneDisabled => _playableZoneDisabled && _debug;
+        private bool _immortal;
+        public bool Immortal => _immortal && _debug;
         [SerializeField, ShowIf(nameof(_debug))]
         private bool _singularityInstantComeback;
         public bool SingularityInstantComeback => _singularityInstantComeback && _debug;
