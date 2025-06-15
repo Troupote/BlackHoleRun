@@ -35,6 +35,9 @@ namespace BHR
         [SerializeField, ShowIf(nameof(_debug))]
         private bool _singularityInstantComeback;
         public bool SingularityInstantComeback => _singularityInstantComeback && _debug;
+        [SerializeField, ShowIf(nameof(_debug))]
+        private bool _deadzonesPreview;
+        public bool DeadzonesPreview => _deadzonesPreview && _debug;
 
 
         [Header("Rebinding"), SerializeField, ShowIf(nameof(_debug))]
