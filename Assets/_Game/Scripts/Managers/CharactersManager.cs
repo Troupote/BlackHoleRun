@@ -287,9 +287,14 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         m_singularityBehavior.SetIgnoreCollision(true);
 
-        //yield return WaitForCustomSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
-
         Transform targetTransform = CameraManager.Instance.SingularityPlacementRefTransform;
+
+#if UNITY_EDITOR
+        if (DebugManager.Instance.SingularityInstantComeback)
+            m_singularityBehavior.transform.position = targetTransform.position;
+#endif
+
+        //yield return WaitForCustomSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
 
         float timer = 0f;
 

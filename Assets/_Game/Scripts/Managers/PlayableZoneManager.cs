@@ -21,6 +21,10 @@ namespace BHR
             Invoke("EnableCheck", duration);
         }
 
-        private void EnableCheck() => CanCheck = true;
+        private void EnableCheck()
+        {
+            CanCheck = true;
+            //transform.GetChild(0).GetComponent<PlayableZone>().ForceCheckWithVariable();
+        }
     }
 }

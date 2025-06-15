@@ -30,7 +30,7 @@ public class SingularityCharacterFollowComponent : MonoBehaviour
     public void PickupSingularity(bool shouldPickup)
     {
         m_isPickedUp = shouldPickup;
-        PlayableZoneManager.Instance.DisableCheckAndEnableAfterTime(0.1f);
+        PlayableZoneManager.Instance.DisableCheckAndEnableAfterTime(0.2f + CharactersManager.Instance.GameplayData.TimeTakenToGoToCenter);
 
         if (shouldPickup)
         {
