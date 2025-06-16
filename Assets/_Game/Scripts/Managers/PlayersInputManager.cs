@@ -309,10 +309,15 @@ namespace BHR
         public void OnPlayerJoined(PlayerInput playerInput)
         {
             // Resolve switch bug
-            if (playerInput.devices[0].name.Contains("Switch") && playerInput.devices[0].name.Contains("Pro"))
-                RemoveSwitchXInput(playerInput.devices[0]);
+            RemoveSwitchXInput(playerInput.devices[0]);
 
-            if(PlayerConnectedCount()>=2 || !AssignPlayerIndex(playerInput)) // Max players connected at the same time
+#if UNITY_EDITOR
+            if(DebugManager.Instance.DisplayDeviceData)
+               Debug.Log(GetDevicesData(playerInput.devices[0]));
+#endif
+
+
+            if (PlayerConnectedCount()>=2 || !AssignPlayerIndex(playerInput)) // Max players connected at the same time
             {
                 Destroy(playerInput.gameObject);
                 return;
@@ -566,7 +571,7 @@ namespace BHR
         }
         #endregion
 
-        #region Hard Fix Switch twice controllers bug
+        #region Authorized devices gestion
         private void RemoveSwitchXInput(InputDevice device)
         {
             if (IsUnwantedXInput(device))
@@ -580,8 +585,26 @@ namespace BHR
         {
             var desc = device.description;
             return desc.interfaceName == "XInput" &&
-                   !desc.product.ToLower().Contains("xbox");
+                   !desc.product.ToLower().Contains("xbox") &&
+                   desc.serial == "";
+                
         }
+
+#if UNITY_EDITOR
+        private string GetDevicesData(InputDevice device) => $"--- INPUT DEVICE ---\n" +
+                  $"Name: {device.name}\n" +
+                  $"Display Name: {device.displayName}\n" +
+                  $"Layout: {device.layout}\n" +
+                  //$"Device Parent Name: {device.parent.name}\n" +
+                  $"Device Id: {device.deviceId}\n" +
+                  $"Description: {device.description}\n" +
+                  $"DescriptionInterface: {device.description.interfaceName}\n" +
+                  $"DescriptionManufacturer: {device.description.manufacturer}\n" +
+                  $"DescriptionProduct: {device.description.product}\n" +
+                  $"DescriptionSerial: {device.description.serial}\n" +
+                  $"Usages: {string.Join(", ", device.usages)}\n" +
+                  $"Path: {device.path}\n";
+#endif
         #endregion
     }
 

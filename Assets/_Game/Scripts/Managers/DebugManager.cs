@@ -40,7 +40,10 @@ namespace BHR
         public bool DeadzonesPreview => _deadzonesPreview && _debug;
 
 
-        [Header("Rebinding"), SerializeField, ShowIf(nameof(_debug))]
+        [Header("Inputs"), SerializeField, ShowIf(nameof(_debug))]
+        private bool _displayDeviceData;
+        public bool DisplayDeviceData => _displayDeviceData && _debug;
+        [SerializeField, ShowIf(nameof(_debug))]
         private bool _showControllerKeyinRebinding;
         public bool ShowControllerKeyinRebinding => _showControllerKeyinRebinding && _debug;
 
