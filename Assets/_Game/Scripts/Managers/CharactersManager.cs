@@ -248,8 +248,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         m_singularityBehavior.ShaderColorController.SetPlayerColors(GameManager.Instance.ActivePlayerIndex == 0 ? false : true);
 
-        if (m_gameplayData.ActivateMovementsLimit)
-            LimitPlayersMovements.ClearPerformedMovements();
+        LimitPlayersMovements.ClearPerformedMovements();
 
         m_characterBehavior.ImobilizeCharacter(false);
 

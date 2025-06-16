@@ -74,6 +74,7 @@ public class CharacterBehavior : MonoBehaviour
     #region Life Cycle
 
     private Vector3 m_gravity = Physics.gravity;
+    private bool m_wasInAir = false;
 
     private void FixedUpdate()
     {
@@ -128,6 +129,13 @@ public class CharacterBehavior : MonoBehaviour
         m_isGrounded = IsGrounded();
         m_isGroundedForJump = IsGroundedForJump();
         CheckCoyotteTime();
+
+        if (m_wasInAir && m_isGroundedForJump)
+        {
+            CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Jump);
+        }
+
+        m_wasInAir = !m_isGroundedForJump;
     }
 
     #endregion
@@ -191,9 +199,9 @@ public class CharacterBehavior : MonoBehaviour
         {
             StopCoroutine(m_dashCooldownCoroutine);
             m_canDash = true;
+            CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Dash);
         }
 
-        CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
         m_coyotteTimeTimer = -1f;
         Invoke("ResetCoyotteTimer", 0.2f);
     }
@@ -242,8 +250,6 @@ public class CharacterBehavior : MonoBehaviour
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
 
         m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
-
-        CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
     }
 
     private IEnumerator DashCooldown()
@@ -253,6 +259,7 @@ public class CharacterBehavior : MonoBehaviour
         yield return new WaitForSeconds(m_gameplayData.DashCooldown / GameManager.Instance.GameTimeScale);
 
         m_canDash = true;
+        CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Dash);
     }
 
     public void OnSingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
@@ -276,12 +283,26 @@ public class CharacterBehavior : MonoBehaviour
     {
         if (!CharactersManager.Instance.CanThrow) return;
 
+        RegisterActionsToLimitActions();
+
         ResetVelocity();
         ResetGroundedStates();
         m_canDash = true;
 
         OnThrowInput?.Invoke();
     }
+
+    private void RegisterActionsToLimitActions()
+    {
+        if (!CharactersManager.Instance.GameplayData.ActivateMovementsLimit) return;
+
+        if (!m_canDash)
+            CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
+
+        if (!m_isGrounded)
+            CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
+    }
+
 
     #endregion
 
