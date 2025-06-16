@@ -160,16 +160,20 @@ namespace BHR
             if(!firstStart) StartLevel();
         }
 
-        public void StartLevel()
+        public void PreAnimationStartLevel()
         {
             CheckpointsManager.Instance.ReplacePlayer();
-            IsPlaying = true; OnStartLevel.Invoke();
             OnTutorielSet?.Invoke(_tutorielEnable);
             _tutorielEnable = false;
 #if UNITY_EDITOR
-            if(DebugManager.Instance.ForceTutoriel)
+            if (DebugManager.Instance.ForceTutoriel)
                 OnTutorielSet?.Invoke(true);
 #endif
+        }
+
+        public void StartLevel()
+        {
+            IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
         }
 

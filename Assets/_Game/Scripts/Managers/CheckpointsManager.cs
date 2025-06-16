@@ -40,7 +40,6 @@ namespace BHR
         public void ReplacePlayer()
         {
             CharactersManager.Instance.CharacterObject.transform.position = _currentCheckpoint.position;
-            CharactersManager.Instance.CharacterObject.transform.rotation = _currentCheckpoint.rotation;
             CameraManager.Instance.ForceCameraLookAt(_currentCheckpoint.forward);
         }
 

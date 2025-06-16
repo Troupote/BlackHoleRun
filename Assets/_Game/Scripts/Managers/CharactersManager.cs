@@ -361,8 +361,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         ShowSingularityPreview();
         GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
 
-        if (!GameManager.Instance.isSlowMotionSequenceFinished)
-            CancelAim();
+        CancelAim();
     }
 
     private void OnThrowPerformed()

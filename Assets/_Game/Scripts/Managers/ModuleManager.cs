@@ -176,7 +176,11 @@ namespace BHR
             }
         }
         public void LaunchTransitionAnimation(bool start, float duration = float.MaxValue) => _transition.GetComponent<TransitionUI>().LaunchTransitionAnimation(start, duration);
-        private void LaunchStartAnimation() => _transition.GetComponent<TransitionUI>().LaunchStartAnimation();
+        private void LaunchStartAnimation()
+        {
+            GameManager.Instance.PreAnimationStartLevel();
+            _transition.GetComponent<TransitionUI>().LaunchStartAnimation();
+        }
     }
 
 }

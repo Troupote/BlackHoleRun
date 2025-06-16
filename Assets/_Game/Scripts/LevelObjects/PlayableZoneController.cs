@@ -19,7 +19,7 @@ namespace BHR
 #endif
             transform.GetChild(0).gameObject.SetActive(false);
 
-            for(int i=1; i < transform.childCount; i++)
+            for(int i=1; i < transform.childCount-1; i++)
             {
                 Transform zone = transform.GetChild(i);
                 zone.name = "Deadzone" + i.ToString();
@@ -33,7 +33,7 @@ namespace BHR
         [Button]
         private void ToggleDeadzonePreview(bool enable)
         {
-            for(int i=1; i < transform.childCount; i++)
+            for(int i=1; i < transform.childCount-1; i++)
                 transform.GetChild(i).GetComponent<MeshRenderer>().enabled = enable;
         }
 #endif
