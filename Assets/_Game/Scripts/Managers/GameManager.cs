@@ -189,7 +189,6 @@ namespace BHR
 
         public void Pause(GameObject moduleToLoad)
         {
-            OnPaused?.Invoke();
             if(!IsPaused)
             {
                 _savedGameTimeScale = GameTimeScale;
@@ -198,15 +197,16 @@ namespace BHR
                 ChangeMainPlayerState(PlayerState.UI, false);
             }
             ModuleManager.Instance.OnModuleEnable(moduleToLoad);
+            OnPaused?.Invoke();
         }
 
         public void Resume()
         {
-            OnResumed?.Invoke();
             IsPlaying = true;
             ChangeMainPlayerState(_savedPausedState, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.HUD));
             ModuleManager.Instance.ClearNavigationHistoric();
+            OnResumed?.Invoke();
         }
 
         public void EndLevel()
