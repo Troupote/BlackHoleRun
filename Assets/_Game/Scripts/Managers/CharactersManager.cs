@@ -392,7 +392,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     public void StartAim(bool a_withThrow)
     {
         float duration = m_gameplayData.TriggerAimDuration;
-        StartCoroutine(GameManager.Instance.SlowmotionSequence(duration, duration * (a_withThrow ? 0f : 1f)));
+        StartCoroutine(GameManager.Instance.SlowmotionSequence(duration, duration * (a_withThrow ? 1f : 1f)));
         GameManager.Instance.isSlowMotionSequenceStarted = true;
         isHumanoidAiming = true;
     }

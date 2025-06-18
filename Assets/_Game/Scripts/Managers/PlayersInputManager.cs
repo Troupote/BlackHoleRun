@@ -42,10 +42,10 @@ namespace BHR
 
         public InputDevice CurrentAllowedDevice => CurrentAllowedPlayerInput?.devices[0];
 
-        public InputDevice CurrentActivePlayerDevice => CurrentActivePlayerInput.devices[0];
+        public InputDevice CurrentActivePlayerDevice => CurrentActivePlayerInput?.devices[0];
         public PlayerControllerState CurrentActiveControllerState => PlayersControllerState[GameManager.Instance.ActivePlayerIndex];
 
-        public PlayerInput CurrentActivePlayerInput => PlayersInputControllerRef[GameManager.Instance.ActivePlayerIndex].GetComponent<PlayerInput>();
+        public PlayerInput CurrentActivePlayerInput => PlayersInputControllerRef[GameManager.Instance.ActivePlayerIndex]?.GetComponent<PlayerInput>();
         public PlayerInput CurrentAllowedPlayerInput => CurrentAllowedInput switch
         {
             AllowedPlayerInput.FIRST_PLAYER => PlayersInputControllerRef[0].GetComponent<PlayerInput>(),

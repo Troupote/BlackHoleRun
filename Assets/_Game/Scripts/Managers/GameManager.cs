@@ -356,8 +356,10 @@ namespace BHR
                 //Wait until isSlowed becomes false
                 yield return new WaitUntil(() => isTimeSlowed == false);
 
+                StopCoroutine(ChangeTimeScale(GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, inDuration));
+                GameTimeScale = CharactersManager.Instance.GameplayData.TargetAimTimeScale;
                 StartCoroutine(ChangeTimeScale(GameTimeScale, 1f, outDuration));
-
+                GameTimeScale = 1f;
                 isSlowMotionSequenceFinished = true;
             }
         }
