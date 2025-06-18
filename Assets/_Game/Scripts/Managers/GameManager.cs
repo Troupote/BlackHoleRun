@@ -175,6 +175,8 @@ namespace BHR
         {
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
+
+            PlanetsCollidingManager.Instance.SetPlanetCollidingTimer(20f, true);
         }
 
         public void TogglePause()
