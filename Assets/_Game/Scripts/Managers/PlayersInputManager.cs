@@ -18,6 +18,10 @@ namespace BHR
         [SerializeField, ReadOnly] private bool _canConnect; // Enable the ControllerSelection 
         public bool CanConnect { get => _canConnect; set => _canConnect = value; }
 
+
+        // Hard fix bug stuff don't mind
+        private bool _hasToCheckDevice = false; private const float _checkDeviceWindow = 0.05f; private InputDevice _lastDeviceConnected;
+
         [SerializeField, ReadOnly] private bool _reconnecting = false;
 
         // Players managing
@@ -308,11 +312,18 @@ namespace BHR
         #region Connect and disconncect gestion
         public void OnPlayerJoined(PlayerInput playerInput)
         {
-            // Resolve switch bug
-            RemoveSwitchXInput(playerInput.devices[0]);
+            // Resolve switch bug hard fix
+            if(_hasToCheckDevice)
+                CheckDevice(playerInput.devices[0]);
+            else
+            {
+                _hasToCheckDevice = true;
+                Invoke("DisableCheckDevice", _checkDeviceWindow);
+            }
 
+            _lastDeviceConnected = playerInput.devices[0];
 #if UNITY_EDITOR
-            if(DebugManager.Instance.DisplayDeviceData)
+            if (DebugManager.Instance.DisplayDeviceData)
                Debug.Log(GetDevicesData(playerInput.devices[0]));
 #endif
 
@@ -572,23 +583,34 @@ namespace BHR
         #endregion
 
         #region Authorized devices gestion
-        private void RemoveSwitchXInput(InputDevice device)
+        private void CheckDevice(InputDevice device)
         {
-            if (IsUnwantedXInput(device))
+            int removeDeviceOutput = IsUnwantedXInput(device);
+            switch(removeDeviceOutput)
             {
-                Debug.LogWarning($"Removing duplicate XInput device: {device.displayName}");
-                InputSystem.RemoveDevice(device);
+                case 1:
+                    Debug.LogWarning($"Removing duplicate XInput device: {device.displayName}");
+                    InputSystem.RemoveDevice(device);
+                    break;
+                case 2:
+                    Debug.LogWarning($"Removing duplicate XInput device: {_lastDeviceConnected.displayName}");
+                    InputSystem.RemoveDevice(_lastDeviceConnected);
+                    break;
             }
         }
 
-        bool IsUnwantedXInput(InputDevice device)
+        int IsUnwantedXInput(InputDevice device)
         {
-            var desc = device.description;
-            return desc.interfaceName == "XInput" &&
-                   !desc.product.ToLower().Contains("xbox") &&
-                   desc.serial == "";
-                
+            var CDdesc = device.description;
+            var LDdesc = _lastDeviceConnected.description;
+            if (CDdesc.interfaceName == "XInput" && !CDdesc.product.ToLower().Contains("xbox") && _lastDeviceConnected.name.ToLower().Contains("switchprocontroller"))
+                return 1;
+            else if (_lastDeviceConnected.name.ToLower().Contains("switchprocontroller") && !LDdesc.product.ToLower().Contains("xbox") && LDdesc.interfaceName == "XInput")
+                return 2;
+            return 0;
         }
+
+        private void DisableCheckDevice() => _hasToCheckDevice = false;
 
 #if UNITY_EDITOR
         private string GetDevicesData(InputDevice device) => $"--- INPUT DEVICE ---\n" +
