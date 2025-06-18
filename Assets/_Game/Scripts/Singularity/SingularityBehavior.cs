@@ -120,6 +120,7 @@ public class SingularityBehavior : MonoBehaviour
 
     private bool m_isThrown = false;
     private float m_throwTime = 0f;
+    private Coroutine m_alignAndThrowCoroutine = null;
 
     public void OnThrow()
     {
@@ -128,7 +129,7 @@ public class SingularityBehavior : MonoBehaviour
 
         Vector3 throwDirection = CameraManager.Instance.MainCam.transform.forward;
 
-        StartCoroutine(AlignAndThrow(throwDirection));
+        m_alignAndThrowCoroutine = StartCoroutine(AlignAndThrow(throwDirection));
 
         m_throwTime = 0f;
         OnThrowPerformed?.Invoke();
@@ -229,6 +230,12 @@ public class SingularityBehavior : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (SingularityCharacterFollowComponent.IsPickedUp || m_ignoreUnmorph) return;
+
+        if (m_alignAndThrowCoroutine != null)
+        {
+            StopCoroutine(m_alignAndThrowCoroutine);
+            m_alignAndThrowCoroutine = null;
+        }
 
         m_isThrown = false;
         OnUnmorph?.Invoke();
