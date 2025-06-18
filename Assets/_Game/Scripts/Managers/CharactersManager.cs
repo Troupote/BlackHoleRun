@@ -1,7 +1,10 @@
 using BHR;
 using System;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
+using FMOD.Studio;
+using FMODUnity;
 
 public class CharactersManager : ManagerSingleton<CharactersManager>
 {
@@ -35,6 +38,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     public Action ResetInputs;
 
     public bool isHumanoidAiming = false;
+    public bool isCharacterGrounded => m_characterBehavior.IsGrounded();
 
     internal bool CanThrow => m_singularityBehavior.IsAllowedToBeThrown;
 
@@ -74,7 +78,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.OnJump += OnSingularityJump;
         m_singularityBehavior.OnDash += SingularityDash;
 
-        GameManager.Instance.OnRespawn.AddListener(HardReset);
+        GameManager.Instance.OnRespawned.AddListener(HardReset);
     }
 
     private void UnlistenToEvents()
@@ -85,7 +89,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.OnJump -= OnSingularityJump;
         m_singularityBehavior.OnDash -= SingularityDash;
 
-        GameManager.Instance.OnRespawn.RemoveListener(HardReset);
+        GameManager.Instance.OnRespawned.RemoveListener(HardReset);
     }
 
     private bool AreObjectsInstancied() => m_isInstancied;
@@ -99,12 +103,16 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         m_characterObject.transform.position = a_position;
         m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(true);
+        StartAmbience();
+        StartMusic();
     }
 
     public void HardReset()
     {
         Debug.Log("Hard Reset Characters Manager");
 
+        ResetAmbience();
+        ResetMusic();
         if (BringNewSingularityToNewCharacterCoroutine != null)
         {
             StopCoroutine(BringNewSingularityToNewCharacterCoroutine);
@@ -125,6 +133,10 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         CameraManager.Instance.SwitchCameraToCharacter(m_characterObject.transform.position);
         GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
+
+        if (!m_characterObject.activeInHierarchy)
+            HideSingularityPreview();
+
         m_characterBehavior.ImobilizeCharacter(false);
 
         ResetInputs?.Invoke();
@@ -149,10 +161,35 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         if (!AreObjectsInstancied()) return;
 
     }
-
+    
     private void Update()
     {
         if (!AreObjectsInstancied()) return;
+
+        // Gestion du son des pas (footsteps)
+        Vector3 currentPosition = m_characterObject.transform.position;
+        bool isMoving = (currentPosition - m_lastPosition).sqrMagnitude > 0.0001f && m_characterBehavior.IsGrounded();
+        if (isMoving && !m_wasMovingLastFrame)
+        {
+            PlayFootsteps();
+        }
+        else if (!isMoving && m_wasMovingLastFrame)
+        {
+            StopFootsteps();
+        }
+        m_wasMovingLastFrame = isMoving;
+        m_lastPosition = currentPosition;
+
+        if (m_ambienceStarted)
+        {
+            AudioManager.Instance.Set3DAttributesFromGameObject(m_ambienceInstance, m_characterObject);
+            if (!m_isFadingAmbience)
+                m_ambienceInstance.setVolume(AudioManager.Instance.SFXVolume);
+        }
+        if (m_musicStarted)
+        {
+            m_musicInstance.setVolume(AudioManager.Instance.MusicVolume);
+        }
 
         // Check if the distance between players is exceeded
         if (IsDistanceBetweenPlayersExceeded() && !m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
@@ -161,6 +198,11 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         }
     }
 
+    private void OnDestroy()
+    {
+        StopAmbience();
+        StopMusic();
+    }
 
     #endregion
 
@@ -196,13 +238,17 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         CorrectlySwitchPositionsOfPlayers(singularityPosition, oldCharacterPosition);
 
         CameraManager.Instance.SwitchCameraToCharacter(m_characterObject.transform.position);
+        
+        // Correct the filter when returning to character
+        SetMusicLowFilterTo1();
 
         ResetInputs?.Invoke();
 
         GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
 
-        if (m_gameplayData.ActivateMovementsLimit)
-            LimitPlayersMovements.ClearPerformedMovements();
+        m_singularityBehavior.ShaderColorController.SetPlayerColors(GameManager.Instance.ActivePlayerIndex == 0 ? false : true);
+
+        LimitPlayersMovements.ClearPerformedMovements();
 
         m_characterBehavior.ImobilizeCharacter(false);
 
@@ -240,20 +286,32 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         m_singularityBehavior.SetIgnoreCollision(true);
 
-        yield return WaitForCustomSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
-
         Transform targetTransform = CameraManager.Instance.SingularityPlacementRefTransform;
+
+#if UNITY_EDITOR
+        if (DebugManager.Instance.SingularityInstantComeback)
+            m_singularityBehavior.transform.position = targetTransform.position;
+#endif
+
+        //yield return WaitForCustomSeconds(m_gameplayData.CooldownBeforeThrowAllowed);
+
+        float timer = 0f;
 
         while (Vector3.Distance(m_singularityObject.transform.position, targetTransform.position) > 1f)
         {
             while (GameManager.Instance.GameTimeScale == 0)
                 yield return null;
 
+            float speed = m_gameplayData.ComingBackCurve.Evaluate(timer);
+
             m_singularityObject.transform.position = Vector3.MoveTowards(
                 m_singularityObject.transform.position,
                 targetTransform.position,
-                m_gameplayData.ComingBackSpeed * Time.deltaTime);
+                speed * Time.deltaTime * GameManager.Instance.GameTimeScale);
 
+            timer += Time.deltaTime * GameManager.Instance.GameTimeScale;
+            if (timer > m_gameplayData.ComingBackCurve.keys[m_gameplayData.ComingBackCurve.length - 1].time)
+                timer = m_gameplayData.ComingBackCurve.keys[m_gameplayData.ComingBackCurve.length - 1].time;
             yield return null;
         }
 
@@ -295,16 +353,59 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         if (!m_singularityBehavior.IsAllowedToBeThrown) return;
 
+        if (m_singularityBehavior.IsOverlapping()) return;
+
         m_singularityBehavior.OnThrow();
         m_characterBehavior.ImobilizeCharacter(true);
         ShowSingularityPreview();
         GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
+
+        CancelAim();
     }
 
     private void OnThrowPerformed()
     {
         CameraManager.Instance.SwitchCameraToSingularity();
+        SetMusicLowFilterTo0();
     }
+    #endregion
+
+    #region Character Aim
+    private bool m_hasAlreadyCallAim = false;
+    internal bool HasAlreadyCalledAim => m_hasAlreadyCallAim;
+
+    public void HandleAim(bool withThrow)
+    {
+        m_hasAlreadyCallAim = !m_hasAlreadyCallAim;
+
+        if (m_hasAlreadyCallAim && CanThrow)
+        {
+            StartAim(withThrow);
+        }
+        else if (!m_hasAlreadyCallAim)
+        {
+            CancelAim();
+        }
+
+    }
+
+    public void StartAim(bool a_withThrow)
+    {
+        float duration = m_gameplayData.TriggerAimDuration;
+        StartCoroutine(GameManager.Instance.SlowmotionSequence(duration, duration * (a_withThrow ? 1f : 1f)));
+        GameManager.Instance.isSlowMotionSequenceStarted = true;
+        isHumanoidAiming = true;
+    }
+
+    public void CancelAim()
+    {
+        m_hasAlreadyCallAim = false;
+        GameManager.Instance.isSlowMotionSequenceStarted = false;
+        GameManager.Instance.isTimeSlowed = false;
+
+        isHumanoidAiming = false;
+    }
+
     #endregion
 
     #region Singularity Jump
@@ -332,8 +433,11 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     private void ShowSingularityPreview()
     {
         SingularityPreviewController.Inflate(m_characterObject.transform);
+        //Invoke("DisableCharacterObject", 0.05f);
         m_characterObject.SetActive(false);
     }
+
+    private void DisableCharacterObject() => m_characterObject.SetActive(false);
 
     private void HideSingularityPreview()
     {
@@ -341,5 +445,180 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_characterObject.SetActive(true);
     }
 
+    #endregion
+    
+    #region Audio
+    #region Ambiant
+    private EventInstance m_ambienceInstance;
+    private bool m_ambienceStarted = false;
+    private bool m_isFadingAmbience = false;
+
+    public void StartAmbience()
+    {
+        Debug.Log("Starting ambience");
+        if (m_ambienceStarted) return;
+        m_ambienceInstance = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.windAmbient);
+        m_ambienceInstance.start();
+        m_ambienceStarted = true;
+    }
+
+    public void StopAmbience()
+    {
+        if (!m_ambienceStarted) return;
+        m_ambienceInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        m_ambienceInstance.release();
+        m_ambienceStarted = false;
+    }
+
+    public void ResetAmbience()
+    {
+        if (!m_ambienceStarted) return;
+        float strtVolume;
+        m_ambienceInstance.getVolume(out strtVolume);
+        float fadeDuration = 0.2f;
+        float minVolume = strtVolume * 0.2f;
+
+        m_isFadingAmbience = true;
+        DOTween.To(
+            () => strtVolume,
+            v => {
+                m_ambienceInstance.setVolume(v);
+            },
+            minVolume,
+            fadeDuration
+        ).OnComplete(() => {
+            DOTween.To(
+                () => minVolume,
+                v => {
+                    m_ambienceInstance.setVolume(v);
+                },
+                strtVolume,
+                fadeDuration
+            ).OnComplete(() => {
+                m_isFadingAmbience = false;
+            });
+        });
+    }
+    #endregion
+
+    #region SFX
+    private EventInstance m_footstepsInstance;
+    private bool m_isFootstepsPlaying = false;
+    private Vector3 m_lastPosition;
+    private bool m_wasMovingLastFrame = false;
+
+    public void PlayFootsteps()
+    {
+        if (m_isFootstepsPlaying) return;
+        m_footstepsInstance = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.playerFootsetps);
+        m_footstepsInstance.setVolume(AudioManager.Instance.SFXVolume);
+        m_footstepsInstance.start();
+        m_isFootstepsPlaying = true;
+    }
+
+    public void StopFootsteps()
+    {
+        if (!m_isFootstepsPlaying) return;
+        m_footstepsInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        m_footstepsInstance.release();
+        m_isFootstepsPlaying = false;
+    }
+    #endregion
+
+    #region Music
+    private EventInstance m_musicInstance;
+    private bool m_musicStarted = false;
+
+    public void StartMusic()
+    {
+        if (m_musicStarted) return;
+        m_musicInstance = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.musicBeatRigolo);
+        m_musicInstance.setVolume(AudioManager.Instance.MusicVolume);
+        m_musicInstance.start();
+        m_musicStarted = true;
+    }
+
+    public void StopMusic()
+    {
+        if (!m_musicStarted) return;
+        m_musicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        m_musicInstance.release();
+        m_musicStarted = false;
+    }
+
+    public void ResetMusic()
+    {
+        if (!m_musicStarted) return;
+        float fadeDuration = 0.5f;
+        float minValue = 0f;
+        float maxValue = 1f;
+
+        DOTween.To(
+            () => maxValue,
+            v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+            minValue,
+            fadeDuration +0.2f
+        ).OnComplete(() => { 
+            DOTween.To(
+                () => minValue,
+                v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+                maxValue,
+                fadeDuration
+            );
+        });
+    }
+
+    public void SetMusicLowFilterTo0(float duration = 0.2f)
+    {
+        if (m_musicStarted)
+        {
+            float currentValue;
+            m_musicInstance.getParameterByName("MusicLowFilter", out currentValue);
+            DG.Tweening.DOTween.To(
+                () => currentValue,
+                v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+                0f,
+                duration
+            );
+        }
+        if (m_ambienceStarted)
+        {
+            float currentValue;
+            m_ambienceInstance.getParameterByName("MusicLowFilter", out currentValue);
+            DG.Tweening.DOTween.To(
+                () => currentValue,
+                v => m_ambienceInstance.setParameterByName("MusicLowFilter", v),
+                0f,
+                duration
+            );
+        }
+    }
+
+    public void SetMusicLowFilterTo1(float duration = 0.2f)
+    {
+        if (m_musicStarted)
+        {
+            float currentValue;
+            m_musicInstance.getParameterByName("MusicLowFilter", out currentValue);
+            DG.Tweening.DOTween.To(
+                () => currentValue,
+                v => m_musicInstance.setParameterByName("MusicLowFilter", v),
+                1f,
+                duration
+            );
+        }
+        if (m_ambienceStarted)
+        {
+            float currentValue;
+            m_ambienceInstance.getParameterByName("MusicLowFilter", out currentValue);
+            DG.Tweening.DOTween.To(
+                () => currentValue,
+                v => m_ambienceInstance.setParameterByName("MusicLowFilter", v),
+                1f,
+                duration
+            );
+        }
+    }
+    #endregion
     #endregion
 }

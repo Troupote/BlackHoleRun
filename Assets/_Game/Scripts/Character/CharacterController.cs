@@ -6,7 +6,6 @@ public class PlayerController : MonoBehaviour
     private CharacterBehavior m_characterBehavior;
     private Vector2 m_moveValue = Vector2.zero;
     private bool m_isInitialized = false;
-    private bool _hasAlreadyCallAim = false;
 
     void Start()
     {
@@ -30,7 +29,7 @@ private void OnEnable()
         PlayersInputManager.Instance.OnHAim.AddListener(HandleAim);
         CharactersManager.Instance.ResetInputs += ResetInputs;
         GameManager.Instance.OnPaused.AddListener(ResetInputs);
-        GameManager.Instance.OnRespawn.AddListener(ResetInputs);
+        GameManager.Instance.OnRespawned.AddListener(ResetInputs);
         //PlayersInputManager.Instance.OnHSlide.AddListener();
 
     }
@@ -45,7 +44,7 @@ private void OnEnable()
         PlayersInputManager.Instance.OnHAim.RemoveListener(HandleAim);
         CharactersManager.Instance.ResetInputs -= ResetInputs;
         GameManager.Instance.OnPaused.RemoveListener(ResetInputs);
-        GameManager.Instance.OnRespawn.RemoveListener(ResetInputs);
+        GameManager.Instance.OnRespawned.RemoveListener(ResetInputs);
         //PlayersInputManager.Instance.OnHSlide.RemoveListener();
     }
 
@@ -63,7 +62,8 @@ private void OnEnable()
     private void ResetInputs()
     {
         m_moveValue = Vector2.zero;
-        CancelAim();
+        if (!GameManager.Instance.isSlowMotionSequenceFinished)
+            CharactersManager.Instance.CancelAim();
     }
     private void HandleMove(Vector2 a_movementValue)
     {
@@ -82,46 +82,12 @@ private void OnEnable()
 
     private void HandleThrowSingularity()
     {
-        if (!GameManager.Instance.isFinished)
-        {
-            GameManager.Instance.isSlowed = false;
-        }
-
-        GameManager.Instance.isStarted = false;
-        GameManager.Instance.isSlowed = false;
-
-        CancelAim();
         m_characterBehavior.OnThrowSingularity();
     }
 
-    private void HandleAim()
+    private void HandleAim(bool a_withThrow)
     {
-        _hasAlreadyCallAim = !_hasAlreadyCallAim;
+        CharactersManager.Instance.HandleAim(a_withThrow);
 
-        if (_hasAlreadyCallAim && CharactersManager.Instance.CanThrow)
-        {
-            StartAim();
-        }
-        else if(!_hasAlreadyCallAim)
-        {
-            CancelAim();
-        }
-
-    }
-
-    private void StartAim()
-    {
-        StartCoroutine(GameManager.Instance.SlowmotionSequence());
-        GameManager.Instance.isStarted = true;
-        CharactersManager.Instance.isHumanoidAiming = true;
-    }
-
-    private void CancelAim()
-    {
-        GameManager.Instance.isStarted = false;
-        GameManager.Instance.isSlowed = false;
-
-        _hasAlreadyCallAim = false;
-        CharactersManager.Instance.isHumanoidAiming = false;
     }
 }

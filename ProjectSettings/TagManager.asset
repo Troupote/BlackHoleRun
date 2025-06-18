@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Singleton
   - Singularity
+  - Planet
   layers:
   - Default
   - TransparentFX

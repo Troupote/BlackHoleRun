@@ -453,10 +453,10 @@ MonoBehaviour:
   switchSettingsMigration: 1
   HasSourceProject: 1
   HasPlatforms: 1
-  sourceProjectPath: ../../../SONS/AudioSystemBlackHoleRun/AudioSystemBlackHoleRun.fspro
-  sourceBankPath: ../../../SONS/AudioSystemBlackHoleRun/Build
+  sourceProjectPath: Assets/_Game/Fmod/AudioSystemBlackHoleRun/AudioSystemBlackHoleRun.fspro
+  sourceBankPath: Assets/_Game/Fmod/AudioSystemBlackHoleRun/Build
   sourceBankPathUnformatted: 
-  BankRefreshCooldown: 5
+  BankRefreshCooldown: 1
   ShowBankRefreshWindow: 1
   AutomaticEventLoading: 1
   BankLoadType: 0
@@ -478,13 +478,15 @@ MonoBehaviour:
   MasterBanks:
   - Master
   Banks:
+  - Ambient
+  - Musics
   - SFX
   BanksToLoad: []
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0
   AndroidUseOBB: 0
   AndroidPatchBuild: 0
-  MeterChannelOrdering: 0
+  MeterChannelOrdering: 1
   StopEventsOutsideMaxDistance: 0
   BoltUnitOptionsBuildPending: 0
   EnableErrorCallback: 0

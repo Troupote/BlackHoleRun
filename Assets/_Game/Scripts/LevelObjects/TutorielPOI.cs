@@ -55,8 +55,11 @@ namespace BHR
             if (_hasComposite)
             {
                 GameManager.Instance.OnMainPlayerStateChanged.AddListener((newState, hasSwitched) => CheckComposite());
+                if(PlayersInputManager.Instance.CurrentActivePlayerDevice != null)
                 CheckComposite();
             }
+
+            GameManager.Instance.OnTutorielSet.AddListener(gameObject.SetActive);
         }
 
         private void ToggleUI(bool enabled)

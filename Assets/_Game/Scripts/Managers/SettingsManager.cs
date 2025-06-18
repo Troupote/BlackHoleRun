@@ -47,7 +47,8 @@ namespace BHR
 
         public void UpdateVolume()
         {
-            // @todo Thybault c'est ici que tu dois cook
+            if (AudioManager.Instance == null) return;
+            AudioManager.Instance.ApplyVolumesToAllEvents();
         }
 
         public void ApplyUserSettings() => OnUserSettingsApplied?.Invoke();

@@ -19,7 +19,7 @@ namespace BHR.UILinkers
         protected override bool LoadSetting()
         {
             InputDevice controller = PlayersInputManager.Instance.CurrentAllowedDevice;
-            return SettingsSave.LoadInvertAxeY(controller);
+            return _registered ? _savedValue : SettingsSave.LoadInvertAxeY(controller);
         }
 
         protected override void UpdateUI() => GetComponent<Toggle>().isOn = LoadSetting();

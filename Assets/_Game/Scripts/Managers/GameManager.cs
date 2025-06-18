@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 namespace BHR
 {
@@ -37,7 +38,8 @@ namespace BHR
         public bool HasPlayedInSolo => _hasPlayedInSolo;
 
         public LevelDataSO CurrentLevel => _currentLevel;
-        public UnityEvent<bool> OnLaunchLevel;
+        public UnityEvent<bool> OnLaunchLevel, OnTutorielSet;
+        private bool _tutorielEnable;
         public UnityEvent OnStartLevel;
         /// <summary>
         /// Float End timer, bool HasHitNewBestTime, bool HasPlayedSolo
@@ -66,7 +68,7 @@ namespace BHR
                 _isPlaying = value;
                 if (_isPlaying)
                     IsPaused = false;
-                _gameTimeScale = _isPlaying ? _savedGameTimeScale : 0f;
+                GameTimeScale = _isPlaying ? _savedGameTimeScale : 0f;
             }
         }
         [SerializeField, ReadOnly]
@@ -88,11 +90,20 @@ namespace BHR
         private float _savedGameTimeScale = 1f;
         [SerializeField, ReadOnly]
         private float _gameTimeScale;
-        public float GameTimeScale => _gameTimeScale;
+        public float GameTimeScale
+        {
+            get => _gameTimeScale;
+            private set
+            {
+                _gameTimeScale = value;
+                OnGameTimeScaleChanged?.Invoke(_gameTimeScale);
+            }
+        }
+        public UnityEvent<float> OnGameTimeScaleChanged;
         #endregion
 
         public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
-        public UnityEvent OnPaused, OnResumed, OnRespawn;
+        public UnityEvent OnPaused, OnResumed, OnRespawned;
 
         private void Start()
         {
@@ -116,6 +127,8 @@ namespace BHR
 
         #region Level gestion
         public void SaveSelectedLevel(LevelDataSO data) => SelectedLevel = data;
+
+        public void SetTutoriel(bool enable) => _tutorielEnable = enable;
 
         public void LaunchLevel(bool firstStart = true)
         {
@@ -148,10 +161,23 @@ namespace BHR
             if(!firstStart) StartLevel();
         }
 
+        public void PreAnimationStartLevel()
+        {
+            CheckpointsManager.Instance.ReplacePlayer();
+            OnTutorielSet?.Invoke(_tutorielEnable);
+            _tutorielEnable = false;
+#if UNITY_EDITOR
+            if (DebugManager.Instance.ForceTutoriel)
+                OnTutorielSet?.Invoke(true);
+#endif
+        }
+
         public void StartLevel()
         {
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
+
+            PlanetsCollidingManager.Instance.SetPlanetCollidingTimer(20f, true);
         }
 
         public void TogglePause()
@@ -164,7 +190,6 @@ namespace BHR
 
         public void Pause(GameObject moduleToLoad)
         {
-            OnPaused?.Invoke();
             if(!IsPaused)
             {
                 _savedGameTimeScale = GameTimeScale;
@@ -173,15 +198,16 @@ namespace BHR
                 ChangeMainPlayerState(PlayerState.UI, false);
             }
             ModuleManager.Instance.OnModuleEnable(moduleToLoad);
+            OnPaused?.Invoke();
         }
 
         public void Resume()
         {
-            OnResumed?.Invoke();
             IsPlaying = true;
             ChangeMainPlayerState(_savedPausedState, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.HUD));
             ModuleManager.Instance.ClearNavigationHistoric();
+            OnResumed?.Invoke();
         }
 
         public void EndLevel()
@@ -233,21 +259,36 @@ namespace BHR
             }
         }
 
-        public void Respawning() => StartCoroutine(RespawnPlayer(GameSettings.RespawningDuration));
+        public void Respawning()
+        {
+            ApplyRespawn();
+            //Coroutine respawnPlayer = StartCoroutine(RespawnPlayerAnimation(() => ApplyRespawn()));
+        }
 
-        IEnumerator RespawnPlayer(float duration)
+        private void ApplyRespawn()
+        {
+            OnRespawned?.Invoke();
+            //ModuleManager.Instance.LaunchTransitionAnimation(false, GameSettings.RespawningDuration / 2f);
+            //_isRespawning = false;
+            //Invoke("Play", GameSettings.RespawningDuration / 2f);
+        }
+
+        private void Play() => IsPlaying = true;
+
+        IEnumerator RespawnPlayerAnimation(Action onComplete = null)
         {
             float transitionDuration = GameSettings.RespawningDuration / 2f;
             IsPaused = true;
             _isRespawning = true;
             ModuleManager.Instance.LaunchTransitionAnimation(true, transitionDuration);
-            yield return new WaitForSeconds(transitionDuration);
-            CheckpointsManager.Instance.ReplacePlayer();
-            OnRespawn?.Invoke();
-            ModuleManager.Instance.LaunchTransitionAnimation(false, transitionDuration);
-            yield return new WaitForSeconds(transitionDuration);
-            _isRespawning = false;
-            IsPlaying = true;
+            yield return new WaitForSeconds(transitionDuration + 0.5f);
+            onComplete?.Invoke();
+            //CheckpointsManager.Instance.ReplacePlayer();
+            //OnRespawn?.Invoke();
+            //ModuleManager.Instance.LaunchTransitionAnimation(false, transitionDuration);
+            //yield return new WaitForSeconds(transitionDuration);
+            //_isRespawning = false;
+            //IsPlaying = true;
         }
 
         public void LoadTutorielData(TutorielData data)
@@ -301,24 +342,27 @@ namespace BHR
         }
 
 
-        public bool isSlowed = true;
+        public bool isTimeSlowed = true;
         public bool isSlowMotionSequenceFinished = false;
         public bool isSlowMotionSequenceStarted = false;
-        public IEnumerator SlowmotionSequence()
+
+        public IEnumerator SlowmotionSequence(float inDuration, float outDuration)
         {
             if (!isSlowMotionSequenceStarted)
             {
                 isSlowMotionSequenceStarted = true;
-                isSlowed = true;
+                isTimeSlowed = true;
                 isSlowMotionSequenceFinished = false;
 
-                StartCoroutine(ChangeTimeScale(GameManager.Instance.GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, CharactersManager.Instance.GameplayData.TriggerAimDuration));
+                StartCoroutine(ChangeTimeScale(GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, inDuration));
 
                 //Wait until isSlowed becomes false
-                yield return new WaitUntil(() => isSlowed == false);
+                yield return new WaitUntil(() => isTimeSlowed == false);
 
-                StartCoroutine(ChangeTimeScale(GameManager.Instance.GameTimeScale, 1f, CharactersManager.Instance.GameplayData.TriggerAimDuration));
-
+                StopCoroutine(ChangeTimeScale(GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, inDuration));
+                GameTimeScale = CharactersManager.Instance.GameplayData.TargetAimTimeScale;
+                StartCoroutine(ChangeTimeScale(GameTimeScale, 1f, outDuration));
+                GameTimeScale = 1f;
                 isSlowMotionSequenceFinished = true;
             }
         }
@@ -329,13 +373,14 @@ namespace BHR
 
             while (elapsed < duration)
             {
-                _gameTimeScale = Mathf.Lerp(start, end, elapsed / duration);
+                GameTimeScale = Mathf.Lerp(start, end, elapsed / duration);
                 //Time.fixedDeltaTime = Time.timeScale * 0.02f;// ? que faire
+                //Time.timeScale = _gameTimeScale;
                 elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }
 
-            _gameTimeScale = end;
+            GameTimeScale = end;
         }
 
         #endregion

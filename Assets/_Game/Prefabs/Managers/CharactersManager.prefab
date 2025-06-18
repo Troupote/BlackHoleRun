@@ -89,6 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_singularityPreviewPrefab: {fileID: 2938045941139767026, guid: a0aeb4bb8c678fe4a97a1dc1cc3de2de, type: 3}
+  m_shaderColorController: {fileID: 7006791435193080453, guid: a0aeb4bb8c678fe4a97a1dc1cc3de2de, type: 3}
 --- !u!1 &1439793360169082399
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,7 +138,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_characterPrefab: {fileID: 4458174275016469787, guid: 82e7f987ce0e31e4a935311e5b410ea4, type: 3}
   m_singularityPrefab: {fileID: 2938045941139767026, guid: df3099e18e29c6048a76f111051f5ad7, type: 3}
-  m_singularityPreviewPrefab: {fileID: 0}
   m_gameplayData: {fileID: 11400000, guid: bab024fbbe50866409ddc44d8a098e36, type: 2}
   <LimitPlayersMovements>k__BackingField: {fileID: 7733766357271388743}
   <SingularityPreviewController>k__BackingField: {fileID: 6304412475196270084}

@@ -28,12 +28,19 @@ Tu peux changer le mode de visée (Maintenir ou Basculer) dans les paramètres.
 Quand tu vises, tu déformes l'espace-temps ce qui te permet de ralentir et concentrer ton tir.","You can also aim without throwing the Singularity on release.
 You can change the aim mode (Hold or Toggle) in settings.
 When you aim, you distort space-time, allowing you to slow down and concentrate your shot."
+M/T/GoBeyond,Plus loin !,Go beyond !
+M/T/GoBeyondDesc,"Tu peux viser et lancer la singularité à n'importe quel moment, même après avoir sauter et dasher !","You can aim and throw the singularity at any time, even after jumping and dashing !"
 M/T/UnmorphDesc,"Quand tu es en Singularité après avoir été lancée, tu peux en jaillir avec un saut ou un dash.
 Cela qui te permet d'aller plus haut ou plus loin, avec plus de contrôle !
 Cependant, tes actions sont contraintes par le lanceur : si ce dernier avait déjà sauté ou dashé, tu ne pourras pas jaillir de la singularité en sautant ou dashant.
-Dans tous les cas, la Singularité s'arrête au bout d'un certain temps ou si elle se cogne contre un astéroïde.
+Dans tous les cas, la Singularité s'arrête au bout d'un certain temps ou en se cognant contre un astéroïde.
 Vous avez toutes les informations nécéssaire, maintenant, élancez-vous pour atteindre le bout de cette ceinture à temps pour sauver ces planètes de leur collision !","When you are in Singularity after been throwed, you can unmorph from it by jumping or dashing.
 This let you go higher or farther with more control !
 However, your actions are constrained by the thrower : if this one already has jumped or dashed, you won't be able to jump or dash.
 In every case, the Singularity will stop after a certain amount of time or if it hits an asteroid.
 You now have all the information you need, so, take off and reach the end of this belt in time to save those planets from colliding !"
+M/T/Restart,Recommencer (maintenir),Restart (hold)
+M/T/RestartDesc,Tu peux recommencer le niveau depuis le menu pause mais aussi de manière rapide en maintenant cette touche.,You can restart level from pause menu but also faster by holding this input.
+M/T/Respawn,Réapparaître (double click),Respawn (double tap)
+M/T/RespawnDesc,Tu peux réapparaître au dernier checkpoint en double cliquant sur cette touche.,You can respawn at last checkpoint by double tap this input.
+M/T/PauseDesc,Met le jeu en pause à n'importe quel moment !,Pause the game at anytime !

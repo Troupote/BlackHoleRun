@@ -30,8 +30,8 @@ public class EndLevelModuleUI : MonoBehaviour
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] Button _rightArrowButton;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] Button _leftArrowButton;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _hideScale;
-    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _hideMove;
-    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _revealMove;
+    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _hideMovePercents;
+    [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _revealMovePercents;
     [SerializeField, Required, FoldoutGroup("Medals/Settings")] private float _switchDuration;
 
     [SerializeField, Required, FoldoutGroup("Localization")] private string _newBestLocalizationKey;
@@ -127,7 +127,8 @@ public class EndLevelModuleUI : MonoBehaviour
         {
             Transform medal = _medalsSpriteParent.GetChild(i);
             bool becomingDisplayed = _currentMedalDisplayed-1== i;
-            medal.DOMove(medal.position - move * new Vector3(becomingDisplayed || _currentMedalDisplayed-move-1==i ? _revealMove : _hideMove,0f), _switchDuration);
+            float canvasWidth = ModuleManager.Instance.transform.localScale.x * ModuleManager.Instance.GetComponent<RectTransform>().rect.width;
+            medal.DOMove(medal.position - move * new Vector3(becomingDisplayed || _currentMedalDisplayed-move-1==i ? _revealMovePercents : _hideMovePercents,0f) * canvasWidth, _switchDuration);
             medal.DOScale(becomingDisplayed ? 1f : _hideScale, _switchDuration);
         }
         ActivateButtons();

@@ -1,3 +1,4 @@
+using BHR;
 using UnityEngine;
 
 public class NewSingularityPreviewController : MonoBehaviour
@@ -6,6 +7,8 @@ public class NewSingularityPreviewController : MonoBehaviour
     private GameObject m_singularityPreviewPrefab;
 
     private GameObject m_currentPreviewObject;
+
+    private SingularityShaderColorController m_shaderColorController;
 
     private void Start()
     {
@@ -25,8 +28,13 @@ public class NewSingularityPreviewController : MonoBehaviour
         if (m_currentPreviewObject != null)
         {
             Destroy(m_currentPreviewObject);
+            m_shaderColorController = null;
         }
         m_currentPreviewObject = Instantiate(m_singularityPreviewPrefab, a_characterPosition.position, Quaternion.identity);
+
+        m_shaderColorController = m_currentPreviewObject.GetComponent<SingularityShaderColorController>();
+
+        m_shaderColorController.SetPlayerColors(GameManager.Instance.ActivePlayerIndex == 0 ? false : true);
     }
 
     /// <summary>

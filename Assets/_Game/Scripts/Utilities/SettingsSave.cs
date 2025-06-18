@@ -11,7 +11,7 @@ namespace BHR
         private const string LANGUAGE_KEY = "Language"; public const string DEFAULT_LANGUAGE = "English"; public const string START_LANGUAGE = "";
         private const string MASTER_VOLUME_KEY = "MasterVolume"; private const float DEFAULT_MASTER_VOLUME = 0.5f;
         private const string MUSIC_VOLUME_KEY = "MusicVolume"; private const float DEFAULT_MUSIC_VOLUME = 0.5f;
-        private const string MASTER_SOUND_KEY = "MasterVolume"; private const float DEFAULT_SOUND_VOLUME = 0.5f;
+        private const string SOUND_VOLUME_KEY = "MasterVolume"; private const float DEFAULT_SOUND_VOLUME = 0.5f;
         #endregion
 
         #region Users settings keys and default values
@@ -35,11 +35,11 @@ namespace BHR
         public static string LoadLanguage() => PlayerPrefs.GetString(LANGUAGE_KEY, START_LANGUAGE);
 
         public static void SaveMasterVolume(float value = DEFAULT_MASTER_VOLUME) => PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, value);
-        public static float LoadMasterVolume() => PlayerPrefs.GetFloat(MASTER_SOUND_KEY, DEFAULT_MASTER_VOLUME);
+        public static float LoadMasterVolume() => PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, DEFAULT_MASTER_VOLUME);
         public static void SaveMusicVolume(float value = DEFAULT_MUSIC_VOLUME) => PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, value);
         public static float LoadMusicVolume() => PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, DEFAULT_MUSIC_VOLUME);
-        public static void SaveSoundsVolume(float value = DEFAULT_SOUND_VOLUME) => PlayerPrefs.GetFloat(MASTER_SOUND_KEY, DEFAULT_SOUND_VOLUME);
-        public static float LoadSoundsVolume() => PlayerPrefs.GetFloat(MASTER_SOUND_KEY, DEFAULT_SOUND_VOLUME);
+        public static void SaveSoundsVolume(float value = DEFAULT_SOUND_VOLUME) => PlayerPrefs.GetFloat(SOUND_VOLUME_KEY, DEFAULT_SOUND_VOLUME);
+        public static float LoadSoundsVolume() => PlayerPrefs.GetFloat(SOUND_VOLUME_KEY, DEFAULT_SOUND_VOLUME);
 
         #endregion
 
