@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 namespace BHR
 {
@@ -374,6 +375,7 @@ namespace BHR
             {
                 GameTimeScale = Mathf.Lerp(start, end, elapsed / duration);
                 //Time.fixedDeltaTime = Time.timeScale * 0.02f;// ? que faire
+                //Time.timeScale = _gameTimeScale;
                 elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }

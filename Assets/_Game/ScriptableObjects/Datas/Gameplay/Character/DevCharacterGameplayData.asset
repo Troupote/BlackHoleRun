@@ -46,7 +46,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   m_maxDistanceBetweenPlayers: 100
-  m_activateMovementsLimit: 1
+  m_activateMovementsLimit: 0
   m_throwForce: 30
   m_movingCurveForce: 10
   m_DashForce: 30
@@ -55,8 +55,9 @@ MonoBehaviour:
   m_timeTakenToGoToCenter: 0.05
   m_gravityDelayDuration: 0.5
   m_gravityMultiplier: 2
-  m_playerSpeed: 35
-  m_jumpForce: 35
+  m_playerSpeed: 40
+  m_jumpForce: 10
+  m_jumpDuration: 1.6
   m_coyotteTime: 0.15
   m_dashForce: 200
   m_dashDuration: 0.2

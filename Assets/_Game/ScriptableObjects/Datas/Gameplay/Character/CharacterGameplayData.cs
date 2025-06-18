@@ -67,20 +67,24 @@ public class CharacterGameplayData : ScriptableObject
     private float m_playerSpeed = 30f;
     public float PlayerSpeed => m_playerSpeed;
 
-    [SerializeField, PropertyOrder(3)]
-    private float m_jumpForce = 12f;
+    [SerializeField]
+    private float m_jumpForce = 8f;
     public float JumpForce => m_jumpForce;
 
-    [SerializeField, PropertyOrder(3)]
+    [SerializeField]
+    private float m_jumpDuration = 1.6f;
+    public float JumpDuration => m_jumpDuration;
+
+    [SerializeField]
     private float m_coyotteTime = 0.15f;
     public float CoyotteTime => m_coyotteTime;
 
-    [SerializeField, PropertyOrder(3)]
-    private float m_dashForce = 5f;
+    [SerializeField]
+    private float m_dashForce = 1f;
     public float DashForce => m_dashForce;
 
-    [SerializeField, PropertyOrder(3)]
-    private float m_dashDuration;
+    [SerializeField]
+    private float m_dashDuration = 1f;
     public float DashDuration => m_dashDuration;
 
     [SerializeField, PropertyOrder(3)]
