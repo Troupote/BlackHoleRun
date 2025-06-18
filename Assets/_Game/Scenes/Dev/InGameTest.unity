@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 59e3905006518e4459dc0f2a03ba69a3, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1317,7 +1317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d7dbf18ee2f534cae8195045fda073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <MainCamBrain>k__BackingField: {fileID: 1247988108}
+  <MainCam>k__BackingField: {fileID: 1247988107}
   <PlayerCam>k__BackingField: {fileID: 357607459}
   <SingularityCam>k__BackingField: {fileID: 992702904}
   <SingularityPlacementRefTransform>k__BackingField: {fileID: 223187506}
@@ -3186,7 +3186,7 @@ GameObject:
   - component: {fileID: 1371679371}
   - component: {fileID: 1371679370}
   m_Layer: 6
-  m_Name: Cube (8)
+  m_Name: Sarah Sekraoui
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4375,25 +4375,33 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1155192829}
+    - target: {fileID: 477528519769724985, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2263823960019498126, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1670679979}
     - target: {fileID: 2308173344833074178, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2308173344833074178, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2308173344833074178, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1.99
       objectReference: {fileID: 0}
     - target: {fileID: 2308173344833074178, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.9950001
       objectReference: {fileID: 0}
     - target: {fileID: 2308173344833074178, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4168045254367972388, guid: c46bf86db2468e748a88a760fb86a7a1, type: 3}
       propertyPath: m_Mesh

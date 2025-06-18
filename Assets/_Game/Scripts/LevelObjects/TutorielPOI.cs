@@ -38,6 +38,9 @@ namespace BHR
 
         private void OnTriggerEnter(Collider other)
         {
+#if UNITY_EDITOR
+            if (DebugManager.Instance.DisableTutorielPopup) return;
+#endif
             // @todo remove tuto if level completed ? -> make a settings option ?
             if(other.CompareTag("Player") && !_isOn)
             {
@@ -54,6 +57,8 @@ namespace BHR
                 GameManager.Instance.OnMainPlayerStateChanged.AddListener((newState, hasSwitched) => CheckComposite());
                 CheckComposite();
             }
+
+            GameManager.Instance.OnTutorielSet.AddListener(gameObject.SetActive);
         }
 
         private void ToggleUI(bool enabled)

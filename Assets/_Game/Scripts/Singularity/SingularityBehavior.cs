@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using BHR;
 using Cinemachine;
@@ -14,6 +15,9 @@ public class SingularityBehavior : MonoBehaviour
     [field: SerializeField]
     internal SingularityCharacterFollowComponent SingularityCharacterFollowComponent { get; private set; } = null;
 
+    [field: SerializeField]
+    internal SingularityShaderColorController ShaderColorController;
+
     public Action OnThrowPerformed;
     public Action OnUnmorph;
     public Action<Vector3> OnJump;
@@ -28,76 +32,157 @@ public class SingularityBehavior : MonoBehaviour
 
         SingularityCharacterFollowComponent.InititializeDependencies(this.transform, m_rigidbody);
 
+        ListenToEvents();
+
         m_isInitialized = true;
     }
+
+    public void ListenToEvents()
+    {
+        GameManager.Instance.OnPaused.AddListener(OnPaused);
+        GameManager.Instance.OnResumed.AddListener(OnResume);
+    }
+
+    public void UnlistenToEvents()
+    {
+        GameManager.Instance.OnPaused.RemoveListener(OnPaused);
+        GameManager.Instance.OnResumed.RemoveListener(OnResume);
+    }
+
+    #region On Pause
+
+    private bool m_isPaused = false;
+    private Vector3 m_oldVelocity;
+    private Vector3 m_oldAngularVelocity;
+
+    private void OnPaused()
+    {
+        if (SingularityCharacterFollowComponent.IsPickedUp) return;
+
+        m_isPaused = true;
+
+        m_oldVelocity = m_rigidbody.linearVelocity;
+        m_oldAngularVelocity = m_rigidbody.angularVelocity;
+        m_rigidbody.isKinematic = true;
+    }
+
+    private void OnResume()
+    {
+        if (SingularityCharacterFollowComponent.IsPickedUp) return;
+
+        if (CharactersManager.Instance.IsCurrentlySwitching)
+            return;
+
+        m_rigidbody.isKinematic = false;
+        m_rigidbody.linearVelocity = m_oldVelocity;
+        m_rigidbody.angularVelocity = m_oldAngularVelocity;
+
+        m_isPaused = false;
+    }
+
+    #endregion
 
     #region Life Cycle
 
     private void FixedUpdate()
     {
-        if (!m_isInitialized) return;
+        if (!m_isInitialized || m_isPaused) return;
 
         HandleThrowCurve();
+
     }
 
     #endregion
 
-    internal bool IsAllowedToBeThrown => SingularityCharacterFollowComponent.IsKinematicEnabled();
+    internal bool IsAllowedToBeThrown => SingularityCharacterFollowComponent.IsPickedUp;
 
     #region Move
     public void Move(Vector2 a_movementValue)
     {
-        float moveX = a_movementValue.x;
-
         if (a_movementValue.x == 0) return;
 
-        Vector3 curveDirection = transform.right * moveX;
+        Vector3 velocity = m_rigidbody.linearVelocity;
+        if (velocity.sqrMagnitude < 0.01f) return;
 
-        m_rigidbody.AddForce(curveDirection.normalized * CharactersManager.Instance.GameplayData.MovingCurveForce, ForceMode.Force);
+        Vector3 forwardDir = velocity.normalized;
+        Vector3 rightDir = Vector3.Cross(Vector3.up, forwardDir).normalized;
+
+        // Apply curve force
+        Vector3 curveForce = rightDir * a_movementValue.x * CharactersManager.Instance.GameplayData.MovingCurveForce;
+
+        m_rigidbody.AddForce(curveForce, ForceMode.Force);
     }
+
 
     #endregion
 
     #region Throw
 
-    [SerializeField]
-    private AnimationCurve m_verticalVelocityCurve;
-    [SerializeField]
-    private float m_curveDuration = 2f;
     private bool m_isThrown = false;
     private float m_throwTime = 0f;
+    private Coroutine m_alignAndThrowCoroutine = null;
 
     public void OnThrow()
     {
+        Debug.Log("SThrow performed");
         SingularityCharacterFollowComponent.PickupSingularity(false);
 
         Vector3 throwDirection = CameraManager.Instance.MainCam.transform.forward;
 
-        m_rigidbody.AddForce(throwDirection * m_gameplayData.ThrowForce, ForceMode.Impulse);
+        m_alignAndThrowCoroutine = StartCoroutine(AlignAndThrow(throwDirection));
 
         m_throwTime = 0f;
-
         OnThrowPerformed?.Invoke();
     }
 
+    private IEnumerator AlignAndThrow(Vector3 direction)
+    {
+        m_rigidbody.isKinematic = true;
+
+        float elapsedTime = 0f;
+
+        Vector3 startPos = transform.position;
+        Vector3 targetPos = CameraManager.Instance.MainCam.transform.position + direction * m_gameplayData.ThrowingCenterDistanceMultiplier;
+
+        while (elapsedTime < m_gameplayData.TimeTakenToGoToCenter)
+        {
+            transform.position = Vector3.Lerp(startPos, targetPos, elapsedTime / m_gameplayData.TimeTakenToGoToCenter);
+            elapsedTime += Time.deltaTime * GameManager.Instance.GameTimeScale;
+            yield return null;
+        }
+
+        transform.position = targetPos;
+
+        m_rigidbody.isKinematic = false;
+        m_rigidbody.AddForce(direction * m_gameplayData.ThrowForce, ForceMode.Impulse);
+    }
+
+
     private void HandleThrowCurve()
     {
-        if (SingularityCharacterFollowComponent.IsKinematicEnabled()) return;
+        if (SingularityCharacterFollowComponent.IsPickedUp) return;
 
-        m_throwTime += Time.fixedDeltaTime;
-        float normalizedTime = m_throwTime / m_curveDuration;
+        //Debug.Log("Handling Throw Curve for Singularity");
 
         Vector3 velocity = m_rigidbody.linearVelocity;
 
-        velocity.y += Physics.gravity.y * Time.fixedDeltaTime;
+        if (m_throwTime >= m_gameplayData.GravityDelayDuration)
+        {
+            velocity.y += Physics.gravity.y * Time.fixedDeltaTime * m_gameplayData.GravityMultiplier;
+            m_rigidbody.linearVelocity = velocity;
+        }
 
-        /* Useless for the moment, idk yet
-        float verticalMultiplier = m_verticalVelocityCurve.Evaluate(normalizedTime);
-        velocity.y *= verticalMultiplier;
-        */
+        m_throwTime += Time.fixedDeltaTime;
+
+        /*
+        var curveParam = m_gameplayData.GravityCurveMultiplier.Evaluate(m_throwTime / m_gameplayData.GravityDelayDuration);
+
+        velocity.y += Physics.gravity.y * Time.fixedDeltaTime * curveParam;
 
         m_rigidbody.linearVelocity = velocity;
 
+        Debug.DrawRay(transform.position, Vector3.down * curveParam, Color.blue, 0.1f);
+        */
     }
     #endregion
 
@@ -105,6 +190,9 @@ public class SingularityBehavior : MonoBehaviour
 
     public void Jump()
     {
+        if (CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Jump) ||
+            CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth()) return;
+
         OnJump?.Invoke(m_rigidbody.linearVelocity);
     }
 
@@ -114,6 +202,9 @@ public class SingularityBehavior : MonoBehaviour
 
     public void Dash()
     {
+        if (CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Dash) ||
+            CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth()) return;
+
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
         Vector3 dashDir = cam.forward;
@@ -125,15 +216,48 @@ public class SingularityBehavior : MonoBehaviour
 
     #endregion
 
+    private bool m_ignoreUnmorph = false;
+
+    public void SetIgnoreCollision(bool shouldIgnore)
+    {
+        m_ignoreUnmorph = shouldIgnore;
+        m_rigidbody.detectCollisions = !shouldIgnore;
+    }
+
+
     #region Collision Detection
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (SingularityCharacterFollowComponent.IsKinematicEnabled() || CharactersManager.Instance.SingularityMovingToCharacter) return;
+        if (SingularityCharacterFollowComponent.IsPickedUp || m_ignoreUnmorph) return;
+
+        if (m_alignAndThrowCoroutine != null)
+        {
+            StopCoroutine(m_alignAndThrowCoroutine);
+            m_alignAndThrowCoroutine = null;
+        }
 
         m_isThrown = false;
         OnUnmorph?.Invoke();
     }
 
-    #endregion
+    public bool IsOverlapping()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, 1f, ~0, QueryTriggerInteraction.Ignore);
+        foreach (var hit in hits)
+        {
+            if (hit.attachedRigidbody != m_rigidbody) // ignore self
+                return true;
+        }
+        return false;
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 1f);
+    }
+#endif
+#endregion
 }

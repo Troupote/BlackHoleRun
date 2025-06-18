@@ -18,6 +18,10 @@ namespace BHR
         [SerializeField, ReadOnly] private bool _canConnect; // Enable the ControllerSelection 
         public bool CanConnect { get => _canConnect; set => _canConnect = value; }
 
+
+        // Hard fix bug stuff don't mind
+        private bool _hasToCheckDevice = false; private const float _checkDeviceWindow = 0.05f; private InputDevice _lastDeviceConnected;
+
         [SerializeField, ReadOnly] private bool _reconnecting = false;
 
         // Players managing
@@ -36,14 +40,20 @@ namespace BHR
             }
         }
 
-        public InputDevice CurrentAllowedDevice => CurrentAllowedInput switch
+        public InputDevice CurrentAllowedDevice => CurrentAllowedPlayerInput?.devices[0];
+
+        public InputDevice CurrentActivePlayerDevice => CurrentActivePlayerInput.devices[0];
+        public PlayerControllerState CurrentActiveControllerState => PlayersControllerState[GameManager.Instance.ActivePlayerIndex];
+
+        public PlayerInput CurrentActivePlayerInput => PlayersInputControllerRef[GameManager.Instance.ActivePlayerIndex].GetComponent<PlayerInput>();
+        public PlayerInput CurrentAllowedPlayerInput => CurrentAllowedInput switch
         {
-            AllowedPlayerInput.FIRST_PLAYER => PlayersInputControllerRef[0].GetComponent<PlayerInput>().devices[0],
-            AllowedPlayerInput.SECOND_PLAYER => PlayersInputControllerRef[1].GetComponent<PlayerInput>().devices[0],
+            AllowedPlayerInput.FIRST_PLAYER => PlayersInputControllerRef[0].GetComponent<PlayerInput>(),
+            AllowedPlayerInput.SECOND_PLAYER => PlayersInputControllerRef[1].GetComponent<PlayerInput>(),
             _ => null
         };
 
-        public InputDevice CurrentActivePlayerDevice => PlayersInputControllerRef[GameManager.Instance.ActivePlayerIndex].GetComponent<PlayerInput>().devices[0];
+        private bool _isOnlyOnePlayerInputsAllowed = false;
 
 #if UNITY_EDITOR
         [Button] private void ForceAllowedInputState(AllowedPlayerInput state) => CurrentAllowedInput = state;
@@ -111,6 +121,9 @@ namespace BHR
         #region Input management
         public void HandleInput(InputAction.CallbackContext ctx, int playerIndex)
         {
+            if(RebindInputsManager.Instance.IsRebinding)
+                return;
+
             string actionMap = ctx.action.actionMap.name;
             //Debug.Log($"Player in {actionMap} state has {ctx.phase} {ctx.action.name} with {ctx.control.device.name}");
 
@@ -142,7 +155,7 @@ namespace BHR
         public UnityEvent OnHJump, OnHDash, OnHSlide, OnHThrow, OnSJump, OnSDash, OnSUnmorph, OnPause, OnIReconnect; // Performed events
         public UnityEvent<Vector2> OnHMove, OnSMove; // Vector2 value events
         public UnityEvent<Vector2, PlayerControllerState> OnHLook, OnSLook; // Vector2 value events depending of the controller used
-        public UnityEvent OnHAim; // Multiple callbacks events (Hold throw, Hold/toggle aim)
+        public UnityEvent<bool> OnHAim; // Multiple callbacks events (Hold throw, Hold/toggle aim)
         public UnityEvent OnRestartLevel, OnRespawn; // Interactions performed events
 
         private void SendInputEvent(InputAction.CallbackContext ctx, int playerIndex)
@@ -193,7 +206,7 @@ namespace BHR
                 }
 
                 else if (ctx.action.name == InputActions.Aim && (ctx.performed || ctx.canceled && SettingsSave.LoadToggleAim(CurrentActivePlayerDevice) == 0) || ctx.action.name == InputActions.Throw && ctx.canceled)
-                    OnHAim.Invoke();
+                    OnHAim.Invoke(ctx.action.name == InputActions.Throw && ctx.canceled);
 
                 if (ctx.performed)
                 {
@@ -203,8 +216,8 @@ namespace BHR
                     else if (ctx.action.name == InputActions.Dash)
                         OnHDash.Invoke();
 
-                    else if (ctx.action.name == InputActions.Slide)
-                        OnHSlide.Invoke();
+                    //else if (ctx.action.name == InputActions.Slide)
+                    //    OnHSlide.Invoke();
 
                     else if (ctx.action.name == InputActions.Throw)
                         OnHThrow.Invoke();
@@ -248,8 +261,8 @@ namespace BHR
                     else if (ctx.action.name == InputActions.Dash)
                         OnSDash.Invoke(); // @todo link to singularity dash action
 
-                    else if (ctx.action.name == InputActions.Unmorph)
-                        OnSUnmorph.Invoke(); // @todo link to singularity unmorph action (if any)
+                    //else if (ctx.action.name == InputActions.Unmorph)
+                    //    OnSUnmorph.Invoke(); // @todo link to singularity unmorph action (if any)
                 }
             }
 
@@ -262,11 +275,11 @@ namespace BHR
 
         private void SetAllowedInput(int playerIndex, bool disconnecting)
         {
-            if (ModuleManager.Instance.CurrentModule != ModuleManager.Instance.GetModule(ModuleType.MAP_REBINDING))
+            //if (ModuleManager.Instance.CurrentModule != ModuleManager.Instance.GetModule(ModuleType.MAP_REBINDING))
             {
                 if(PlayerConnectedCount() == 0)
                     CurrentAllowedInput = AllowedPlayerInput.NONE;
-                else if (PlayerConnectedCount() == 1)
+                else if (PlayerConnectedCount() == 1 || _isOnlyOnePlayerInputsAllowed)
                     CurrentAllowedInput = playerIndex == 0 || disconnecting ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.SECOND_PLAYER;
                 else if (PlayerConnectedCount() == 2)
                     CurrentAllowedInput = AllowedPlayerInput.BOTH;
@@ -277,12 +290,13 @@ namespace BHR
         {
             if(enable)
             {
-                CurrentAllowedInput = LastPlayerIndexUIInput == 0 || PlayersInputControllerRef.Length <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.SECOND_PLAYER;
+                CurrentAllowedInput = LastPlayerIndexUIInput == 0 || PlayerConnectedCount() <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.SECOND_PLAYER;
             }
             else
             {
-                CurrentAllowedInput = PlayersInputControllerRef.Length <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.BOTH;
+                CurrentAllowedInput = PlayerConnectedCount() <= 1 ? AllowedPlayerInput.FIRST_PLAYER : AllowedPlayerInput.BOTH;
             }
+            _isOnlyOnePlayerInputsAllowed = enable;
         }
 
         public void ToggleCurrentAllowedInput()
@@ -298,10 +312,23 @@ namespace BHR
         #region Connect and disconncect gestion
         public void OnPlayerJoined(PlayerInput playerInput)
         {
-            // Resolve switch bug
-            RemoveSwitchXInput(playerInput.devices[0]);
+            // Resolve switch bug hard fix
+            if(_hasToCheckDevice)
+                CheckDevice(playerInput.devices[0]);
+            else
+            {
+                _hasToCheckDevice = true;
+                Invoke("DisableCheckDevice", _checkDeviceWindow);
+            }
 
-            if(PlayerConnectedCount()>=2 || !AssignPlayerIndex(playerInput)) // Max players connected at the same time
+            _lastDeviceConnected = playerInput.devices[0];
+#if UNITY_EDITOR
+            if (DebugManager.Instance.DisplayDeviceData)
+               Debug.Log(GetDevicesData(playerInput.devices[0]));
+#endif
+
+
+            if (PlayerConnectedCount()>=2 || !AssignPlayerIndex(playerInput)) // Max players connected at the same time
             {
                 Destroy(playerInput.gameObject);
                 return;
@@ -555,22 +582,51 @@ namespace BHR
         }
         #endregion
 
-        #region Hard Fix Switch twice controllers bug
-        private void RemoveSwitchXInput(InputDevice device)
+        #region Authorized devices gestion
+        private void CheckDevice(InputDevice device)
         {
-            if (IsUnwantedXInput(device))
+            int removeDeviceOutput = IsUnwantedXInput(device);
+            switch(removeDeviceOutput)
             {
-                Debug.LogWarning($"Removing duplicate XInput device: {device.displayName}");
-                InputSystem.RemoveDevice(device);
+                case 1:
+                    Debug.LogWarning($"Removing duplicate XInput device: {device.displayName}");
+                    InputSystem.RemoveDevice(device);
+                    break;
+                case 2:
+                    Debug.LogWarning($"Removing duplicate XInput device: {_lastDeviceConnected.displayName}");
+                    InputSystem.RemoveDevice(_lastDeviceConnected);
+                    break;
             }
         }
 
-        bool IsUnwantedXInput(InputDevice device)
+        int IsUnwantedXInput(InputDevice device)
         {
-            var desc = device.description;
-            return desc.interfaceName == "XInput" &&
-                   !desc.product.ToLower().Contains("xbox");
+            var CDdesc = device.description;
+            var LDdesc = _lastDeviceConnected.description;
+            if (CDdesc.interfaceName == "XInput" && !CDdesc.product.ToLower().Contains("xbox") && _lastDeviceConnected.name.ToLower().Contains("switchprocontroller"))
+                return 1;
+            else if (_lastDeviceConnected.name.ToLower().Contains("switchprocontroller") && !LDdesc.product.ToLower().Contains("xbox") && LDdesc.interfaceName == "XInput")
+                return 2;
+            return 0;
         }
+
+        private void DisableCheckDevice() => _hasToCheckDevice = false;
+
+#if UNITY_EDITOR
+        private string GetDevicesData(InputDevice device) => $"--- INPUT DEVICE ---\n" +
+                  $"Name: {device.name}\n" +
+                  $"Display Name: {device.displayName}\n" +
+                  $"Layout: {device.layout}\n" +
+                  //$"Device Parent Name: {device.parent.name}\n" +
+                  $"Device Id: {device.deviceId}\n" +
+                  $"Description: {device.description}\n" +
+                  $"DescriptionInterface: {device.description.interfaceName}\n" +
+                  $"DescriptionManufacturer: {device.description.manufacturer}\n" +
+                  $"DescriptionProduct: {device.description.product}\n" +
+                  $"DescriptionSerial: {device.description.serial}\n" +
+                  $"Usages: {string.Join(", ", device.usages)}\n" +
+                  $"Path: {device.path}\n";
+#endif
         #endregion
     }
 

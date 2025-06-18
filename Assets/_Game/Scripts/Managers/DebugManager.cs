@@ -10,33 +10,46 @@ namespace BHR
         [SerializeField, Tooltip("Enable DebugManager")]
         private bool _debug;
 
-        [Header("Debug Keyboard Shortcuts"), Tooltip("Set true to enable keyboard debug shortcuts"), SerializeField]
+        [Header("Debug Keyboard Shortcuts"), Tooltip("Set true to enable keyboard debug shortcuts"), SerializeField, ShowIf(nameof(_debug))]
         private bool _enableDebugKeyboardShortcuts;
         public bool DebugKeyboardShortcutsEnabled => _enableDebugKeyboardShortcuts && _debug;
 
+        [Header("Unlocker"), SerializeField]
+        private bool _unlockedAllLevels;
+        public bool UnlockedAllLevels => _unlockedAllLevels && _debug;
+
         [Header("HUD"), Tooltip("Enable/Disable start animation"), ShowIf(nameof(_debug)), SerializeField]
         private bool _disableStartAnimation;
-
         public bool DisableStartAnimation => _disableStartAnimation && _debug;
 
-        [Header("InGame"), Tooltip("Enable/disable phase/checkpoint data text"), ShowIf(nameof(_debug)), SerializeField]
-        private bool _enableCheckpointInfosText;
-        [SerializeField, Required, ShowIf(nameof(_debug))]
-        private TextMeshProUGUI _checkpointHUDInfosText; 
-        public TextMeshProUGUI CheckpointHUDInfosText => _checkpointHUDInfosText;
-        public bool CheckpointInfosTextEnabled => _enableCheckpointInfosText && _debug;
+        [Header("InGame")]
+        [SerializeField]
+        private bool _forceTutoriel;
+        public bool ForceTutoriel => _forceTutoriel && _debug;
+        [SerializeField, ShowIf(nameof(_debug))]
+        private bool _disableTutorielPopup = false;
+        public bool DisableTutorielPopup => _disableTutorielPopup && _debug;
+        [SerializeField, ShowIf(nameof(_debug))]
+        private bool _immortal;
+        public bool Immortal => _immortal && _debug;
+        [SerializeField, ShowIf(nameof(_debug))]
+        private bool _singularityInstantComeback;
+        public bool SingularityInstantComeback => _singularityInstantComeback && _debug;
+        [SerializeField, ShowIf(nameof(_debug))]
+        private bool _deadzonesPreview;
+        public bool DeadzonesPreview => _deadzonesPreview && _debug;
+
+
+        [Header("Inputs"), SerializeField, ShowIf(nameof(_debug))]
+        private bool _displayDeviceData;
+        public bool DisplayDeviceData => _displayDeviceData && _debug;
+        [SerializeField, ShowIf(nameof(_debug))]
+        private bool _showControllerKeyinRebinding;
+        public bool ShowControllerKeyinRebinding => _showControllerKeyinRebinding && _debug;
 
         private void Start()
         {
-            transform.GetChild(0).gameObject.SetActive(_debug);
-            ModuleManager.Instance.OnModuleEnabled.AddListener(OnModuleEnabled);
-        }
-
-        private void OnModuleEnabled(GameObject module, bool withBack)
-        {
-            if (CheckpointInfosTextEnabled && CheckpointHUDInfosText != null)
-                CheckpointHUDInfosText.gameObject.SetActive(ModuleManager.Instance.ModulesRef[module] == ModuleType.HUD);
-           
+            //transform.GetChild(0).gameObject.SetActive(_debug);
         }
     }
 }

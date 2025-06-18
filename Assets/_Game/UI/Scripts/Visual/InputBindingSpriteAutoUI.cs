@@ -14,7 +14,6 @@ namespace BHR
         private bool _inGame = false;
         [SerializeField, ShowIf(nameof(_hasCompositeElement))]
         private bool _useComposite;
-        protected enum DirectionComposite {NONE, up, right, down, left}
         [SerializeField, ShowIf(nameof(_useComposite)), ValidateInput(nameof(_directionIsNotNone))]
         private DirectionComposite _directionOfComposite = DirectionComposite.NONE;
         public InputBindingComposite test;
@@ -42,7 +41,10 @@ namespace BHR
             if (_inGame)
                 GameManager.Instance.OnMainPlayerStateChanged.AddListener((state, haveSwitched) => UpdateSprite());
             else
+            {
                 PlayersInputManager.Instance.OnAllowedInputChanged.AddListener((newAllowed) => UpdateSprite());
+                SettingsManager.Instance.OnUserBindingsLoaded.AddListener((bjson) => UpdateSprite());
+            }
         }
 
         private void OnDisable()
@@ -50,10 +52,13 @@ namespace BHR
             if (_inGame)
                 GameManager.Instance.OnMainPlayerStateChanged.RemoveListener((state, haveSwitched) => UpdateSprite());
             else
+            {
                 PlayersInputManager.Instance.OnAllowedInputChanged.RemoveListener((newAllowed) => UpdateSprite());
+                SettingsManager.Instance.OnUserBindingsLoaded.RemoveListener((bjson) => UpdateSprite());
+            }
         }
 
-        private void UpdateSprite()
+        public void UpdateSprite()
         {
             // If no need to change sprite 
             if ((_inGame && GameManager.Instance.ActivePlayerState == PlayerState.UI)
@@ -70,6 +75,12 @@ namespace BHR
             else if (currentActivePlayerController == PlayerControllerState.GAMEPAD)
                 controlPaths = BindingsToSprite.GamepadBindings(_actionRef.action.bindings.ToList());
 
+            if(controlPaths.Count <= 0)
+            {
+                Debug.LogWarning($"No control path found on {gameObject.name}");
+                return;
+            }
+
             string controlPathKey = controlPaths[0].effectivePath;
 
             if (_useComposite && _directionIsNotNone)
@@ -77,7 +88,7 @@ namespace BHR
 
             if(controlPathKey == null || controlPathKey == string.Empty || !spriteFinder.ContainsKey(controlPathKey))
             {
-                Debug.LogError($"Control path {controlPathKey} isn't in the dictionary / an allowed path on {gameObject.name}");
+                Debug.LogError($"Control path {controlPathKey} isn't in the dictionary / an allowed path on {gameObject.name}");    
                 controlPathKey = "None";
             }
 

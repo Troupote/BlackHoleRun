@@ -1,5 +1,8 @@
 using BHR;
 using Cinemachine;
+using DG.Tweening;
+
+//using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
@@ -24,6 +27,10 @@ public class CameraManager : ManagerSingleton<CameraManager>
     private float initialRotationY;
     private Vector2 lookValue;
     private Vector2 playerMoveValue;
+
+    protected enum FOVState { NONE, BASE, FORWARD, BACK, AIM}
+    private FOVState _fovState = FOVState.NONE;
+    private Tween _fovTransitionTween = null;
 
     private PlayerControllerState currentControllerUsed = PlayerControllerState.DISCONNECTED;
 
@@ -58,6 +65,9 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayersInputManager.Instance.OnHLook.AddListener(HandleLook);
         PlayersInputManager.Instance.OnSLook.AddListener(HandleLook);
         PlayersInputManager.Instance.OnHMove.AddListener(HandlePlayerMove);
+
+        GameManager.Instance.OnRespawned.AddListener(ResetInputs);
+        GameManager.Instance.OnPaused.AddListener(ResetInputs);
     }
 
     private void OnDisable()
@@ -66,13 +76,42 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayersInputManager.Instance.OnHLook.RemoveListener(HandleLook);
         PlayersInputManager.Instance.OnSLook.RemoveListener(HandleLook);
         PlayersInputManager.Instance.OnHMove.RemoveListener(HandlePlayerMove);
+
+        GameManager.Instance.OnRespawned.RemoveListener(ResetInputs);
+        GameManager.Instance.OnPaused.RemoveListener(ResetInputs);
     }
 
     internal bool IsBlending => MainCamBrain.IsBlending;
 
+    private void ResetInputs()
+    {
+        lookValue = Vector2.zero;
+        playerMoveValue = Vector2.zero;
+    }
+
+    public void ForceCameraLookAt(Vector3 targetLook)
+    {
+        PlayerCam.transform.localRotation = Quaternion.LookRotation(targetLook);
+        rotationX = PlayerCam.transform.localRotation.eulerAngles.x;
+        rotationY = PlayerCam.transform.localRotation.eulerAngles.y;
+    }
+
+    public void ForceSingularityCamLookAt()
+    {
+        PlayerCam.transform.rotation = Quaternion.Euler(lookValue);
+        initialRotationY = PlayerCam.transform.eulerAngles.y;
+        rotationY = initialRotationY;
+
+        SingularityCam.transform.rotation = PlayerCam.transform.rotation;
+    }
+
     public void SwitchCameraToSingularity()
     {
-        initialRotationY = transform.eulerAngles.y;
+        if (CurrentCam == SingularityCam) return;
+
+        Debug.Log("Switching camera to Singularity...");
+
+        initialRotationY = PlayerCam.transform.eulerAngles.y;
         rotationY = initialRotationY;
 
         SingularityCam.transform.rotation = PlayerCam.transform.rotation;
@@ -84,6 +123,8 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     public void SwitchCameraToCharacter(Vector3 a_characterPosition)
     {
+        if (CurrentCam == PlayerCam) return;
+
         PlayerCam.transform.position = a_characterPosition;
         PlayerCam.transform.rotation = SingularityCam.transform.rotation;
 
@@ -99,6 +140,18 @@ public class CameraManager : ManagerSingleton<CameraManager>
         SingularityCam.Priority = 0;
         SingularityCam.gameObject.SetActive(false);
 
+        MainCamBrain.enabled = true;
+    }
+
+    public void InstantBlendPlayerToSingularity()
+    {
+        StartCoroutine(InstantBlendPlayerToSingularityCoroutine());
+    }
+
+    private IEnumerator InstantBlendPlayerToSingularityCoroutine()
+    {
+        MainCamBrain.enabled = false;
+        yield return new WaitForEndOfFrame();
         MainCamBrain.enabled = true;
     }
 
@@ -126,8 +179,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         else
         {
             rotationY += mouseX;
-            transform.rotation = Quaternion.Euler(0, rotationY, 0);
-            PlayerCam.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+            PlayerCam.transform.localRotation = Quaternion.Euler(rotationX, rotationY, 0);
             //PlayerCam.Follow.gameObject.transform.Rotate(Vector3.up * mouseX);
         }
 
@@ -135,19 +187,48 @@ public class CameraManager : ManagerSingleton<CameraManager>
         
         float currentFOV = PlayerCam.m_Lens.FieldOfView;
 
-        if (moveZ > 0)
-        {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingForwardFOV, Time.deltaTime * 2);
-        }
+        if (CharactersManager.Instance.isHumanoidAiming)
+            ChangeFOVState(FOVState.AIM);
+        else if (moveZ > 0)
+            ChangeFOVState(FOVState.FORWARD);
         else if (moveZ < 0)
-        {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.MovingBackwardFOV, Time.deltaTime * 2);
-        }
+            ChangeFOVState(FOVState.BACK);
         else
-        {
-            PlayerCam.m_Lens.FieldOfView = Mathf.Lerp(currentFOV, CharactersManager.Instance.GameplayData.BaseFOV, Time.deltaTime * 2);
-        }
+            ChangeFOVState(FOVState.BASE);
         
+    }
+
+    private void ChangeFOVState(FOVState newState)
+    {
+        if (newState == _fovState) return;
+
+        CharacterGameplayData data = CharactersManager.Instance.GameplayData;
+
+        // Time transition
+        float tweenDuration = (newState == FOVState.AIM || _fovState == FOVState.AIM) ? data.TriggerAimDuration : data.BaseFOVTransitionDuration;
+
+        // Set ease
+        Ease ease = (newState == FOVState.AIM || _fovState == FOVState.AIM) ? data.AimFOVTransitionEase : data.DefaultFOVTransitionEase;
+
+        // Choose target FOV
+        float targetFOV = newState switch
+        {
+            FOVState.BASE => data.BaseFOV,
+            FOVState.FORWARD => data.MovingForwardFOV,
+            FOVState.BACK => data.MovingBackwardFOV,
+            FOVState.AIM => data.TargetAimFOV,
+            _ => data.BaseFOV
+        };
+
+        // Launch transition (and kill if there is one at the moment)
+        if (_fovTransitionTween != null)
+            _fovTransitionTween.Kill();
+
+        _fovTransitionTween = DOTween.To(() => PlayerCam.m_Lens.FieldOfView, x => PlayerCam.m_Lens.FieldOfView = x, targetFOV, tweenDuration).SetEase(ease);
+
+        //Debug.Log($"From {_fovState} to {newState}, with new FOV set at {targetFOV} in {tweenDuration} seconds");
+
+        _fovState = newState;
     }
 
     public void HandleLook(Vector2 value, PlayerControllerState controller)

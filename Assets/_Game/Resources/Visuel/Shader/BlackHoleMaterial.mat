@@ -51,12 +51,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Power: 2
+    - _AroundEffectPower: 1.77
+    - _Power: 6.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Step: 0.2
-    - _TwirlPower: 20
+    - _TwirlPower: 0
     m_Colors:
-    - _Color: {r: 1, g: 0.04794633, b: 0, a: 0}
+    - _Color: {r: 0, g: 0.47189426, b: 1, a: 0}
+    - _Color2: {r: 1, g: 0, b: 0.31303692, a: 0}
+    - _ExteriorColor: {r: 64, g: 64, b: 64, a: 0}
+    - _InteriorColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

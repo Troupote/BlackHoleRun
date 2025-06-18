@@ -1,3 +1,4 @@
+using BHR;
 using UnityEngine;
 
 public class SingularityCharacterFollowComponent : MonoBehaviour
@@ -18,8 +19,8 @@ public class SingularityCharacterFollowComponent : MonoBehaviour
 
         SetKinematicState(true);
     }
-    public bool IsKinematicEnabled() => m_rigidbody.isKinematic;
-    private void SetKinematicState(bool isKinematic)
+    internal bool IsPickedUp { get => m_isPickedUp; }
+    public void SetKinematicState(bool isKinematic)
     {
          m_rigidbody.isKinematic = isKinematic;
          m_rigidbody.detectCollisions = !isKinematic;
@@ -32,12 +33,14 @@ public class SingularityCharacterFollowComponent : MonoBehaviour
 
         if (shouldPickup)
         {
+            m_isPickedUp = true;
             SetKinematicState(true);
             m_singularityTransform.SetParent(m_camRefPlacement);
             m_singularityTransform.localPosition = Vector3.zero;
         }
         else
         {
+            m_isPickedUp = false;
             m_singularityTransform.SetParent(null);
             SetKinematicState(false);
         }

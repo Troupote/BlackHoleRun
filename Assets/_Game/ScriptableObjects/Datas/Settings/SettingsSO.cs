@@ -12,10 +12,6 @@ namespace BHR
         public Vector2 MouseSensitivity => mouseBaseSensitivity;
         [SerializeField, FoldoutGroup("Camera")]
         private Vector2 gamepadBaseSensitivity;
-        public Vector2 GamepadSensitivity => gamepadBaseSensitivity;
-
-        [Header("InGame"), SerializeField]
-        private float _respawningDuration;
-        public float RespawningDuration => _respawningDuration;
+        public Vector2 GamepadSensitivity => gamepadBaseSensitivity;        
     }
 }

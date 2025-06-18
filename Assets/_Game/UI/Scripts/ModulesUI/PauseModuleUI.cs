@@ -11,7 +11,8 @@ namespace BHR
 
         private void OnEnable()
         {
-            _currentLevelState.text = $"Level {GameManager.Instance.CurrentLevel.ID} - {GameManager.Instance.CurrentLevel.name}\n{UtilitiesFunctions.TimeFormat(GameManager.Instance.Timer)}";
+            _currentLevelState.text = $"Level {GameManager.Instance.CurrentLevel.ID} - {GameManager.Instance.CurrentLevel.name}" +
+                $"\n{UtilitiesFunctions.TMPBalises(UtilitiesFunctions.TimeFormat(GameManager.Instance.Timer), "OverpassMono-VariableFont_wght SDF", true)}";
         }
 
         public void RestartLevel() => GameManager.Instance.RestartLevel(true);

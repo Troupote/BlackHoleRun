@@ -13,6 +13,7 @@ Sun,Soleil,Sun
 Best,Record,Best
 Time,Temps,Time
 Reset,Restaurer,Reset
+Pause,Pause,Pause
 Resume,Reprendre,Resume
 Cancel,Annuler,Cancel
 Apply,Appliquer,Apply
@@ -24,3 +25,6 @@ Controller,Manette,Controller
 Gamepad,Manette,Gamepad
 Rebinding,Réassignation,Rebinding
 Singularity,Singularité,Singularity
+Or,Ou,Or
+Unmorph,Jaillir,Unmorph
+Tutorial,Tutoriel,Tutorial
