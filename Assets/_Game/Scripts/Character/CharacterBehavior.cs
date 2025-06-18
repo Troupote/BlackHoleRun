@@ -264,6 +264,9 @@ public class CharacterBehavior : MonoBehaviour
     public void OnDash()
     {
         if (!m_canDash) return;
+        
+        // Appel de PlayDashSound avec la position actuelle du personnage
+        CharactersManager.Instance.PlayDashSound();
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 

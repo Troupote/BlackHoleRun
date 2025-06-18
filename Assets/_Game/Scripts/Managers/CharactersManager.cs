@@ -422,6 +422,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void SingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
     {
+        // Jouer le son du dash avec notre méthode dédiée
+        PlayDashSound();
+
         SwitchCharactersPositions();
         m_characterBehavior.OnSingularityDash(a_linearVelocityToApply, a_direction);
     }
@@ -446,7 +449,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     }
 
     #endregion
-    
+
     #region Audio
     #region Ambiant
     private EventInstance m_ambienceInstance;
@@ -516,6 +519,14 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_isFootstepsPlaying = true;
     }
 
+    public void PlayDashSound()
+    {
+        EventInstance dashInstance = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.dash);
+        dashInstance.setVolume(AudioManager.Instance.SFXVolume);
+        dashInstance.start();
+        dashInstance.release();
+    }
+
     public void StopFootsteps()
     {
         if (!m_isFootstepsPlaying) return;
@@ -558,7 +569,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
             v => m_musicInstance.setParameterByName("MusicLowFilter", v),
             minValue,
             fadeDuration +0.2f
-        ).OnComplete(() => { 
+        ).OnComplete(() => {
             DOTween.To(
                 () => minValue,
                 v => m_musicInstance.setParameterByName("MusicLowFilter", v),
@@ -647,3 +658,5 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     #endregion
     #endregion
 }
+
+

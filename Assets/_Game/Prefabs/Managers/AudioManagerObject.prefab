@@ -88,10 +88,10 @@ MonoBehaviour:
     Path: event:/jump
   <dash>k__BackingField:
     Guid:
-      Data1: -1119705734
-      Data2: 1074229887
-      Data3: -687674495
-      Data4: 49901630
+      Data1: -1180494400
+      Data2: 1153120217
+      Data3: -628323442
+      Data4: -597167813
     Path: event:/dash
   <musicBeatRigolo>k__BackingField:
     Guid:
