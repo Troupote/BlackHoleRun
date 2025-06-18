@@ -257,6 +257,7 @@ public class CharacterBehavior : MonoBehaviour
         m_canDash = false;
 
         yield return new WaitForSeconds(m_gameplayData.DashCooldown / GameManager.Instance.GameTimeScale);
+        yield return new WaitUntil(() => m_isGroundedForJump);
 
         m_canDash = true;
         CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Dash);
@@ -287,7 +288,7 @@ public class CharacterBehavior : MonoBehaviour
 
         ResetVelocity();
         ResetGroundedStates();
-        m_canDash = true;
+        //m_canDash = true;
 
         OnThrowInput?.Invoke();
     }

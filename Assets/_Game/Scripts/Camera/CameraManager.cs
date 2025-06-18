@@ -169,7 +169,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         float mouseY = lookValue.y * baseSensitivity.y * SettingsSave.LoadSensitivityY(PlayersInputManager.Instance.CurrentActivePlayerDevice) * Time.deltaTime * GameManager.Instance.GameTimeScale;
 
         rotationX -= mouseY;
-        rotationX = Mathf.Clamp(rotationX, -90, 90);
+        rotationX = Mathf.Clamp(rotationX, -89, 89);
 
         if (CurrentCam == SingularityCam)
         {
