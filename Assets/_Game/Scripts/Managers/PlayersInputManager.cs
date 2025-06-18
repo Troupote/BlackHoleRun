@@ -18,6 +18,10 @@ namespace BHR
         [SerializeField, ReadOnly] private bool _canConnect; // Enable the ControllerSelection 
         public bool CanConnect { get => _canConnect; set => _canConnect = value; }
 
+
+        // Hard fix bug stuff don't mind
+        private bool _hasToCheckDevice = false; private const float _checkDeviceWindow = 0.05f; private InputDevice _lastDeviceConnected;
+
         [SerializeField, ReadOnly] private bool _reconnecting = false;
 
         // Players managing
@@ -38,10 +42,10 @@ namespace BHR
 
         public InputDevice CurrentAllowedDevice => CurrentAllowedPlayerInput?.devices[0];
 
-        public InputDevice CurrentActivePlayerDevice => CurrentActivePlayerInput.devices[0];
+        public InputDevice CurrentActivePlayerDevice => CurrentActivePlayerInput?.devices[0];
         public PlayerControllerState CurrentActiveControllerState => PlayersControllerState[GameManager.Instance.ActivePlayerIndex];
 
-        public PlayerInput CurrentActivePlayerInput => PlayersInputControllerRef[GameManager.Instance.ActivePlayerIndex].GetComponent<PlayerInput>();
+        public PlayerInput CurrentActivePlayerInput => PlayersInputControllerRef[GameManager.Instance.ActivePlayerIndex]?.GetComponent<PlayerInput>();
         public PlayerInput CurrentAllowedPlayerInput => CurrentAllowedInput switch
         {
             AllowedPlayerInput.FIRST_PLAYER => PlayersInputControllerRef[0].GetComponent<PlayerInput>(),
@@ -308,11 +312,23 @@ namespace BHR
         #region Connect and disconncect gestion
         public void OnPlayerJoined(PlayerInput playerInput)
         {
-            // Resolve switch bug
-            if (playerInput.devices[0].name.Contains("Switch") && playerInput.devices[0].name.Contains("Pro"))
-                RemoveSwitchXInput(playerInput.devices[0]);
+            // Resolve switch bug hard fix
+            if(_hasToCheckDevice)
+                CheckDevice(playerInput.devices[0]);
+            else
+            {
+                _hasToCheckDevice = true;
+                Invoke("DisableCheckDevice", _checkDeviceWindow);
+            }
 
-            if(PlayerConnectedCount()>=2 || !AssignPlayerIndex(playerInput)) // Max players connected at the same time
+            _lastDeviceConnected = playerInput.devices[0];
+#if UNITY_EDITOR
+            if (DebugManager.Instance.DisplayDeviceData)
+               Debug.Log(GetDevicesData(playerInput.devices[0]));
+#endif
+
+
+            if (PlayerConnectedCount()>=2 || !AssignPlayerIndex(playerInput)) // Max players connected at the same time
             {
                 Destroy(playerInput.gameObject);
                 return;
@@ -566,22 +582,51 @@ namespace BHR
         }
         #endregion
 
-        #region Hard Fix Switch twice controllers bug
-        private void RemoveSwitchXInput(InputDevice device)
+        #region Authorized devices gestion
+        private void CheckDevice(InputDevice device)
         {
-            if (IsUnwantedXInput(device))
+            int removeDeviceOutput = IsUnwantedXInput(device);
+            switch(removeDeviceOutput)
             {
-                Debug.LogWarning($"Removing duplicate XInput device: {device.displayName}");
-                InputSystem.RemoveDevice(device);
+                case 1:
+                    Debug.LogWarning($"Removing duplicate XInput device: {device.displayName}");
+                    InputSystem.RemoveDevice(device);
+                    break;
+                case 2:
+                    Debug.LogWarning($"Removing duplicate XInput device: {_lastDeviceConnected.displayName}");
+                    InputSystem.RemoveDevice(_lastDeviceConnected);
+                    break;
             }
         }
 
-        bool IsUnwantedXInput(InputDevice device)
+        int IsUnwantedXInput(InputDevice device)
         {
-            var desc = device.description;
-            return desc.interfaceName == "XInput" &&
-                   !desc.product.ToLower().Contains("xbox");
+            var CDdesc = device.description;
+            var LDdesc = _lastDeviceConnected.description;
+            if (CDdesc.interfaceName == "XInput" && !CDdesc.product.ToLower().Contains("xbox") && _lastDeviceConnected.name.ToLower().Contains("switchprocontroller"))
+                return 1;
+            else if (_lastDeviceConnected.name.ToLower().Contains("switchprocontroller") && !LDdesc.product.ToLower().Contains("xbox") && LDdesc.interfaceName == "XInput")
+                return 2;
+            return 0;
         }
+
+        private void DisableCheckDevice() => _hasToCheckDevice = false;
+
+#if UNITY_EDITOR
+        private string GetDevicesData(InputDevice device) => $"--- INPUT DEVICE ---\n" +
+                  $"Name: {device.name}\n" +
+                  $"Display Name: {device.displayName}\n" +
+                  $"Layout: {device.layout}\n" +
+                  //$"Device Parent Name: {device.parent.name}\n" +
+                  $"Device Id: {device.deviceId}\n" +
+                  $"Description: {device.description}\n" +
+                  $"DescriptionInterface: {device.description.interfaceName}\n" +
+                  $"DescriptionManufacturer: {device.description.manufacturer}\n" +
+                  $"DescriptionProduct: {device.description.product}\n" +
+                  $"DescriptionSerial: {device.description.serial}\n" +
+                  $"Usages: {string.Join(", ", device.usages)}\n" +
+                  $"Path: {device.path}\n";
+#endif
         #endregion
     }
 

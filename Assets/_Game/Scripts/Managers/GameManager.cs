@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 namespace BHR
 {
@@ -160,17 +161,23 @@ namespace BHR
             if(!firstStart) StartLevel();
         }
 
-        public void StartLevel()
+        public void PreAnimationStartLevel()
         {
             CheckpointsManager.Instance.ReplacePlayer();
-            IsPlaying = true; OnStartLevel.Invoke();
             OnTutorielSet?.Invoke(_tutorielEnable);
             _tutorielEnable = false;
 #if UNITY_EDITOR
-            if(DebugManager.Instance.ForceTutoriel)
+            if (DebugManager.Instance.ForceTutoriel)
                 OnTutorielSet?.Invoke(true);
 #endif
+        }
+
+        public void StartLevel()
+        {
+            IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
+
+            PlanetsCollidingManager.Instance.SetPlanetCollidingTimer(20f, true);
         }
 
         public void TogglePause()
@@ -183,7 +190,6 @@ namespace BHR
 
         public void Pause(GameObject moduleToLoad)
         {
-            OnPaused?.Invoke();
             if(!IsPaused)
             {
                 _savedGameTimeScale = GameTimeScale;
@@ -192,15 +198,16 @@ namespace BHR
                 ChangeMainPlayerState(PlayerState.UI, false);
             }
             ModuleManager.Instance.OnModuleEnable(moduleToLoad);
+            OnPaused?.Invoke();
         }
 
         public void Resume()
         {
-            OnResumed?.Invoke();
             IsPlaying = true;
             ChangeMainPlayerState(_savedPausedState, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.HUD));
             ModuleManager.Instance.ClearNavigationHistoric();
+            OnResumed?.Invoke();
         }
 
         public void EndLevel()
@@ -355,7 +362,10 @@ namespace BHR
                 //Wait until isSlowed becomes false
                 yield return new WaitUntil(() => isTimeSlowed == false);
 
+                StopCoroutine(ChangeTimeScale(GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, inDuration));
+                GameTimeScale = CharactersManager.Instance.GameplayData.TargetAimTimeScale;
                 StartCoroutine(ChangeTimeScale(GameTimeScale, 1f, outDuration));
+                GameTimeScale = 1f;
                 
                 //Speed up music speed, warn: synced method with CharactersManager and frames, do not make async
                 CharactersManager.Instance.SpeedUpMusic();
@@ -372,6 +382,7 @@ namespace BHR
             {
                 GameTimeScale = Mathf.Lerp(start, end, elapsed / duration);
                 //Time.fixedDeltaTime = Time.timeScale * 0.02f;// ? que faire
+                //Time.timeScale = _gameTimeScale;
                 elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }

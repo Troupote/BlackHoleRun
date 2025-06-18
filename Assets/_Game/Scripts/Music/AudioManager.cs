@@ -10,7 +10,7 @@ namespace BHR
     {
         [SerializeField] public float MasterVolume => SettingsSave.LoadMasterVolume();
         [SerializeField] public float SFXVolume => SettingsSave.LoadSoundsVolume() * MasterVolume;
-        [SerializeField] public float MusicVolume => SettingsSave.LoadMusicVolume() * MasterVolume;
+        [SerializeField] public float MusicVolume => SettingsSave.LoadMusicVolume() * MasterVolume * (GameManager.Instance.IsPaused ? GameManager.Instance.GameSettings.AudioCoefWhenPaused : 1f);
 
         private List<EventInstance> ListEvents;
     
@@ -29,7 +29,13 @@ namespace BHR
         
             ListEvents = new List<EventInstance>();
         }
-   
+
+        private void Start()
+        {
+            GameManager.Instance.OnPaused.AddListener(ApplyVolumesToAllEvents);
+            GameManager.Instance.OnResumed.AddListener(ApplyVolumesToAllEvents);
+        }
+
 
         /// <summary>
         /// Joue un son une seule fois à une position spécifique

@@ -12,20 +12,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beda91f5e784f894aa9f28a42b90336a, type: 3}
   m_Name: DevCharacterGameplayData
   m_EditorClassIdentifier: 
-  m_cooldownBeforeThrowAllowed: 2
-  m_comingBackSpeed: 100
+  _comingBackCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 3.2063465
+      value: 93.42872
+      inSlope: 49.999992
+      outSlope: 49.999992
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 5
+      value: 250
+      inSlope: 50
+      outSlope: 50
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   m_maxDistanceBetweenPlayers: 100
   m_activateMovementsLimit: 0
   m_throwForce: 30
   m_movingCurveForce: 10
-  m_DashForce: 20
+  m_DashForce: 30
   m_JumpForce: 35
   m_throwingCenterDistanceMultiplier: 10
   m_timeTakenToGoToCenter: 0.05
   m_gravityDelayDuration: 0.5
   m_gravityMultiplier: 2
-  m_playerSpeed: 35
-  m_jumpForce: 35
+  m_playerSpeed: 40
+  m_jumpForce: 10
+  m_jumpDuration: 1.6
   m_coyotteTime: 0.15
   m_dashForce: 200
   m_dashDuration: 0.2

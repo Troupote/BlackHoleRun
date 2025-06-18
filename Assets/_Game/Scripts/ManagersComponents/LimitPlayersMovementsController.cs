@@ -18,21 +18,42 @@ public class LimitPlayersMovementsController : MonoBehaviour
         if (!CharactersManager.Instance.GameplayData.ActivateMovementsLimit) return;
 
         m_performedMovementTypes.Add(a_newMovementType);
+
+        Debug.Log($"Movement performed && registered: {a_newMovementType}");
+    }
+
+    public void OnCharacterMovementTypeDone(CharacterMovementType a_movementType)
+    {
+        if (!CharactersManager.Instance.GameplayData.ActivateMovementsLimit) return;
+
+        if (m_performedMovementTypes.Contains(a_movementType))
+        {
+            m_performedMovementTypes.Remove(a_movementType);
+            Debug.Log($"Movement done && removed: {a_movementType}");
+        }
     }
 
     public bool HasPerformed(CharacterMovementType a_movementType)
     {
+        if (!CharactersManager.Instance.GameplayData.ActivateMovementsLimit) return false;
+
         return m_performedMovementTypes.Contains(a_movementType);
     }
 
     public bool HasPerformedBoth()
     {
+        if (!CharactersManager.Instance.GameplayData.ActivateMovementsLimit) return false;
+
         return m_performedMovementTypes.Contains(CharacterMovementType.Dash) &&
         m_performedMovementTypes.Contains(CharacterMovementType.Jump);
     }
 
     public void ClearPerformedMovements()
     {
+        if (!CharactersManager.Instance.GameplayData.ActivateMovementsLimit) return;
+
         m_performedMovementTypes.Clear();
+
+        Debug.Log("All performed movements cleared.");
     }
 }

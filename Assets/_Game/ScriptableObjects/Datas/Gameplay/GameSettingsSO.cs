@@ -13,5 +13,9 @@ namespace BHR
         [SerializeField]
         private float _playerSizeForRespawn;
         public float PlayerSizeForRespawn => _playerSizeForRespawn;
+
+        [SerializeField]
+        private float _audioCoefWhenPaused = 0.75f;
+        public float AudioCoefWhenPaused => _audioCoefWhenPaused;
     }
 }

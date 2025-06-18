@@ -23,6 +23,12 @@ public class CharacterBehavior : MonoBehaviour
     private bool _isDashing;
     private float _dashDurationTimer = 0f;
 
+    public bool startJumping = false;
+
+    public bool hasJumped = false;
+
+    private bool _wasAirborneWhenDashStarted = false;
+
     public void InitializeDependencies(CharacterGameplayData a_gameplayData)
     {
         m_rigidbody = GetComponent<Rigidbody>();
@@ -74,12 +80,17 @@ public class CharacterBehavior : MonoBehaviour
     #region Life Cycle
 
     private Vector3 m_gravity = Physics.gravity;
+    private bool m_wasInAir = false;
 
     private void FixedUpdate()
     {
         if (!m_isInitialized || m_isPaused) return;
 
-        if (!m_isGrounded || !m_isGroundedForJump)
+        if (startJumping)
+        {
+            CustomJump();
+        }
+        else if (m_canDash)
         {
             Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale * GameManager.Instance.GameTimeScale * (_isDashing ? 0f : 1f);
             m_rigidbody.AddForce(gravityForce);
@@ -98,11 +109,13 @@ public class CharacterBehavior : MonoBehaviour
         // Dash duration timer
         if(_isDashing)
         {
-            _dashDurationTimer -= Time.fixedDeltaTime * GameManager.Instance.GameTimeScale; 
-            if( _dashDurationTimer <= 0f)
+            _dashDurationTimer -= Time.fixedDeltaTime * GameManager.Instance.GameTimeScale;
+            if (_dashDurationTimer <= 0f)
             {
                 _dashDurationTimer = 0f;
+
                 _isDashing = false;
+                m_rigidbody.useGravity = true;
             }
         }
 
@@ -128,7 +141,23 @@ public class CharacterBehavior : MonoBehaviour
         m_isGrounded = IsGrounded();
         m_isGroundedForJump = IsGroundedForJump();
         CheckCoyotteTime();
+
+        if (_isDashing && m_isGroundedForJump && _wasAirborneWhenDashStarted)
+        {
+            _isDashing = false;
+            m_rigidbody.useGravity = true;
+
+            Vector3 vel = m_rigidbody.linearVelocity;
+            m_rigidbody.linearVelocity = new Vector3(0f, vel.y, 0f);
+        }
+
+        if (m_isGroundedForJump)
+        {
+            m_canDash = true;
+        }
     }
+
+
 
     #endregion
 
@@ -150,6 +179,7 @@ public class CharacterBehavior : MonoBehaviour
     public void Move(Vector2 a_moveValue)
     {
         if (m_rigidbody.isKinematic || m_moveLockTimer > 0f) return;
+        if (_isDashing || m_moveLockTimer > 0f) return;
 
         float moveX = a_moveValue.x;
         float moveZ = a_moveValue.y;
@@ -171,7 +201,8 @@ public class CharacterBehavior : MonoBehaviour
             targetVelocity *= m_gameplayData.AirPlayerSpeedMultiplier;
         }
 
-        m_rigidbody.linearVelocity = Vector3.SmoothDamp(m_rigidbody.linearVelocity, new Vector3(targetVelocity.x, m_rigidbody.linearVelocity.y, targetVelocity.z), ref currentVelocity, 0.1f);
+        Vector3 nextPosition = m_rigidbody.position + targetVelocity * Time.fixedDeltaTime;
+        m_rigidbody.MovePosition(nextPosition);
     }
 
     #endregion
@@ -180,20 +211,25 @@ public class CharacterBehavior : MonoBehaviour
 
     public void OnJump()
     {
+        if (hasJumped) return;
         if (!m_isGroundedForJump && m_coyotteTimeTimer <= 0f) return;
 
-
+        startJumping = true;
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
-        m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce * GameManager.Instance.GameTimeScale, ForceMode.Impulse);
+        //m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
+
+        jumpTime = 0;
+        hasJumped = true;
+
 
         // Reset dash cooldown if jumping
         if (m_dashCooldownCoroutine != null)
         {
             StopCoroutine(m_dashCooldownCoroutine);
             m_canDash = true;
+            CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Dash);
         }
 
-        CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
         m_coyotteTimeTimer = -1f;
         Invoke("ResetCoyotteTimer", 0.2f);
     }
@@ -231,28 +267,35 @@ public class CharacterBehavior : MonoBehaviour
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
+        _wasAirborneWhenDashStarted = !m_isGroundedForJump;
+
         Vector3 dashDir = cam.forward;
         dashDir.y = 0f;
         dashDir.Normalize();
 
-        Vector3 dashVelocity = dashDir * m_gameplayData.DashForce;
+        float timeScale = GameManager.Instance.GameTimeScale;
+        float scaledDashForce = m_gameplayData.DashForce * timeScale;
+        print(scaledDashForce);
+        print(timeScale +" / " + m_gameplayData.DashForce);
+        Vector3 dashVelocity = dashDir * scaledDashForce;
         m_rigidbody.linearVelocity = new Vector3(dashVelocity.x, 0f, dashVelocity.z);
 
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
 
         m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
-
-        CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
     }
+
 
     private IEnumerator DashCooldown()
     {
         m_canDash = false;
 
         yield return new WaitForSeconds(m_gameplayData.DashCooldown / GameManager.Instance.GameTimeScale);
+        yield return new WaitUntil(() => m_isGroundedForJump);
 
         m_canDash = true;
+        CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Dash);
     }
 
     public void OnSingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
@@ -276,12 +319,26 @@ public class CharacterBehavior : MonoBehaviour
     {
         if (!CharactersManager.Instance.CanThrow) return;
 
+        RegisterActionsToLimitActions();
+
         ResetVelocity();
         ResetGroundedStates();
-        m_canDash = true;
+        //m_canDash = true;
 
         OnThrowInput?.Invoke();
     }
+
+    private void RegisterActionsToLimitActions()
+    {
+        if (!CharactersManager.Instance.GameplayData.ActivateMovementsLimit) return;
+
+        if (!m_canDash)
+            CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
+
+        if (!m_isGrounded)
+            CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
+    }
+
 
     #endregion
 
@@ -321,5 +378,37 @@ public class CharacterBehavior : MonoBehaviour
         }
     }
 #endif
-#endregion
+
+    private float jumpTime = 0;
+    private float previousJumpHeight = 0;
+
+    private void CustomJump()
+    {
+        jumpTime += Time.fixedDeltaTime * GameManager.Instance.GameTimeScale / m_gameplayData.JumpDuration;
+
+        float sinValue = Mathf.Sin(jumpTime * Mathf.PI);
+        float currentJumpHeight = m_gameplayData.JumpForce * Mathf.Abs(sinValue);
+
+        if (jumpTime <= 1f)
+        {
+            float deltaHeight = (currentJumpHeight - previousJumpHeight) / Time.fixedDeltaTime;
+
+            m_rigidbody.linearVelocity = new Vector3(
+                m_rigidbody.linearVelocity.x,
+                deltaHeight,
+                m_rigidbody.linearVelocity.z);
+
+            previousJumpHeight = currentJumpHeight;
+            m_rigidbody.useGravity = false;
+        }
+        else
+        {
+            m_rigidbody.useGravity = true;
+            startJumping = false;
+            previousJumpHeight = 0f;
+            hasJumped = false;
+        }
+    }
+
+    #endregion
 }

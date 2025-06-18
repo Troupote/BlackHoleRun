@@ -22,6 +22,8 @@ public class CameraManager : ManagerSingleton<CameraManager>
     [field: SerializeField]
     internal Transform SingularityPlacementRefTransform { get; private set; }
 
+    private CinemachineBasicMultiChannelPerlin m_playerCamNoise;
+
     private float rotationX = 0f;
     private float rotationY = 0f;
     private float initialRotationY;
@@ -47,6 +49,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayerCam.Priority = 5;
         SingularityCam.Priority = 0;
         SingularityCam.gameObject.SetActive(false);
+        m_playerCamNoise = PlayerCam.GetComponent<CinemachineBasicMultiChannelPerlin>();
 
         PlayerCam.m_Lens.FieldOfView = CharactersManager.Instance.GameplayData.BaseFOV;
     }
@@ -89,11 +92,11 @@ public class CameraManager : ManagerSingleton<CameraManager>
         playerMoveValue = Vector2.zero;
     }
 
-    public void ForceCameraLookAt(Vector2 targetLook)
+    public void ForceCameraLookAt(Vector3 targetLook)
     {
-        PlayerCam.transform.localRotation = Quaternion.Euler(lookValue);
-        rotationX = PlayerCam.transform.localRotation.x;
-        rotationY = PlayerCam.transform.localRotation.y;
+        PlayerCam.transform.localRotation = Quaternion.LookRotation(targetLook);
+        rotationX = PlayerCam.transform.localRotation.eulerAngles.x;
+        rotationY = PlayerCam.transform.localRotation.eulerAngles.y;
     }
 
     public void ForceSingularityCamLookAt()
@@ -166,7 +169,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         float mouseY = lookValue.y * baseSensitivity.y * SettingsSave.LoadSensitivityY(PlayersInputManager.Instance.CurrentActivePlayerDevice) * Time.deltaTime * GameManager.Instance.GameTimeScale;
 
         rotationX -= mouseY;
-        rotationX = Mathf.Clamp(rotationX, -90, 90);
+        rotationX = Mathf.Clamp(rotationX, -89, 89);
 
         if (CurrentCam == SingularityCam)
         {
@@ -237,4 +240,32 @@ public class CameraManager : ManagerSingleton<CameraManager>
         lookValue = value;
     }
     public void HandlePlayerMove(Vector2 value) => playerMoveValue = value;
+
+    public void ShakeCamera(float intensity, float duration, float frequency = 2f)
+    {
+        CinemachineVirtualCamera camToShake = CurrentCam;
+
+        var noise = camToShake.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+        if (noise == null)
+        {
+            Debug.LogWarning("CinemachineBasicMultiChannelPerlin not found on active virtual camera.");
+            return;
+        }
+
+        noise.m_AmplitudeGain = intensity;
+        noise.m_FrequencyGain = frequency;
+
+        StartCoroutine(ResetNoiseAfterDelay(noise, duration));
+    }
+
+    private IEnumerator ResetNoiseAfterDelay(CinemachineBasicMultiChannelPerlin noise, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        noise.m_AmplitudeGain = 0f;
+        noise.m_FrequencyGain = 0f;
+    }
+
+
 }

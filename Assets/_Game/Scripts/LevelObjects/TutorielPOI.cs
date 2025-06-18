@@ -55,6 +55,7 @@ namespace BHR
             if (_hasComposite)
             {
                 GameManager.Instance.OnMainPlayerStateChanged.AddListener((newState, hasSwitched) => CheckComposite());
+                if(PlayersInputManager.Instance.CurrentActivePlayerDevice != null)
                 CheckComposite();
             }
 
