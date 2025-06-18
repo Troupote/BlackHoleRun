@@ -22,6 +22,8 @@ public class CameraManager : ManagerSingleton<CameraManager>
     [field: SerializeField]
     internal Transform SingularityPlacementRefTransform { get; private set; }
 
+    private CinemachineBasicMultiChannelPerlin m_playerCamNoise;
+
     private float rotationX = 0f;
     private float rotationY = 0f;
     private float initialRotationY;
@@ -47,6 +49,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         PlayerCam.Priority = 5;
         SingularityCam.Priority = 0;
         SingularityCam.gameObject.SetActive(false);
+        m_playerCamNoise = PlayerCam.GetComponent<CinemachineBasicMultiChannelPerlin>();
 
         PlayerCam.m_Lens.FieldOfView = CharactersManager.Instance.GameplayData.BaseFOV;
     }
@@ -237,4 +240,32 @@ public class CameraManager : ManagerSingleton<CameraManager>
         lookValue = value;
     }
     public void HandlePlayerMove(Vector2 value) => playerMoveValue = value;
+
+    public void ShakeCamera(float intensity, float duration, float frequency = 2f)
+    {
+        CinemachineVirtualCamera camToShake = CurrentCam;
+
+        var noise = camToShake.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+        if (noise == null)
+        {
+            Debug.LogWarning("CinemachineBasicMultiChannelPerlin not found on active virtual camera.");
+            return;
+        }
+
+        noise.m_AmplitudeGain = intensity;
+        noise.m_FrequencyGain = frequency;
+
+        StartCoroutine(ResetNoiseAfterDelay(noise, duration));
+    }
+
+    private IEnumerator ResetNoiseAfterDelay(CinemachineBasicMultiChannelPerlin noise, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        noise.m_AmplitudeGain = 0f;
+        noise.m_FrequencyGain = 0f;
+    }
+
+
 }
