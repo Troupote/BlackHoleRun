@@ -377,6 +377,7 @@ public class CharacterBehavior : MonoBehaviour
             Gizmos.DrawRay(m_groundCheck.position, Vector3.down * (m_gameplayData.CapsuleGroundDistance + m_gameplayData.RaycastGroundDistance));
         }
     }
+#endif
 
     private float jumpTime = 0;
     private float previousJumpHeight = 0;
