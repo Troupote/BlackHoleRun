@@ -95,11 +95,11 @@ MonoBehaviour:
     Path: event:/dash
   <musicBeatRigolo>k__BackingField:
     Guid:
-      Data1: -388635763
-      Data2: 1340308937
-      Data3: 1169153696
-      Data4: -286072945
-    Path: event:/Music/Music1
+      Data1: -1879588747
+      Data2: 1088408987
+      Data3: -1885356670
+      Data4: -1339071831
+    Path: event:/Music/Lo-FiMusic
   <UIReturnButton>k__BackingField:
     Guid:
       Data1: -911270816
