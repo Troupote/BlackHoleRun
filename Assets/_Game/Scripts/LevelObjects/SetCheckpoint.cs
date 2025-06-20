@@ -10,7 +10,7 @@ namespace BHR
 
         private void OnCollisionEnter(Collision collision)
         {
-            if(CheckpointsManager.Instance.CurrentCheckpoint != _targetCheckpoint && collision.body.CompareTag("Player") && CharactersManager.Instance.isCharacterGrounded)
+            if(CheckpointsManager.Instance.CurrentCheckpoint != _targetCheckpoint && collision.body.CompareTag("Player") && CharactersManager.Instance.canCharacterJump)
                 CheckpointsManager.Instance.SetCheckpoint(_targetCheckpoint);
         }
     }

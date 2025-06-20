@@ -71,6 +71,10 @@ namespace BHR
                 else
                     LoadScene(CurrentSceneData.SceneName);
             }
+#if UNITY_EDITOR
+            else
+                LoadScene(SceneManager.GetActiveScene().name);
+#endif
         }
 
         public void QuitGame()
