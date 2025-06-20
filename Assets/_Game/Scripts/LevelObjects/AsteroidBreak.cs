@@ -68,7 +68,7 @@ public class AsteroidBreak : MonoBehaviour
     //    }
     //}
 
-    private void DisableObject(bool shouldDisable)
+    public void DisableObject(bool shouldDisable)
     {
         if (shouldDisable)
         {

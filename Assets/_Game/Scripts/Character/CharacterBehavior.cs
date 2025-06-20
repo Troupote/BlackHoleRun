@@ -135,6 +135,22 @@ public class CharacterBehavior : MonoBehaviour
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Jump);
         }
 
+        if (IsDashing)
+        {
+            RaycastHit hit;
+            Vector3 origin = transform.position;
+
+            if (Physics.SphereCast(origin, 4f, transform.forward, out hit, 4f, m_gameplayData.GroundMask))
+            {
+                AsteroidBreak asteroid = hit.collider.GetComponent<AsteroidBreak>();
+                if (asteroid != null)
+                {
+                    asteroid.DisableObject(true);
+                }
+            }
+        }
+
+
         m_wasInAir = !m_isGroundedForJump;
     }
 
@@ -235,6 +251,7 @@ public class CharacterBehavior : MonoBehaviour
 
     private bool m_canDash = true;
     private Coroutine m_dashCooldownCoroutine;
+    internal bool IsDashing => _isDashing;
     public void OnDash()
     {
         if (!m_canDash) return;
@@ -351,6 +368,9 @@ public class CharacterBehavior : MonoBehaviour
 
             Gizmos.color = Color.green;
             Gizmos.DrawRay(m_groundCheck.position, Vector3.down * (m_gameplayData.CapsuleGroundDistance + m_gameplayData.RaycastGroundDistance));
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, 4f);
         }
     }
 #endif
