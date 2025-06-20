@@ -39,6 +39,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public bool isHumanoidAiming = false;
     public bool canCharacterJump => m_characterBehavior.CanJump();
+    internal bool IsDashing => m_characterBehavior.IsDashing;
 
     internal bool CanThrow => m_singularityBehavior.IsAllowedToBeThrown;
 
@@ -376,6 +377,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void HandleAim(bool withThrow)
     {
+        if (m_characterBehavior.IsJumping || m_characterBehavior.IsDashing) return;
         m_hasAlreadyCallAim = !m_hasAlreadyCallAim;
 
         if (m_hasAlreadyCallAim && CanThrow)

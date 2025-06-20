@@ -135,6 +135,8 @@ public class CharacterBehavior : MonoBehaviour
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Jump);
         }
 
+        IsJumping = !m_isGrounded;
+
         if (IsDashing)
         {
             RaycastHit hit;
@@ -202,13 +204,13 @@ public class CharacterBehavior : MonoBehaviour
 
     #region Jump
 
+    internal bool IsJumping { get; private set; } = false;
     public void OnJump()
     {
         if (!CanJump()) return;
 
-
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
-        m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce * GameManager.Instance.GameTimeScale, ForceMode.Impulse);
+        m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
 
         // Reset dash cooldown if jumping
         if (m_dashCooldownCoroutine != null)
@@ -222,7 +224,7 @@ public class CharacterBehavior : MonoBehaviour
         Invoke("ResetCoyotteTimer", 0.2f);
     }
 
-    public bool CanJump() => m_isGroundedForJump || m_coyotteTimeTimer > 0f;
+    public bool CanJump() => (m_isGrounded || m_coyotteTimeTimer > 0f) && !CharactersManager.Instance.isHumanoidAiming;
 
     private void CheckCoyotteTime()
     {
@@ -254,7 +256,9 @@ public class CharacterBehavior : MonoBehaviour
     internal bool IsDashing => _isDashing;
     public void OnDash()
     {
-        if (!m_canDash) return;
+        if (!m_canDash || CharactersManager.Instance.isHumanoidAiming) return;
+
+        CharactersManager.Instance.CancelAim();
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 

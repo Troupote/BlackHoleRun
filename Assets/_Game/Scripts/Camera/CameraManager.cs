@@ -162,6 +162,8 @@ public class CameraManager : ManagerSingleton<CameraManager>
     {
         if (!m_hasBeenInstancied || !GameManager.Instance.IsPlaying) return;
 
+        if (CharactersManager.Instance.IsDashing) return;
+
         float moveZ = playerMoveValue.y;
         Vector2 baseSensitivity = currentControllerUsed == PlayerControllerState.KEYBOARD ? SettingsManager.Instance.BaseSettings.MouseSensitivity : SettingsManager.Instance.BaseSettings.GamepadSensitivity;
 
