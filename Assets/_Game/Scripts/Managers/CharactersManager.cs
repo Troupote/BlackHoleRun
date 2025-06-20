@@ -5,6 +5,7 @@ using DG.Tweening;
 using UnityEngine;
 using FMOD.Studio;
 using FMODUnity;
+using _Game.Scripts.Music;
 
 public class CharactersManager : ManagerSingleton<CharactersManager>
 {

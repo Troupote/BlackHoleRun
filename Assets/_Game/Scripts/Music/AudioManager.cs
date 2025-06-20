@@ -134,5 +134,15 @@ namespace BHR
                     eventInstance.setVolume(SFXVolume);
             }
         }
+
+        /// <summary>
+        /// Joue un son 2D sans déclaration d'attributs 3D
+        /// </summary>
+        public void Play2D(EventReference soundReference)
+        {
+            var instance = CreateEventInstance(soundReference);
+            instance.start();
+            instance.release();
+        }
     }
 }

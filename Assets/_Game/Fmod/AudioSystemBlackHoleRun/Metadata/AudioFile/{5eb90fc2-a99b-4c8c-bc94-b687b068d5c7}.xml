@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{5eb90fc2-a99b-4c8c-bc94-b687b068d5c7}">
 		<property name="assetPath">
-			<value>retro-wave-style-track-59892.mp3</value>
+			<value>Music/retro-wave-en-mode-l'epoque.mp3</value>
 		</property>
 		<property name="isStreaming">
 			<value>true</value>
