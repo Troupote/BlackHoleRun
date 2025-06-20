@@ -41,7 +41,7 @@ Material:
     - _RadialScale: 0
     - _Roughness: 1
     - _Size: 1
-    - _Size2: 0.5
+    - _Size2: 0.6
     - _Spacing: 1.4
     - _Speed: 1
     m_Colors:

@@ -5,6 +5,7 @@ using DG.Tweening;
 using UnityEngine;
 using FMOD.Studio;
 using FMODUnity;
+using _Game.Scripts.Music;
 
 public class CharactersManager : ManagerSingleton<CharactersManager>
 {
@@ -38,7 +39,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     public Action ResetInputs;
 
     public bool isHumanoidAiming = false;
-    public bool isCharacterGrounded => m_characterBehavior.IsGrounded();
+    public bool canCharacterJump => m_characterBehavior.CanJump();
+    internal bool IsDashing => m_characterBehavior.IsDashing;
 
     internal bool CanThrow => m_singularityBehavior.IsAllowedToBeThrown;
 
@@ -377,6 +379,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     public void HandleAim(bool withThrow)
     {
         m_hasAlreadyCallAim = !m_hasAlreadyCallAim;
+        if (m_characterBehavior.IsJumping || m_characterBehavior.IsDashing) return;
 
         if (m_hasAlreadyCallAim && CanThrow)
         {
@@ -422,6 +425,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void SingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
     {
+        // Jouer le son du dash avec notre méthode dédiée
+        PlayDashSound();
+
         SwitchCharactersPositions();
         m_characterBehavior.OnSingularityDash(a_linearVelocityToApply, a_direction);
     }
@@ -446,7 +452,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     }
 
     #endregion
-    
+
     #region Audio
     #region Ambiant
     private EventInstance m_ambienceInstance;
@@ -516,6 +522,14 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_isFootstepsPlaying = true;
     }
 
+    public void PlayDashSound()
+    {
+        EventInstance dashInstance = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.dash);
+        dashInstance.setVolume(AudioManager.Instance.SFXVolume);
+        dashInstance.start();
+        dashInstance.release();
+    }
+
     public void StopFootsteps()
     {
         if (!m_isFootstepsPlaying) return;
@@ -558,7 +572,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
             v => m_musicInstance.setParameterByName("MusicLowFilter", v),
             minValue,
             fadeDuration +0.2f
-        ).OnComplete(() => { 
+        ).OnComplete(() => {
             DOTween.To(
                 () => minValue,
                 v => m_musicInstance.setParameterByName("MusicLowFilter", v),
@@ -594,6 +608,18 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         }
     }
 
+    public void SlowMusic(float duration = 0.2f)
+    {
+        float currentValue2;
+        m_musicInstance.getParameterByName("MusicSpeed", out currentValue2);
+        DG.Tweening.DOTween.To(
+            () => currentValue2,
+            v => m_musicInstance.setParameterByName("MusicSpeed", v),
+            0f,
+            duration
+        );
+    }
+
     public void SetMusicLowFilterTo1(float duration = 0.2f)
     {
         if (m_musicStarted)
@@ -619,6 +645,21 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
             );
         }
     }
+
+    public void SpeedUpMusic(float duration = 0.2f)
+    {
+        float currentValue2;
+        m_musicInstance.getParameterByName("MusicSpeed", out currentValue2);
+        DG.Tweening.DOTween.To(
+            () => currentValue2,
+            v => m_musicInstance.setParameterByName("MusicSpeed", v),
+            1f,
+            duration
+        );
+    }
+
     #endregion
     #endregion
 }
+
+
