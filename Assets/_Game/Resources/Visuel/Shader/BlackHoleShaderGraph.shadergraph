@@ -859,8 +859,8 @@
     "m_ObjectId": "1dd1853301324c60aeb9b8964cabfa07",
     "m_Title": "Distorsion",
     "m_Position": {
-        "x": -1537.0,
-        "y": 236.0
+        "x": -1536.9998779296875,
+        "y": 235.99993896484376
     }
 }
 
@@ -2814,7 +2814,7 @@
     "m_Title": "Black hole colors",
     "m_Position": {
         "x": -550.0,
-        "y": -1187.0
+        "y": -1186.9998779296875
     }
 }
 
@@ -3014,7 +3014,7 @@
     "m_ObjectId": "9cb220e932ca4cc08a2595ce70177fa6",
     "m_Title": "Custom fresnel",
     "m_Position": {
-        "x": -2397.0,
+        "x": -2396.999755859375,
         "y": -577.0
     }
 }
