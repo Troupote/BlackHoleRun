@@ -177,7 +177,7 @@ namespace BHR
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
 
-            PlanetsCollidingManager.Instance.SetPlanetCollidingTimer(10f, true);
+            PlanetsCollidingManager.Instance.StartPlanetsMovement(10f);
         }
 
         public void TogglePause()
@@ -355,7 +355,10 @@ namespace BHR
                 isSlowMotionSequenceFinished = false;
 
                 StartCoroutine(ChangeTimeScale(GameTimeScale, CharactersManager.Instance.GameplayData.TargetAimTimeScale, inDuration));
-
+                
+                //Slow down music, warn: synced method with CharactersManager and frames, do not make async
+                CharactersManager.Instance.SlowMusic();
+                
                 //Wait until isSlowed becomes false
                 yield return new WaitUntil(() => isTimeSlowed == false);
 
@@ -363,6 +366,10 @@ namespace BHR
                 GameTimeScale = CharactersManager.Instance.GameplayData.TargetAimTimeScale;
                 StartCoroutine(ChangeTimeScale(GameTimeScale, 1f, outDuration));
                 GameTimeScale = 1f;
+                
+                //Speed up music speed, warn: synced method with CharactersManager and frames, do not make async
+                CharactersManager.Instance.SpeedUpMusic();
+
                 isSlowMotionSequenceFinished = true;
             }
         }
