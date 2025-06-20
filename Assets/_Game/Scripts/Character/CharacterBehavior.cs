@@ -140,12 +140,12 @@ public class CharacterBehavior : MonoBehaviour
             RaycastHit hit;
             Vector3 origin = transform.position;
 
-            if (Physics.SphereCast(origin, 4f, transform.forward, out hit, 4f, m_gameplayData.GroundMask))
+            if (Physics.SphereCast(origin, m_gameplayData.RaycastDashAsteroid, transform.forward, out hit, 4f, m_gameplayData.GroundMask))
             {
                 AsteroidBreak asteroid = hit.collider.GetComponent<AsteroidBreak>();
                 if (asteroid != null)
                 {
-                    asteroid.DisableObject(true);
+                    asteroid.DisableObject(true, true);
                 }
             }
         }

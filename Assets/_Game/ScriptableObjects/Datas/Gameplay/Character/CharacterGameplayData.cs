@@ -113,10 +113,14 @@ public class CharacterGameplayData : ScriptableObject
     private float m_capsuleGroundDistance = 0.4f;
     public float CapsuleGroundDistance => m_capsuleGroundDistance;
 
-    [SerializeField]
-    [Tooltip("The distance from the ground at which the character is considered grounded for the RAYCAST (green gizmo)"), PropertyOrder(3)]
+    [SerializeField, PropertyOrder(3)]
+    [Tooltip("The distance from the ground at which the character is considered grounded for the RAYCAST (green gizmo)")]
     private float m_raycastGroundDistance = 2f;
     public float RaycastGroundDistance => m_raycastGroundDistance;
+
+    [SerializeField, PropertyOrder(3)]
+    private float m_raycastDashAsteroid = 4f;
+    public float RaycastDashAsteroid => m_raycastDashAsteroid;
 
     [Title("Camera Settings")]
     [SerializeField, PropertyOrder(3)]
