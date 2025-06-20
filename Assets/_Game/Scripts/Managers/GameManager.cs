@@ -40,6 +40,7 @@ namespace BHR
         public LevelDataSO CurrentLevel => _currentLevel;
         public UnityEvent<bool> OnLaunchLevel, OnTutorielSet;
         private bool _tutorielEnable;
+        public TutorielData SavedTutorielData;
         public UnityEvent OnStartLevel;
         /// <summary>
         /// Float End timer, bool HasHitNewBestTime, bool HasPlayedSolo
@@ -113,6 +114,7 @@ namespace BHR
             PlayersInputManager.Instance.OnPause.AddListener(TogglePause);
             PlayersInputManager.Instance.OnRestartLevel.AddListener(() => RestartLevel(false));
             PlayersInputManager.Instance.OnRespawn.AddListener(Respawning);
+            PlayersInputManager.Instance.OnOpenTutorial.AddListener(() => LoadTutorielData(SavedTutorielData));
         }
 
         private void Update()

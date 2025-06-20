@@ -20,7 +20,7 @@ namespace BHR
         private TutorielData _turorialData;
 
         [Header("Settings"), SerializeField, Tooltip("Once tutoriel popup closed, wait this time before re trigger it if detected")] private float _durationMinBetweenTriggers = 2f;
-        private bool _isOn = false;
+        private bool _hasAlreadyPopup = false;
         [Min(15f)]
         [SerializeField] private float _distanceFade;
 
@@ -34,6 +34,8 @@ namespace BHR
         {
             foreach(FadeWithDistanceUI fade in GetComponentsInChildren<FadeWithDistanceUI>())
                 fade.DistanceFade = _distanceFade;
+
+            _hasAlreadyPopup = false;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -42,16 +44,40 @@ namespace BHR
             if (DebugManager.Instance.DisableTutorielPopup) return;
 #endif
             // @todo remove tuto if level completed ? -> make a settings option ?
-            if(other.CompareTag("Player") && !_isOn)
+            if(other.CompareTag("Player"))
             {
-                _isOn = true;
-                GameManager.Instance.LoadTutorielData(_turorialData);
+                ToggleUI(false);
+                Debug.Log("COUCOU");
+                if(_hasAlreadyPopup)
+                {
+                    ModuleManager.Instance.transform.GetComponentInChildren<HUDModuleUI>(includeInactive: true).TogglePopup(true);
+                    GameManager.Instance.SavedTutorielData = _turorialData;
+                }
+                else
+                {
+                    GameManager.Instance.LoadTutorielData(_turorialData);
+                }
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                ToggleUI(true);
+
+                if (!_hasAlreadyPopup)
+                {
+                    _hasAlreadyPopup = true;
+                }
+                else
+                    ModuleManager.Instance.transform.GetComponentInChildren<HUDModuleUI>()?.TogglePopup(false);
             }
         }
 
         private void Start()
         {
-            ModuleManager.Instance.OnTutorielToggled.AddListener(ToggleUI);
+            //ModuleManager.Instance.OnTutorielToggled.AddListener(ToggleUI);
             if (_hasComposite)
             {
                 GameManager.Instance.OnMainPlayerStateChanged.AddListener((newState, hasSwitched) => CheckComposite());
@@ -60,15 +86,14 @@ namespace BHR
             }
 
             GameManager.Instance.OnTutorielSet.AddListener(gameObject.SetActive);
+            GameManager.Instance.OnLaunchLevel.AddListener((state) => _hasAlreadyPopup = false);
+            ToggleUI(true);
         }
 
         private void ToggleUI(bool enabled)
         {
-            if (_isOn && !enabled)
-                Invoke("CanTriggerAgain", _durationMinBetweenTriggers);
-
-            foreach(Transform child in transform)
-                child.gameObject.SetActive(!enabled);
+            transform.GetChild(0).gameObject.SetActive(enabled);
+            transform.GetChild(1).gameObject.SetActive(enabled);
         }
 
         private void CheckComposite()
@@ -81,8 +106,6 @@ namespace BHR
             _uniqueBinding.SetActive(!displayComposite);
             _compositeBindingsParent.SetActive(displayComposite);
         }
-
-        private void CanTriggerAgain() => _isOn = false;
     }
 
 }

@@ -24,6 +24,7 @@ namespace BHR
         public static string Restart;
         public static string Pause;
         public static string Reconnect;
+        public static string Open;
 
         public static string Submit;
         public static string Cancel;
@@ -52,6 +53,7 @@ namespace BHR
             Restart = inputActions.Restart.action.name;
             Pause = inputActions.Pause.action.name;
             Reconnect = inputActions.Reconnect.action.name;
+            Open = inputActions.Open.action.name;
 
             Submit = inputActions.Submit.action.name;
             Cancel = inputActions.Cancel.action.name;

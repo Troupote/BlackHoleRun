@@ -36,6 +36,7 @@ namespace BHR
         [Header("Humanoid")]
         [Required] public InputActionReference Aim;
         [Required] public InputActionReference Throw;
+        [Required] public InputActionReference Open;
 
         //[Header("Singularity")]
         //[Required] public InputActionReference Unmorph;
