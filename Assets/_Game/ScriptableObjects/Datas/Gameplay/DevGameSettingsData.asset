@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _respawningDuration: 1.2
   _playerSizeForRespawn: 4.3
+  _audioCoefWhenPaused: 1

@@ -14,7 +14,7 @@ namespace BHR
         private bool _enableDebugKeyboardShortcuts;
         public bool DebugKeyboardShortcutsEnabled => _enableDebugKeyboardShortcuts && _debug;
 
-        [Header("Unlocker"), SerializeField]
+        [Header("Unlocker"), SerializeField, ShowIf(nameof(_debug))]
         private bool _unlockedAllLevels;
         public bool UnlockedAllLevels => _unlockedAllLevels && _debug;
 
@@ -23,7 +23,7 @@ namespace BHR
         public bool DisableStartAnimation => _disableStartAnimation && _debug;
 
         [Header("InGame")]
-        [SerializeField]
+        [SerializeField, ShowIf(nameof(_debug))]
         private bool _forceTutoriel;
         public bool ForceTutoriel => _forceTutoriel && _debug;
         [SerializeField, ShowIf(nameof(_debug))]

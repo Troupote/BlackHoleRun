@@ -68,7 +68,7 @@ public class CharacterGameplayData : ScriptableObject
     public float PlayerSpeed => m_playerSpeed;
 
     [SerializeField, PropertyOrder(3)]
-    private float m_jumpForce = 12f;
+    private float m_jumpForce = 8f;
     public float JumpForce => m_jumpForce;
 
     [SerializeField, PropertyOrder(3)]
@@ -76,11 +76,11 @@ public class CharacterGameplayData : ScriptableObject
     public float CoyotteTime => m_coyotteTime;
 
     [SerializeField, PropertyOrder(3)]
-    private float m_dashForce = 5f;
+    private float m_dashForce = 1f;
     public float DashForce => m_dashForce;
 
     [SerializeField, PropertyOrder(3)]
-    private float m_dashDuration;
+    private float m_dashDuration = 1f;
     public float DashDuration => m_dashDuration;
 
     [SerializeField, PropertyOrder(3)]
@@ -113,10 +113,14 @@ public class CharacterGameplayData : ScriptableObject
     private float m_capsuleGroundDistance = 0.4f;
     public float CapsuleGroundDistance => m_capsuleGroundDistance;
 
-    [SerializeField]
-    [Tooltip("The distance from the ground at which the character is considered grounded for the RAYCAST (green gizmo)"), PropertyOrder(3)]
+    [SerializeField, PropertyOrder(3)]
+    [Tooltip("The distance from the ground at which the character is considered grounded for the RAYCAST (green gizmo)")]
     private float m_raycastGroundDistance = 2f;
     public float RaycastGroundDistance => m_raycastGroundDistance;
+
+    [SerializeField, PropertyOrder(3)]
+    private float m_raycastDashAsteroid = 4f;
+    public float RaycastDashAsteroid => m_raycastDashAsteroid;
 
     [Title("Camera Settings")]
     [SerializeField, PropertyOrder(3)]

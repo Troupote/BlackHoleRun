@@ -80,9 +80,9 @@ public class CharacterBehavior : MonoBehaviour
     {
         if (!m_isInitialized || m_isPaused) return;
 
-        if (!m_isGrounded || !m_isGroundedForJump)
+        if ((!m_isGrounded || !m_isGroundedForJump) && !_isDashing)
         {
-            Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale * GameManager.Instance.GameTimeScale * (_isDashing ? 0f : 1f);
+            Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale * GameManager.Instance.GameTimeScale;
             m_rigidbody.AddForce(gravityForce);
         }
 
@@ -97,10 +97,10 @@ public class CharacterBehavior : MonoBehaviour
         }
 
         // Dash duration timer
-        if(_isDashing)
+        if (_isDashing)
         {
-            _dashDurationTimer -= Time.fixedDeltaTime * GameManager.Instance.GameTimeScale; 
-            if( _dashDurationTimer <= 0f)
+            _dashDurationTimer -= Time.fixedDeltaTime * GameManager.Instance.GameTimeScale;
+            if (_dashDurationTimer <= 0f)
             {
                 _dashDurationTimer = 0f;
                 _isDashing = false;
@@ -130,10 +130,28 @@ public class CharacterBehavior : MonoBehaviour
         m_isGroundedForJump = IsGroundedForJump();
         CheckCoyotteTime();
 
-        if (m_wasInAir && m_isGroundedForJump)
+        if (CanJump())
         {
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Jump);
         }
+
+        IsJumping = !m_isGrounded;
+
+        if (IsDashing)
+        {
+            RaycastHit hit;
+            Vector3 origin = transform.position;
+
+            if (Physics.SphereCast(origin, m_gameplayData.RaycastDashAsteroid, CameraManager.Instance.PlayerCam.transform.forward, out hit, 4f, m_gameplayData.GroundMask))
+            {
+                AsteroidBreak asteroid = hit.collider.GetComponent<AsteroidBreak>();
+                if (asteroid != null)
+                {
+                    asteroid.DisableObject(true, true);
+                }
+            }
+        }
+
 
         m_wasInAir = !m_isGroundedForJump;
     }
@@ -186,13 +204,13 @@ public class CharacterBehavior : MonoBehaviour
 
     #region Jump
 
+    internal bool IsJumping { get; private set; } = false;
     public void OnJump()
     {
-        if (!m_isGroundedForJump && m_coyotteTimeTimer <= 0f) return;
-
+        if (!CanJump()) return;
 
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
-        m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce * GameManager.Instance.GameTimeScale, ForceMode.Impulse);
+        m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
 
         // Reset dash cooldown if jumping
         if (m_dashCooldownCoroutine != null)
@@ -206,9 +224,11 @@ public class CharacterBehavior : MonoBehaviour
         Invoke("ResetCoyotteTimer", 0.2f);
     }
 
+    public bool CanJump() => (m_isGrounded || m_coyotteTimeTimer > 0f) && !CharactersManager.Instance.isHumanoidAiming;
+
     private void CheckCoyotteTime()
     {
-        if(m_coyotteTimeTimer < 0f) return;
+        if (m_coyotteTimeTimer < 0f) return;
 
         if (m_isGroundedForJump && m_coyotteTimeTimer != m_gameplayData.CoyotteTime)
             m_coyotteTimeTimer = m_gameplayData.CoyotteTime;
@@ -233,9 +253,15 @@ public class CharacterBehavior : MonoBehaviour
 
     private bool m_canDash = true;
     private Coroutine m_dashCooldownCoroutine;
+    internal bool IsDashing => _isDashing;
     public void OnDash()
     {
-        if (!m_canDash) return;
+        if (!m_canDash || CharactersManager.Instance.isHumanoidAiming) return;
+
+        CharactersManager.Instance.CancelAim();
+        
+        // Appel de PlayDashSound avec la position actuelle du personnage
+        CharactersManager.Instance.PlayDashSound();
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
@@ -249,10 +275,13 @@ public class CharacterBehavior : MonoBehaviour
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
 
-        m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
+        if(m_isGrounded)
+            m_dashCooldownCoroutine = StartCoroutine(GroundedDashCooldown());
+        else
+            m_dashCooldownCoroutine = StartCoroutine(AirDashCooldown());
     }
 
-    private IEnumerator DashCooldown()
+    private IEnumerator GroundedDashCooldown()
     {
         m_canDash = false;
 
@@ -260,6 +289,13 @@ public class CharacterBehavior : MonoBehaviour
 
         m_canDash = true;
         CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Dash);
+    }
+
+    private IEnumerator AirDashCooldown()
+    {
+        m_canDash = false;
+        yield return new WaitUntil(() => m_isGroundedForJump);
+        m_canDash = true;
     }
 
     public void OnSingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
@@ -270,7 +306,7 @@ public class CharacterBehavior : MonoBehaviour
 
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
-        m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
+        m_dashCooldownCoroutine = StartCoroutine(AirDashCooldown());
 
         m_rigidbody.AddForce(a_direction * m_gameplayData.SingularityDashForce, ForceMode.VelocityChange);
     }
@@ -299,7 +335,7 @@ public class CharacterBehavior : MonoBehaviour
         if (!m_canDash)
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
 
-        if (!m_isGrounded)
+        if (!CanJump())
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
     }
 
@@ -339,8 +375,11 @@ public class CharacterBehavior : MonoBehaviour
 
             Gizmos.color = Color.green;
             Gizmos.DrawRay(m_groundCheck.position, Vector3.down * (m_gameplayData.CapsuleGroundDistance + m_gameplayData.RaycastGroundDistance));
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, 4f);
         }
     }
 #endif
-#endregion
+    #endregion
 }

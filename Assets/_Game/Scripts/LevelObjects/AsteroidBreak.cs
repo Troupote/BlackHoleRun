@@ -1,22 +1,24 @@
 using BHR;
+using Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine;
 
 public class AsteroidBreak : MonoBehaviour
 {
     [SerializeField] private float m_countdown = 3f;
-    [SerializeField] private float m_timerBeforeRespawn = 5f;
-    [SerializeField] private float m_checkInterval = 0.1f;
+    [SerializeField] private bool m_respawnAfterTime;
+    [SerializeField, ShowIf(nameof(m_respawnAfterTime))] private float m_timerBeforeRespawn = 5f;
+    [SerializeField] private GameObject _particleEffects;
 
-    [SerializeField] private Vector3 m_boxSize = new Vector3(2f, 1f, 2f);
-    [SerializeField] private float m_boxCenterHeight = 0.5f;
+    //[SerializeField] private Vector3 m_boxSize = new Vector3(2f, 1f, 2f);
+    //[SerializeField] private float m_boxCenterHeight = 0.5f;
 
-    [SerializeField] private LayerMask m_playerLayer;
+    [SerializeField] private string m_tag = "Player";
 
     private Renderer m_renderer;
     private MeshCollider m_collider;
     private float m_initialCountdown;
-    private Coroutine m_checkCoroutine;
+    private bool m_startTimer = false;
 
     private void Start()
     {
@@ -35,47 +37,51 @@ public class AsteroidBreak : MonoBehaviour
         }
 
         GameManager.Instance.OnRespawned.AddListener(OnRespawned);
-
-        m_checkCoroutine = StartCoroutine(CheckForPlayerStanding());
     }
 
-    private IEnumerator CheckForPlayerStanding()
-    {
-        while (true)
-        {
-            if (m_renderer.enabled)
-            {
-                Debug.Log("AsteroidBreak: Checking for player standing...");
-                Vector3 boxCenter = transform.position + Vector3.up * m_boxCenterHeight;
-                Vector3 halfExtents = m_boxSize * 0.5f;
+    //private IEnumerator CheckForPlayerStanding()
+    //{
+    //    while (true)
+    //    {
+    //        if (m_renderer.enabled)
+    //        {
+    //            Debug.Log("AsteroidBreak: Checking for player standing...");
+    //            Vector3 boxCenter = transform.position + Vector3.up * m_boxCenterHeight;
+    //            Vector3 halfExtents = m_boxSize * 0.5f;
 
-                Collider[] hits = Physics.OverlapBox(boxCenter, halfExtents, Quaternion.identity, m_playerLayer);
-                if (hits.Length > 0)
-                {
-                    Debug.Log("AsteroidBreak: Player detected standing on the asteroid.");
-                    m_countdown -= m_checkInterval;
-                    if (m_countdown <= 0f)
-                    {
-                        DisableObject(true);
-                    }
-                }
-                else
-                {
-                    Debug.Log("AsteroidBreak: No player detected standing on the asteroid.");
-                }
-            }
+    //            Collider[] hits = Physics.OverlapBox(boxCenter, halfExtents, Quaternion.identity, m_playerLayer);
+    //            if (hits.Length > 0)
+    //            {
+    //                Debug.Log("AsteroidBreak: Player detected standing on the asteroid.");
+    //                m_countdown -= m_checkInterval;
+    //                if (m_countdown <= 0f)
+    //                {
+    //                    DisableObject(true);
+    //                }
+    //            }
+    //            else
+    //            {
+    //                Debug.Log("AsteroidBreak: No player detected standing on the asteroid.");
+    //            }
+    //        }
 
-            yield return new WaitForSeconds(m_checkInterval);
-        }
-    }
+    //        yield return new WaitForSeconds(m_checkInterval);
+    //    }
+    //}
 
-    private void DisableObject(bool shouldDisable)
+    public void DisableObject(bool shouldDisable, bool withParticles = false)
     {
         if (shouldDisable)
         {
+            if(withParticles && _particleEffects != null)
+            {
+                var particles = Instantiate(_particleEffects, transform);
+                StartCoroutine(DestroyObject(particles.gameObject, particles.GetComponent<ParticleSystem>().main.duration));
+            }    
             m_renderer.enabled = false;
             m_collider.enabled = false;
-            StartCoroutine(RespawnAfterHavingBeenDisabled());
+            if(m_respawnAfterTime)
+                StartCoroutine(RespawnAfterHavingBeenDisabled());
         }
         else
         {
@@ -90,18 +96,34 @@ public class AsteroidBreak : MonoBehaviour
         OnRespawned();
     }
 
+    private IEnumerator DestroyObject(GameObject go, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        Destroy(go);
+    }
+
     private void OnRespawned()
     {
         m_countdown = m_initialCountdown;
         DisableObject(false);
     }
 
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
+    private void OnCollisionEnter(Collision collision)
     {
-        Gizmos.color = Color.green;
-        Vector3 boxCenter = transform.position + Vector3.up * m_boxCenterHeight;
-        Gizmos.DrawWireCube(boxCenter, m_boxSize);
+        if (collision.transform.CompareTag(m_tag) && CharactersManager.Instance.canCharacterJump)
+            m_startTimer = true;
     }
-#endif
+
+    private void Update()
+    {
+        if(m_startTimer)
+        {
+            m_countdown -= Time.deltaTime * GameManager.Instance.GameTimeScale;
+            if(m_countdown <= 0)
+            {
+                DisableObject(true);
+                m_startTimer= false;
+            }
+        }
+    }
 }

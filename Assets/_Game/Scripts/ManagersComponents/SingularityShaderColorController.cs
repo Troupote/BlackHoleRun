@@ -7,7 +7,11 @@ public class SingularityShaderColorController : MonoBehaviour
     [SerializeField]
     private Renderer m_targetRenderer;
 
+    [SerializeField]
+    private Renderer m_horizonRenderer;
+
     private Material m_singularityMaterial;
+    private Material m_horizonMaterial;
 
     private CharacterGameplayData m_gameplayData;
 
@@ -21,8 +25,9 @@ public class SingularityShaderColorController : MonoBehaviour
         }
 
         m_singularityMaterial = m_targetRenderer.material;
+        m_horizonMaterial = m_horizonRenderer.material;
 
-        if (m_singularityMaterial == null)
+        if (m_singularityMaterial == null || m_horizonMaterial == null)
         {
             Debug.LogError("Material is missing on the Renderer!", this);
             return;
@@ -43,6 +48,9 @@ public class SingularityShaderColorController : MonoBehaviour
 
         m_singularityMaterial.SetColor("_ExteriorColor", a_isPlayerOne ? m_gameplayData.PlayerOneColors.Exterior : m_gameplayData.PlayerTwoColors.Exterior);
         m_singularityMaterial.SetColor("_InteriorColor", a_isPlayerOne ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
+
+        m_horizonMaterial.SetColor("_Color1", a_isPlayerOne ? m_gameplayData.PlayerOneColors.Exterior : m_gameplayData.PlayerTwoColors.Exterior);
+        m_horizonMaterial.SetColor("_Color2", a_isPlayerOne ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
     }
 
 }

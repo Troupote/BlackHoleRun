@@ -162,6 +162,8 @@ public class CameraManager : ManagerSingleton<CameraManager>
     {
         if (!m_hasBeenInstancied || !GameManager.Instance.IsPlaying) return;
 
+        if (CharactersManager.Instance.IsDashing) return;
+
         float moveZ = playerMoveValue.y;
         Vector2 baseSensitivity = currentControllerUsed == PlayerControllerState.KEYBOARD ? SettingsManager.Instance.BaseSettings.MouseSensitivity : SettingsManager.Instance.BaseSettings.GamepadSensitivity;
 
@@ -169,7 +171,7 @@ public class CameraManager : ManagerSingleton<CameraManager>
         float mouseY = lookValue.y * baseSensitivity.y * SettingsSave.LoadSensitivityY(PlayersInputManager.Instance.CurrentActivePlayerDevice) * Time.deltaTime * GameManager.Instance.GameTimeScale;
 
         rotationX -= mouseY;
-        rotationX = Mathf.Clamp(rotationX, -90, 90);
+        rotationX = Mathf.Clamp(rotationX, -89, 89);
 
         if (CurrentCam == SingularityCam)
         {

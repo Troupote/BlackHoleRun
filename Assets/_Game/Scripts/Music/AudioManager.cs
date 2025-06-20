@@ -10,7 +10,7 @@ namespace BHR
     {
         [SerializeField] public float MasterVolume => SettingsSave.LoadMasterVolume();
         [SerializeField] public float SFXVolume => SettingsSave.LoadSoundsVolume() * MasterVolume;
-        [SerializeField] public float MusicVolume => SettingsSave.LoadMusicVolume() * MasterVolume;
+        [SerializeField] public float MusicVolume => SettingsSave.LoadMusicVolume() * MasterVolume * (GameManager.Instance.IsPaused ? GameManager.Instance.GameSettings.AudioCoefWhenPaused : 1f);
 
         private List<EventInstance> ListEvents;
     
@@ -29,7 +29,13 @@ namespace BHR
         
             ListEvents = new List<EventInstance>();
         }
-   
+
+        private void Start()
+        {
+            GameManager.Instance.OnPaused.AddListener(ApplyVolumesToAllEvents);
+            GameManager.Instance.OnResumed.AddListener(ApplyVolumesToAllEvents);
+        }
+
 
         /// <summary>
         /// Joue un son une seule fois à une position spécifique
@@ -127,6 +133,16 @@ namespace BHR
                 else
                     eventInstance.setVolume(SFXVolume);
             }
+        }
+
+        /// <summary>
+        /// Joue un son 2D sans déclaration d'attributs 3D
+        /// </summary>
+        public void Play2D(EventReference soundReference)
+        {
+            var instance = CreateEventInstance(soundReference);
+            instance.start();
+            instance.release();
         }
     }
 }
