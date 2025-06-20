@@ -61,9 +61,9 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Step: 1.26
-    - _Twirl1Speed: 5
-    - _Twirl1Strength: 40
-    - _Twirl2Speed: -1
+    - _Twirl1Speed: 1
+    - _Twirl1Strength: 10
+    - _Twirl2Speed: 0.5
     - _Twirl2Strength: 10
     - _TwirlStrength: 12.86
     m_Colors:

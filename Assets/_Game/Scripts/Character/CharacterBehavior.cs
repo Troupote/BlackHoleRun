@@ -142,7 +142,7 @@ public class CharacterBehavior : MonoBehaviour
             RaycastHit hit;
             Vector3 origin = transform.position;
 
-            if (Physics.SphereCast(origin, m_gameplayData.RaycastDashAsteroid, transform.forward, out hit, 4f, m_gameplayData.GroundMask))
+            if (Physics.SphereCast(origin, m_gameplayData.RaycastDashAsteroid, CameraManager.Instance.PlayerCam.transform.forward, out hit, 4f, m_gameplayData.GroundMask))
             {
                 AsteroidBreak asteroid = hit.collider.GetComponent<AsteroidBreak>();
                 if (asteroid != null)
@@ -259,6 +259,9 @@ public class CharacterBehavior : MonoBehaviour
         if (!m_canDash || CharactersManager.Instance.isHumanoidAiming) return;
 
         CharactersManager.Instance.CancelAim();
+        
+        // Appel de PlayDashSound avec la position actuelle du personnage
+        CharactersManager.Instance.PlayDashSound();
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 

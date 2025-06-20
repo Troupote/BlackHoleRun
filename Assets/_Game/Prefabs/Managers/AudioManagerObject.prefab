@@ -88,18 +88,46 @@ MonoBehaviour:
     Path: event:/jump
   <dash>k__BackingField:
     Guid:
-      Data1: -1119705734
-      Data2: 1074229887
-      Data3: -687674495
-      Data4: 49901630
+      Data1: -1180494400
+      Data2: 1153120217
+      Data3: -628323442
+      Data4: -597167813
     Path: event:/dash
   <musicBeatRigolo>k__BackingField:
     Guid:
-      Data1: -388635763
-      Data2: 1340308937
-      Data3: 1169153696
-      Data4: -286072945
-    Path: event:/Music/Music1
+      Data1: -1879588747
+      Data2: 1088408987
+      Data3: -1885356670
+      Data4: -1339071831
+    Path: event:/Music/Lo-FiMusic
+  <UIReturnButton>k__BackingField:
+    Guid:
+      Data1: -911270816
+      Data2: 1097374852
+      Data3: -1076639843
+      Data4: 1599598474
+    Path: event:/UI/backpanel
+  <TogglePassedTrue_sfx>k__BackingField:
+    Guid:
+      Data1: -1005133202
+      Data2: 1302934446
+      Data3: -1540197218
+      Data4: -718607114
+    Path: event:/UI/ToggleTrued
+  <TogglePassedFalse_sfx>k__BackingField:
+    Guid:
+      Data1: 1166576700
+      Data2: 1335810864
+      Data3: -1029253956
+      Data4: -1113473754
+    Path: event:/UI/ToggleFalsed
+  <UIForwardButton>k__BackingField:
+    Guid:
+      Data1: -1864280266
+      Data2: 1129075153
+      Data3: 1753576071
+      Data4: 1520050259
+    Path: event:/UI/forwardpanel
 --- !u!1 &5058785138657031254
 GameObject:
   m_ObjectHideFlags: 0
