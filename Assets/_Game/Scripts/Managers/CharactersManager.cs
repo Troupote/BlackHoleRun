@@ -377,8 +377,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void HandleAim(bool withThrow)
     {
-        if (m_characterBehavior.IsJumping || m_characterBehavior.IsDashing) return;
         m_hasAlreadyCallAim = !m_hasAlreadyCallAim;
+        if (m_characterBehavior.IsJumping || m_characterBehavior.IsDashing) return;
 
         if (m_hasAlreadyCallAim && CanThrow)
         {
