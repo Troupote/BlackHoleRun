@@ -156,7 +156,7 @@ namespace BHR
         public UnityEvent<Vector2> OnHMove, OnSMove; // Vector2 value events
         public UnityEvent<Vector2, PlayerControllerState> OnHLook, OnSLook; // Vector2 value events depending of the controller used
         public UnityEvent<bool> OnHAim; // Multiple callbacks events (Hold throw, Hold/toggle aim)
-        public UnityEvent OnRestartLevel, OnRespawn; // Interactions performed events
+        public UnityEvent OnRestartLevel, OnRespawn, OnOpenTutorial; // Interactions performed events
 
         private void SendInputEvent(InputAction.CallbackContext ctx, int playerIndex)
         {
@@ -221,6 +221,9 @@ namespace BHR
 
                     else if (ctx.action.name == InputActions.Throw)
                         OnHThrow.Invoke();
+
+                    else if (ctx.action.name == InputActions.Open)
+                        OnOpenTutorial?.Invoke();
                 }
             }
 
