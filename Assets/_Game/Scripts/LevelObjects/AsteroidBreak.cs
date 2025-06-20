@@ -8,6 +8,7 @@ public class AsteroidBreak : MonoBehaviour
     [SerializeField] private float m_countdown = 3f;
     [SerializeField] private bool m_respawnAfterTime;
     [SerializeField, ShowIf(nameof(m_respawnAfterTime))] private float m_timerBeforeRespawn = 5f;
+    [SerializeField] private GameObject _particleEffects;
 
     //[SerializeField] private Vector3 m_boxSize = new Vector3(2f, 1f, 2f);
     //[SerializeField] private float m_boxCenterHeight = 0.5f;
@@ -68,10 +69,15 @@ public class AsteroidBreak : MonoBehaviour
     //    }
     //}
 
-    public void DisableObject(bool shouldDisable)
+    public void DisableObject(bool shouldDisable, bool withParticles = false)
     {
         if (shouldDisable)
         {
+            if(withParticles && _particleEffects != null)
+            {
+                var particles = Instantiate(_particleEffects, transform);
+                StartCoroutine(DestroyObject(particles.gameObject, particles.GetComponent<ParticleSystem>().main.duration));
+            }    
             m_renderer.enabled = false;
             m_collider.enabled = false;
             if(m_respawnAfterTime)
@@ -88,6 +94,12 @@ public class AsteroidBreak : MonoBehaviour
     {
         yield return new WaitForSeconds(m_timerBeforeRespawn);
         OnRespawned();
+    }
+
+    private IEnumerator DestroyObject(GameObject go, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        Destroy(go);
     }
 
     private void OnRespawned()

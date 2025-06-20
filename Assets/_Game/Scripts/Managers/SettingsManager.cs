@@ -71,8 +71,8 @@ namespace BHR
             SettingsSave.SaveSensitivityX(controller);
             SettingsSave.SaveSensitivityY(controller);
             SettingsSave.SaveInvertAxeY(controller);
-            SettingsSave.SaveLeftStickDeadzone(controller);
-            SettingsSave.SaveRightStickDeadzone(controller);
+            //SettingsSave.SaveLeftStickDeadzone(controller);
+            //SettingsSave.SaveRightStickDeadzone(controller);
             SettingsSave.SaveToggleAim(controller);
 
             LoadUserData(controller);
