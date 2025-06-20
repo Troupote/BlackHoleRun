@@ -1,13 +1,18 @@
 using BHR;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlanetSpawningController : MonoBehaviour
 {
     [SerializeField]
     private GameObject m_planetsObject;
-    [SerializeField] 
+    [SerializeField]
     private GameObject m_shockwavePrefab;
+    [SerializeField]
+    private ScreenFlash m_screenFlash;
+    [SerializeField]
+    private List<Renderer> m_planetsRenderer;
 
     [SerializeField]
     private Transform m_planetPlacement1;
@@ -17,25 +22,42 @@ public class PlanetSpawningController : MonoBehaviour
     private Vector3 m_startPos1;
     private Vector3 m_startPos2;
     private Coroutine m_movementCoroutine;
-   
+
     private SphereCollider m_sphereCollider1;
     private SphereCollider m_sphereCollider2;
 
+    private List<Material> m_planetMaterials = new List<Material>();
+
     private void Start()
     {
-        m_planetsObject.SetActive(false);
         PlanetsCollidingManager.Instance.SetSpawner(this);
 
         m_sphereCollider1 = m_planetPlacement1.GetComponentInChildren<SphereCollider>();
         m_sphereCollider2 = m_planetPlacement2.GetComponentInChildren<SphereCollider>();
+
+        if (m_planetsRenderer != null)
+        {
+            foreach (var renderer in m_planetsRenderer)
+            {
+                if (renderer != null)
+                {
+                    Material mat = renderer.material;
+                    if (mat != null)
+                    {
+                        mat.SetFloat("_DissolveIntensity", 0f);
+                        m_planetMaterials.Add(mat);
+                    }
+                }
+            }
+        }
+
+        m_startPos1 = m_planetPlacement1.position;
+        m_startPos2 = m_planetPlacement2.position;
     }
 
     public void SpawnPlanets(float movementDuration)
     {
         m_planetsObject.SetActive(true);
-
-        m_startPos1 = m_planetPlacement1.position;
-        m_startPos2 = m_planetPlacement2.position;
 
         if (m_movementCoroutine != null)
             StopCoroutine(m_movementCoroutine);
@@ -73,12 +95,6 @@ public class PlanetSpawningController : MonoBehaviour
         m_planetPlacement2.position = to2;
     }
 
-    public void ResetPlanets()
-    {
-        m_planetPlacement1.transform.position = m_startPos1;
-        m_planetPlacement2.transform.position = m_startPos2;
-    }
-
     public void HandleCollision(Vector3 contactPoint)
     {
         if (m_movementCoroutine != null)
@@ -91,5 +107,37 @@ public class PlanetSpawningController : MonoBehaviour
 
         CameraManager.Instance.ShakeCamera(8f, 5f);
         Instantiate(m_shockwavePrefab, contactPoint, Quaternion.identity);
+        m_screenFlash.Flash();
+        StartCoroutine(LerpMaterialFloat("_DissolveIntensity", 0f, 1f, 3f));
+    }
+
+    private IEnumerator LerpMaterialFloat(string propertyName, float from, float to, float duration)
+    {
+        if (m_planetMaterials.Count == 0)
+            yield break;
+
+        float timer = 0f;
+        while (timer < duration)
+        {
+            if (!GameManager.Instance.IsPaused)
+            {
+                timer += Time.deltaTime;
+                float t = Mathf.Clamp01(timer / duration);
+                float value = Mathf.Lerp(from, to, t);
+
+                foreach (var mat in m_planetMaterials)
+                {
+                    if (mat.HasProperty(propertyName))
+                        mat.SetFloat(propertyName, value);
+                }
+            }
+            yield return null;
+        }
+
+        foreach (var mat in m_planetMaterials)
+        {
+            if (mat.HasProperty(propertyName))
+                mat.SetFloat(propertyName, to);
+        }
     }
 }
