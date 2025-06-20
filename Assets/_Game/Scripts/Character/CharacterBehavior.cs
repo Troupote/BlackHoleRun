@@ -259,6 +259,9 @@ public class CharacterBehavior : MonoBehaviour
         if (!m_canDash || CharactersManager.Instance.isHumanoidAiming) return;
 
         CharactersManager.Instance.CancelAim();
+        
+        // Appel de PlayDashSound avec la position actuelle du personnage
+        CharactersManager.Instance.PlayDashSound();
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
