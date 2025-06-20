@@ -130,7 +130,7 @@ public class CharacterBehavior : MonoBehaviour
         m_isGroundedForJump = IsGroundedForJump();
         CheckCoyotteTime();
 
-        if (m_wasInAir && m_isGroundedForJump)
+        if (CanJump())
         {
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Jump);
         }
@@ -188,7 +188,7 @@ public class CharacterBehavior : MonoBehaviour
 
     public void OnJump()
     {
-        if (!m_isGroundedForJump && m_coyotteTimeTimer <= 0f) return;
+        if (!CanJump()) return;
 
 
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
@@ -205,6 +205,8 @@ public class CharacterBehavior : MonoBehaviour
         m_coyotteTimeTimer = -1f;
         Invoke("ResetCoyotteTimer", 0.2f);
     }
+
+    public bool CanJump() => m_isGroundedForJump || m_coyotteTimeTimer > 0f;
 
     private void CheckCoyotteTime()
     {
@@ -249,10 +251,13 @@ public class CharacterBehavior : MonoBehaviour
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
 
-        m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
+        if(m_isGrounded)
+            m_dashCooldownCoroutine = StartCoroutine(GroundedDashCooldown());
+        else
+            m_dashCooldownCoroutine = StartCoroutine(AirDashCooldown());
     }
 
-    private IEnumerator DashCooldown()
+    private IEnumerator GroundedDashCooldown()
     {
         m_canDash = false;
 
@@ -260,6 +265,13 @@ public class CharacterBehavior : MonoBehaviour
 
         m_canDash = true;
         CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Dash);
+    }
+
+    private IEnumerator AirDashCooldown()
+    {
+        m_canDash = false;
+        yield return new WaitUntil(() => m_isGroundedForJump);
+        m_canDash = true;
     }
 
     public void OnSingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
@@ -270,7 +282,7 @@ public class CharacterBehavior : MonoBehaviour
 
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
-        m_dashCooldownCoroutine = StartCoroutine(DashCooldown());
+        m_dashCooldownCoroutine = StartCoroutine(AirDashCooldown());
 
         m_rigidbody.AddForce(a_direction * m_gameplayData.SingularityDashForce, ForceMode.VelocityChange);
     }
@@ -299,7 +311,7 @@ public class CharacterBehavior : MonoBehaviour
         if (!m_canDash)
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
 
-        if (!m_isGrounded)
+        if (!CanJump())
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
     }
 
