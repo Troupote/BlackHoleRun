@@ -188,7 +188,6 @@ namespace BHR
         {
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
-
             PlanetsCollidingManager.Instance.StartPlanetsMovement(_currentLevel.Times[MedalsType.EARTH]);
         }
 
@@ -456,7 +455,7 @@ namespace BHR
             }
         }
 
-        private void ResetSpeedLines() => ChangeSpeedLines(SpeedLinesState.NONE);
+        public void ResetSpeedLines() => ChangeSpeedLines(SpeedLinesState.NONE);
 
         private void TweenSpeedLinesSize(float newSize)
         {
