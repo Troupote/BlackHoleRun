@@ -47,7 +47,6 @@ namespace BHR
             if(other.CompareTag("Player"))
             {
                 ToggleUI(false);
-                Debug.Log("COUCOU");
                 if(_hasAlreadyPopup)
                 {
                     ModuleManager.Instance.transform.GetComponentInChildren<HUDModuleUI>(includeInactive: true).TogglePopup(true);

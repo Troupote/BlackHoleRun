@@ -28330,7 +28330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98eec9767c4bbfe4da1962ec3e4dabc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isBackButton: 0
+  isBackButton: 1
 --- !u!1 &6350644783281654551
 GameObject:
   m_ObjectHideFlags: 0

@@ -367,7 +367,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
         GameManager.Instance.ChangeSpeedLines(SpeedLinesState.BLACK);
         ShowSingularityPreview();
-        CancelAim();
     }
 
     private void OnThrowPerformed()
