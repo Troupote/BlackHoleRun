@@ -147,6 +147,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         m_characterBehavior.ImobilizeCharacter(false);
         m_singularityBehavior.HideHorizon(false);
+        GameManager.Instance.ResetSpeedLines();
 
         ResetInputs?.Invoke();
 
@@ -231,8 +232,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         if (m_isSwitching) return;
 
-
-        GameManager.Instance.ChangeSpeedLines(SpeedLinesState.NONE);
+        GameManager.Instance.ResetSpeedLines();
 
         m_isSwitching = true;
 
