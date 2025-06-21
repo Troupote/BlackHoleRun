@@ -118,13 +118,18 @@ public class PlanetSpawningController : MonoBehaviour
 
         Debug.Log("Planet collision detected!");
 
-        GameManager.Instance.StopChrono();
+        Invoke(nameof(StopChrono), 0.01f);
 
         CameraManager.Instance.ShakeCamera(8f, 5f);
         m_shockwave = Instantiate(m_shockwavePrefab, contactPoint, Quaternion.identity);
         m_screenFlash.Flash();
         StartCoroutine(LerpMaterialFloat("_DissolveIntensity", 0f, 1f, 3f));
         GameManager.Instance.OnRespawned.AddListener(DesactivateFlash);
+    }
+
+    private void StopChrono()
+    {
+        GameManager.Instance.StopChrono();
     }
 
     private void DesactivateFlash()

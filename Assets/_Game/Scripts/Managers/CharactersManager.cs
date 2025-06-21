@@ -761,7 +761,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         {
             while (GameManager.Instance.GameTimeScale == 0)
                 yield return null;
-            float speed = 200f;
+            float speed = 100f;
             m_singularityObject.transform.position = Vector3.MoveTowards(
                 m_singularityObject.transform.position,
                 a_destination,
