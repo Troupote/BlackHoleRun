@@ -36,6 +36,7 @@ namespace BHR
                 fade.DistanceFade = _distanceFade;
 
             _hasAlreadyPopup = false;
+            GameManager.Instance.CanOpenPopup = false;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -51,6 +52,7 @@ namespace BHR
                 {
                     ModuleManager.Instance.transform.GetComponentInChildren<HUDModuleUI>(includeInactive: true).TogglePopup(true);
                     GameManager.Instance.SavedTutorielData = _turorialData;
+                    GameManager.Instance.CanOpenPopup = true;
                 }
                 else
                 {
@@ -64,6 +66,7 @@ namespace BHR
             if (other.CompareTag("Player"))
             {
                 ToggleUI(true);
+                GameManager.Instance.CanOpenPopup = false;
 
                 if (!_hasAlreadyPopup)
                 {
