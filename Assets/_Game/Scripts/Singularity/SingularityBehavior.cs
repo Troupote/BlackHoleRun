@@ -18,6 +18,9 @@ public class SingularityBehavior : MonoBehaviour
     [field: SerializeField]
     internal SingularityShaderColorController ShaderColorController;
 
+    [SerializeField]
+    private GameObject m_singularityHorizon;
+
     public Action OnThrowPerformed;
     public Action OnUnmorph;
     public Action<Vector3> OnJump;
@@ -250,6 +253,14 @@ public class SingularityBehavior : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    public void HideHorizon(bool shouldHide)
+    {
+        if (m_singularityHorizon != null)
+        {
+            m_singularityHorizon.SetActive(!shouldHide);
+        }
     }
 
 #if UNITY_EDITOR

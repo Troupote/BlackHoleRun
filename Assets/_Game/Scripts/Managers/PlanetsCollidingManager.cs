@@ -1,21 +1,22 @@
 using BHR;
+using Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine;
 
 public class PlanetsCollidingManager : ManagerSingleton<PlanetsCollidingManager>
 {
-    private PlanetSpawningController m_spawner;
+    internal PlanetSpawningController Spawner { get; private set; }
 
     public void SetSpawner(PlanetSpawningController a_spawner)
     {
-        m_spawner = a_spawner;
+        Spawner = a_spawner;
     }
     public void StartPlanetsMovement(float a_timer)
     {
-        if (m_spawner != null)
+        if (Spawner != null)
         {
             Debug.Log("Starting planets movement with timer: " + a_timer);
-            m_spawner.SpawnPlanets(a_timer);
+            Spawner.SpawnPlanets(a_timer);
         }
         else
         {
@@ -25,6 +26,21 @@ public class PlanetsCollidingManager : ManagerSingleton<PlanetsCollidingManager>
 
     public void OnPlanetCollided(Vector3 contactPoint)
     {
-        m_spawner?.HandleCollision(contactPoint);
+        Spawner.HandleCollision(contactPoint);
+    }
+
+    [Button(ButtonSizes.Large), GUIColor(0.4f, 0.8f, 1f)]
+    public void OnLevelEnded()
+    {
+        if (Spawner != null)
+        {
+            GameManager.Instance.StopChrono();
+            Spawner.StopAllCoroutines();
+            CharactersManager.Instance.ManageEnding(Spawner.GetCenter());
+        }
+        else
+        {
+            Debug.LogError("PlanetSpawningController is not set in PlanetsCollidingManager.");
+        }
     }
 }
