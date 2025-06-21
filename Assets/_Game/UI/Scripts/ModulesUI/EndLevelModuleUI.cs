@@ -182,9 +182,9 @@ public class EndLevelModuleUI : MonoBehaviour
             _nextLevelPanel.GetComponentInChildren<TextMeshProUGUI>().text = LocalizationManager.Localize("M/MT/Credits");
             _nextLevelPanel.onClick.AddListener(() =>
             {
+                ModuleManager.Instance.ClearNavigationHistoric();
                 ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleType.CREDITS));
                 ScenesManager.Instance.ChangeScene(ScenesManager.Instance.MenuScene);
-                ModuleManager.Instance.ClearNavigationHistoric();
             });
         }
     }
