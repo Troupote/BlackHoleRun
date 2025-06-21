@@ -106,6 +106,8 @@ namespace BHR
         public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
         public UnityEvent OnPaused, OnResumed, OnRespawned;
 
+
+        public bool IsPracticeMode = false;
         private void Start()
         {
             Init();
@@ -218,12 +220,12 @@ namespace BHR
             CleanInGame(false);
             IsPlaying = false;
             bool newBestTime = false;
-            if (_hasPlayedInSolo)
+            if (!_hasPlayedInSolo && !IsPracticeMode)
                 newBestTime = CurrentLevel.SaveTime(Timer);
             ChangeMainPlayerState(PlayerState.UI, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.END_LEVEL));
             ModuleManager.Instance.ClearNavigationHistoric();
-            OnEndLevel.Invoke(Timer, newBestTime, _hasPlayedInSolo);
+            OnEndLevel.Invoke(Timer, newBestTime, _hasPlayedInSolo, IsPracticeMode);
         }
 
         public void QuitLevel()
