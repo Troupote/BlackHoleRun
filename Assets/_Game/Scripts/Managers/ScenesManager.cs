@@ -132,5 +132,9 @@ namespace BHR
                 ModuleManager.Instance.CheckStartAnimationLaunchConditions();
             }
         }
+
+        public void LoadSceneAdditive(string scene) => SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
+
+        public void UnloadSceneAdditive(string scene) => SceneManager.UnloadSceneAsync(scene);
     }
 }

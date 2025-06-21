@@ -17,6 +17,7 @@ public class EndLevelModuleUI : MonoBehaviour
     [SerializeField, Required, FoldoutGroup("Run Infos/Refs")] private TextMeshProUGUI _levelNameText;
     [SerializeField, Required, FoldoutGroup("Run Infos/Refs")] private TextMeshProUGUI _currentTimeText;
     [SerializeField, Required, FoldoutGroup("Run Infos/Refs")] private TextMeshProUGUI _bestTimeText;
+    [SerializeField, Required, FoldoutGroup("Run Infos/Refs")] private Toggle _practiceToggle;
     #endregion
 
     #region Medals
@@ -24,7 +25,7 @@ public class EndLevelModuleUI : MonoBehaviour
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] Transform _medalsSpriteParent;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] private Sprite[] _medalsSprite;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] private TextMeshProUGUI _medalNameText;
-    [SerializeField, Required, FoldoutGroup("Medals/Refs")] private GameObject _nextLevelPanel;
+    [SerializeField, Required, FoldoutGroup("Medals/Refs")] private Button _nextLevelPanel;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] private TextMeshProUGUI _endLevelText;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] TextMeshProUGUI _medalTimeText;
     [SerializeField, Required, FoldoutGroup("Medals/Refs")] Button _rightArrowButton;
@@ -64,13 +65,13 @@ public class EndLevelModuleUI : MonoBehaviour
         GameManager.Instance.OnEndLevel.RemoveListener(OnEndLevel);
     }
 
-    private void OnEndLevel(float endTime, bool newBest, bool hasPlayedSolo)
+    private void OnEndLevel(float endTime, bool newBest, bool hasPlayedSolo, bool practiceMode)
     {
         _currentLevel = GameManager.Instance.CurrentLevel;
         _endTimer = endTime;
         UpdateRunInfos(newBest);
         CreateMedals();
-        UpdateEndLevelInfosText(hasPlayedSolo);
+        UpdateEndLevelInfosText(hasPlayedSolo, practiceMode);
         CheckIfNextLevel();
     }
 
@@ -112,11 +113,15 @@ public class EndLevelModuleUI : MonoBehaviour
         CheckButtons();
     }
 
-    private void UpdateEndLevelInfosText(bool hasPlayedInSolo)
+    private void UpdateEndLevelInfosText(bool hasPlayedInSolo, bool practiceMode)
     {
         string endTextInfosKey = MedalObtainedId == 0 ? _failedLocalizationKey : _successLocalizationKey;
-        if (hasPlayedInSolo)
+        if (hasPlayedInSolo && practiceMode)
+            endTextInfosKey = "M/EL/PracticeSolo";
+        else if (hasPlayedInSolo)
             endTextInfosKey = _soloModeLocalizationKey;
+        else if (practiceMode)
+            endTextInfosKey = "M/EL/Practice";
         _endLevelText.text = LocalizationManager.Localize(endTextInfosKey).ToUpper();
     }
 
@@ -143,7 +148,9 @@ public class EndLevelModuleUI : MonoBehaviour
         MedalsType currentMedal = (MedalsType)_currentMedalDisplayed;
         _medalNameText.text = LocalizationManager.Localize(UtilitiesFunctions.ToLowerWithFirstUpper(currentMedal.ToString())).ToUpper();
 
-        float time = _currentLevel.Times[currentMedal];
+        float time = 0f;
+        if(_currentLevel.Times.ContainsKey(currentMedal))
+            time = _currentLevel.Times[currentMedal];
         _medalTimeText.text = UtilitiesFunctions.TimeFormat(time);
 
         _medalNameText.color = _medalTimeText.color = _endTimer <= time ? Color.white : ModuleManager.Instance.HideMedalTextColor;
@@ -163,18 +170,30 @@ public class EndLevelModuleUI : MonoBehaviour
 
     private void CheckIfNextLevel()
     {
+        _nextLevelPanel.onClick.RemoveAllListeners();
         if (_currentLevel.ID <= DataManager.Instance.GetLastLevelCompletedID() && _currentLevel.ID != DataManager.Instance.LevelDatas.Last().ID)
         {
-            _nextLevelPanel.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
-            _nextLevelPanel.GetComponentInChildren<Button>().onClick.AddListener(() => GameManager.Instance.SaveSelectedLevel(DataManager.Instance.LevelDatas[_currentLevel.ID + 1]));
-            _nextLevelPanel.GetComponentInChildren<Button>().onClick.AddListener(() => GameManager.Instance.LaunchLevel());
-            _nextLevelPanel.SetActive(true);
+            _nextLevelPanel.GetComponentInChildren<TextMeshProUGUI>().text = LocalizationManager.Localize("M/EL/NextLevel");
+            _nextLevelPanel.onClick.AddListener(() => GameManager.Instance.SaveSelectedLevel(DataManager.Instance.LevelDatas[_currentLevel.ID + 1]));
+            _nextLevelPanel.onClick.AddListener(() => GameManager.Instance.LaunchLevel());
         }
         else
-            _nextLevelPanel.SetActive(false);
+        {
+            _nextLevelPanel.GetComponentInChildren<TextMeshProUGUI>().text = LocalizationManager.Localize("M/MT/Credits");
+            _nextLevelPanel.onClick.AddListener(() =>
+            {
+                ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleType.CREDITS));
+                ScenesManager.Instance.ChangeScene(ScenesManager.Instance.MenuScene);
+                ModuleManager.Instance.ClearNavigationHistoric();
+            });
+        }
     }
 
-    public void RestartLevel() => GameManager.Instance.RestartLevel(true);
+    public void RestartLevel()
+    {
+        GameManager.Instance.IsPracticeMode = _practiceToggle.isOn;
+        GameManager.Instance.RestartLevel(true);
+    }
     public void QuitLevel() => GameManager.Instance.QuitLevel();
 
 }

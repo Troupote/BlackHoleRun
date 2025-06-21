@@ -127,6 +127,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1552020915830369986, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: _selectedObject
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4734163077719743939, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
       propertyPath: m_Name
       value: UIModulesManager
@@ -359,13 +363,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 958554268}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.991062, y: 0.0011616915, z: -0.008648888, w: 0.13311632}
+  m_LocalRotation: {x: 0.3770145, y: 0.054913938, z: -0.022398788, w: 0.92430675}
   m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 164.7, y: 1, z: 0}
+  m_LocalEulerAnglesHint: {x: 44.38002, y: 6.8, z: 0}
 --- !u!114 &958554272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -627,6 +631,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4846799805334316505, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
+      propertyPath: VSLevelData
+      value: 
+      objectReference: {fileID: 11400000, guid: 204c5e4c971a2aa439096b417137be76, type: 2}
     - target: {fileID: 4942750028036633372, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: m_Name
       value: GameManager
