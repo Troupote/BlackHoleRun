@@ -188,7 +188,6 @@ namespace BHR
         {
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
-
             PlanetsCollidingManager.Instance.StartPlanetsMovement(_currentLevel.Times[MedalsType.EARTH]);
         }
 
@@ -314,6 +313,8 @@ namespace BHR
             ModuleManager.Instance.GetModule(ModuleType.TUTORIEL).GetComponent<TutorielModuleUI>().LoadTutorielData(data);
             Pause(ModuleManager.Instance.GetModule(ModuleType.TUTORIEL));
             ModuleManager.Instance.ClearNavigationHistoric();
+
+            CharactersManager.Instance.CancelAim();
         }
 
 
@@ -349,8 +350,14 @@ namespace BHR
         #region Time gestion
         private void Chrono()
         {
-            if (IsPlaying || IsRespawning)
+            if ((IsPlaying || IsRespawning) && !m_isChronoStopped)
                 Timer += Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
+        }
+
+        private bool m_isChronoStopped = false;
+        public void StopChrono()
+        {
+            m_isChronoStopped = true;
         }
 
         private const float _outerWildsEasterEggBonus = -0.22f;
@@ -448,7 +455,7 @@ namespace BHR
             }
         }
 
-        private void ResetSpeedLines() => ChangeSpeedLines(SpeedLinesState.NONE);
+        public void ResetSpeedLines() => ChangeSpeedLines(SpeedLinesState.NONE);
 
         private void TweenSpeedLinesSize(float newSize)
         {

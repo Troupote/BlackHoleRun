@@ -47,6 +47,7 @@ namespace BHR
             // @todo remove tuto if level completed ? -> make a settings option ?
             if(other.CompareTag("Player"))
             {
+                if (CharactersManager.Instance.isHumanoidAiming) return;
                 ToggleUI(false);
                 if(_hasAlreadyPopup)
                 {
