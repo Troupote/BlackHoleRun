@@ -29,6 +29,8 @@ namespace _Game.Scripts.Music
 
         [field: FoldoutGroup("Music"), Header("Music Beat Rigolo")]
         [field: SerializeField] public EventReference musicBeatRigolo { get; private set; }
+        [field: FoldoutGroup("Music"), Header("General Menu Music")]
+        [field: SerializeField] public EventReference MusicGeneralMenu { get; private set; }
 
         [field: FoldoutGroup("UI"), Header("Return Button")]
         [field: SerializeField] public EventReference UIReturnButton { get; private set; }
