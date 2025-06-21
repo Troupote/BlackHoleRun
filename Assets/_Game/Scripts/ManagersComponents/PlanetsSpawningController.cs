@@ -60,6 +60,8 @@ public class PlanetSpawningController : MonoBehaviour
 
     public void SpawnPlanets(float movementDuration)
     {
+        if (GameManager.Instance.IsPracticeMode) return;
+
         m_planetsObject.SetActive(true);
 
         if (m_movementCoroutine != null)
