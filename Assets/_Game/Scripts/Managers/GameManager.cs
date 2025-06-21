@@ -1,12 +1,10 @@
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using UnityEngine.Tilemaps;
 
 namespace BHR
 {
@@ -14,6 +12,11 @@ namespace BHR
     {
         [Required]
         public GameSettingsSO GameSettings;
+
+        [Required]
+        public LevelDataSO VSLevelData;
+
+        private CharacterGameplayData _characterGameplayData => CharactersManager.Instance.GameplayData;
 
         [SerializeField]
         private PlayerState _activePlayerState;
@@ -40,11 +43,13 @@ namespace BHR
         public LevelDataSO CurrentLevel => _currentLevel;
         public UnityEvent<bool> OnLaunchLevel, OnTutorielSet;
         private bool _tutorielEnable;
+        public TutorielData SavedTutorielData;
+        public bool CanOpenPopup = false;
         public UnityEvent OnStartLevel;
         /// <summary>
         /// Float End timer, bool HasHitNewBestTime, bool HasPlayedSolo
         /// </summary>
-        public UnityEvent<float, bool, bool> OnEndLevel;
+        public UnityEvent<float, bool, bool, bool> OnEndLevel;
 
         #region During Game Level
         private float _timer;
@@ -100,19 +105,25 @@ namespace BHR
             }
         }
         public UnityEvent<float> OnGameTimeScaleChanged;
+
+        [SerializeField] private Material _speedLines;
         #endregion
 
         public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
         public UnityEvent OnPaused, OnResumed, OnRespawned;
 
+
+        public bool IsPracticeMode = false;
         private void Start()
         {
             Init();
+            ChangeSpeedLines(SpeedLinesState.NONE);
 
             // Bind to input events
             PlayersInputManager.Instance.OnPause.AddListener(TogglePause);
             PlayersInputManager.Instance.OnRestartLevel.AddListener(() => RestartLevel(false));
             PlayersInputManager.Instance.OnRespawn.AddListener(Respawning);
+            PlayersInputManager.Instance.OnOpenTutorial.AddListener(() => TryLoadTutorielData(SavedTutorielData));
         }
 
         private void Update()
@@ -132,6 +143,7 @@ namespace BHR
 
         public void LaunchLevel(bool firstStart = true)
         {
+            ChangeSpeedLines(SpeedLinesState.NONE);
             SoloMode = PlayersInputManager.Instance.SoloModeEnabled;
             PlayersInputManager.Instance.CanConnect = false;
             ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleType.HUD));
@@ -177,7 +189,7 @@ namespace BHR
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
 
-            PlanetsCollidingManager.Instance.StartPlanetsMovement(10f);
+            PlanetsCollidingManager.Instance.StartPlanetsMovement(_currentLevel.Times[MedalsType.EARTH]);
         }
 
         public void TogglePause()
@@ -216,12 +228,12 @@ namespace BHR
             CleanInGame(false);
             IsPlaying = false;
             bool newBestTime = false;
-            if (_hasPlayedInSolo)
+            if (!_hasPlayedInSolo && !IsPracticeMode)
                 newBestTime = CurrentLevel.SaveTime(Timer);
             ChangeMainPlayerState(PlayerState.UI, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.END_LEVEL));
             ModuleManager.Instance.ClearNavigationHistoric();
-            OnEndLevel.Invoke(Timer, newBestTime, _hasPlayedInSolo);
+            OnEndLevel.Invoke(Timer, newBestTime, _hasPlayedInSolo, IsPracticeMode);
         }
 
         public void QuitLevel()
@@ -289,6 +301,12 @@ namespace BHR
             //yield return new WaitForSeconds(transitionDuration);
             //_isRespawning = false;
             //IsPlaying = true;
+        }
+
+        private void TryLoadTutorielData(TutorielData data)
+        {
+            if (CanOpenPopup)
+                LoadTutorielData(data);
         }
 
         public void LoadTutorielData(TutorielData data)
@@ -388,6 +406,55 @@ namespace BHR
             }
 
             GameTimeScale = end;
+        }
+
+        #endregion
+
+        #region Speed lines
+        private bool _sizeTweenFinished = false;
+        public void ChangeSpeedLines(SpeedLinesState state)
+        {
+            _sizeTweenFinished = false;
+            switch (state)
+            {
+                case SpeedLinesState.NONE:
+                    TweenSpeedLinesSize(1.5f);
+                    break;
+                case SpeedLinesState.DASH:
+                    _speedLines.SetColor("_Color", Color.white);
+                    _speedLines.SetFloat("_LineAmount", 15);
+                    TweenSpeedLinesSize(_characterGameplayData.DashSize);
+                    Invoke("ResetSpeedLines", _characterGameplayData.DashLinesDuration);
+                    break;
+                case SpeedLinesState.BLACK:
+                    _speedLines.SetColor("_Color", _characterGameplayData.BlackManColor);
+                    _speedLines.SetFloat("_LineAmount", _characterGameplayData.SinguLineAmount);
+                    TweenSpeedLinesSize(_characterGameplayData.SinguSize);
+                    break;
+                case SpeedLinesState.WHITE:
+                    _speedLines.SetColor("_Color", _characterGameplayData.WhiteManColor);
+                    _speedLines.SetFloat("_LineAmount", _characterGameplayData.SinguLineAmount);
+                    TweenSpeedLinesSize(_characterGameplayData.SinguSize);
+                    break;
+            }
+        }
+
+        public void ApplySpeedLinesSingu(float distance)
+        {
+            if(_sizeTweenFinished)
+            {
+                float size = distance * (_characterGameplayData.BaseSize - _characterGameplayData.SinguSize) + _characterGameplayData.SinguSize;
+                _speedLines.SetFloat("_Size2", size);
+            }
+        }
+
+        private void ResetSpeedLines() => ChangeSpeedLines(SpeedLinesState.NONE);
+
+        private void TweenSpeedLinesSize(float newSize)
+        {
+            Tween tween = DOTween.To(() => _speedLines.GetFloat("_Size2"), x => _speedLines.SetFloat("_Size2", x), newSize, 0.3f);
+            tween.onComplete = () => _sizeTweenFinished = true;
+            tween.Play();
         }
 
         #endregion

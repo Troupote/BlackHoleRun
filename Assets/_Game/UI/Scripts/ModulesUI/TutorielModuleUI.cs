@@ -15,6 +15,7 @@ namespace BHR
         [SerializeField, Required, FoldoutGroup("Refs")] private TextMeshProUGUI _description;
         [SerializeField, Required, FoldoutGroup("Refs")] private Image _schema;
         [SerializeField, Required, FoldoutGroup("Refs")] private Transform _bindingsContainer;
+
         public override void Back()
         {
             ModuleManager.Instance.OnTutorielToggled.Invoke(false);

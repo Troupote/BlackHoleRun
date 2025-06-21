@@ -55,14 +55,14 @@ MonoBehaviour:
   m_timeTakenToGoToCenter: 0.05
   m_gravityDelayDuration: 0.5
   m_gravityMultiplier: 2
-  m_playerSpeed: 35
+  m_playerSpeed: 28
   m_jumpForce: 35
-  m_coyotteTime: 0.15
+  m_coyotteTime: 0.25
   m_dashForce: 200
   m_dashDuration: 0.2
   m_dashCooldown: 1.5
   m_gravityScale: 8
-  m_airPlayerSpeedMultiplier: 0.8
+  m_airPlayerSpeedMultiplier: 1
   m_triggerAimDuration: 0.4
   m_targetAimTimeScale: 0.2
   m_groundMask:
@@ -70,6 +70,7 @@ MonoBehaviour:
     m_Bits: 64
   m_capsuleGroundDistance: 0.5
   m_raycastGroundDistance: 1
+  m_raycastDashAsteroid: 4
   m_baseFOV: 60
   m_baseFOVTransitionDuration: 1
   m_MovingForwardFOV: 67
@@ -83,3 +84,11 @@ MonoBehaviour:
   m_playerTwoColors:
     Exterior: {r: 0, g: 0.42937565, b: 1, a: 1}
     Interior: {r: 1, g: 1, b: 1, a: 1}
+  m_whiteManColor: {r: 0.8980392, g: 0.6627451, b: 0.2784314, a: 1}
+  m_blackManColor: {r: 0.2784314, g: 0.69411767, b: 0.8980392, a: 1}
+  _dashLineAmount: 10
+  _singuLineAmount: 3
+  _dashSize: 0.4
+  _singuSize: 0.15
+  _baseSize: 1
+  _dashLinesDuration: 0.5

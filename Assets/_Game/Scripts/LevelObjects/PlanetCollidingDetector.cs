@@ -3,16 +3,14 @@ using UnityEngine;
 
 public class PlanetCollidingDetector : MonoBehaviour
 {
-    [SerializeField]
-    private bool m_shouldHandleDetection = true;
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.CompareTag("Planet") && other.transform.parent != transform.parent)
-        {
-            Debug.Log($"Colliding with {other.gameObject.name}");
-            Vector3 contactPoint = (transform.position + other.transform.position) / 2f;
+        if (!collision.gameObject.CompareTag("Planet")) return;
 
-            PlanetsCollidingManager.Instance.OnPlanetCollided(contactPoint);
-        }
+        var contact = collision.contacts[0];
+        Vector3 contactPoint = contact.point;
+
+        PlanetsCollidingManager.Instance.OnPlanetCollided(contactPoint);
     }
+
 }

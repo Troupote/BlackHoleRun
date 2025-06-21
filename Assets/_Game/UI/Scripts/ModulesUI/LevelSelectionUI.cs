@@ -24,14 +24,16 @@ public class LevelSelectionUI : AModuleUI
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private TextMeshProUGUI[] _medalsTimeText;
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private Button _playButton;
     [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private GameObject _tutorielSet;
+    [SerializeField, Required, FoldoutGroup("Level Infos/Refs")] private Toggle _practiceToggle;
     [SerializeField, Required, FoldoutGroup("Level Infos/Localization")] private string _notCompletedYetLocalizationKey;
 
     [SerializeField, Required, FoldoutGroup("Settings")] private Color _hideColor;
 
     private void OnEnable()
     {
-        LoadLevelsSelection();
+        //LoadLevelsSelection();
         UnloadLevel();
+        LoadLevel(GameManager.Instance.VSLevelData);
     }
     private void UnloadLevel()
     {
@@ -76,16 +78,20 @@ public class LevelSelectionUI : AModuleUI
     public void LoadLevel(LevelDataSO data)
     {
         // Enable tutoriel set if level one
-        _tutorielSet.SetActive(data.ID == 0);
+        _tutorielSet.SetActive(data.ID <= 1);
 
         _playButton.onClick.RemoveListener(() => GameManager.Instance.SaveSelectedLevel(data));
         _playButton.onClick.AddListener(() => GameManager.Instance.SaveSelectedLevel(data));
 
-        if (data.ID == 0)
+        if (data.ID <= 1)
         {
             _playButton.onClick.RemoveListener(() => GameManager.Instance.SetTutoriel(_tutorielSet.GetComponentInChildren<Toggle>().isOn));
             _playButton.onClick.AddListener(() => GameManager.Instance.SetTutoriel(_tutorielSet.GetComponentInChildren<Toggle>().isOn));
         }
+
+        _playButton.onClick.RemoveListener(() => GameManager.Instance.IsPracticeMode = _practiceToggle.isOn);
+        _playButton.onClick.AddListener(() => GameManager.Instance.IsPracticeMode = _practiceToggle.isOn);
+        _practiceToggle.isOn = GameManager.Instance.IsPracticeMode;
 
         _levelNameText.text = $"{data.LevelName}\n{data.ID.ToString("D2")}";
 
@@ -106,7 +112,7 @@ public class LevelSelectionUI : AModuleUI
 
     public override void Back()
     {
-        if(_levelSelectedPanel.activeSelf)
+        if(_levelSelectedPanel.activeSelf && false)
         {
             UnloadLevel();
         }

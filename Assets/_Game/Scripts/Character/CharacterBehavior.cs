@@ -135,7 +135,7 @@ public class CharacterBehavior : MonoBehaviour
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Jump);
         }
 
-        IsJumping = !m_isGrounded;
+        IsJumping = !CanJump() && m_rigidbody.linearVelocity.y > 0f;
 
         if (IsDashing)
         {
@@ -224,7 +224,7 @@ public class CharacterBehavior : MonoBehaviour
         Invoke("ResetCoyotteTimer", 0.2f);
     }
 
-    public bool CanJump() => (m_isGrounded || m_coyotteTimeTimer > 0f) && !CharactersManager.Instance.isHumanoidAiming;
+    public bool CanJump() => (m_isGroundedForJump || m_coyotteTimeTimer > 0f) && !CharactersManager.Instance.isHumanoidAiming;
 
     private void CheckCoyotteTime()
     {
@@ -262,6 +262,8 @@ public class CharacterBehavior : MonoBehaviour
         
         // Appel de PlayDashSound avec la position actuelle du personnage
         CharactersManager.Instance.PlayDashSound();
+
+        GameManager.Instance.ChangeSpeedLines(SpeedLinesState.DASH);
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
@@ -318,6 +320,8 @@ public class CharacterBehavior : MonoBehaviour
     public void OnThrowSingularity()
     {
         if (!CharactersManager.Instance.CanThrow) return;
+
+        CharactersManager.Instance.CancelAim();
 
         RegisterActionsToLimitActions();
 

@@ -167,4 +167,37 @@ public class CharacterGameplayData : ScriptableObject
     private PlayerColors m_playerTwoColors;
     public PlayerColors PlayerTwoColors => m_playerTwoColors;
 
+    [Title("Speed Lines")]
+    [SerializeField, PropertyOrder(3)]
+    private Color m_whiteManColor;
+    public Color WhiteManColor => m_whiteManColor;
+
+    [SerializeField, PropertyOrder(3)]
+    private Color m_blackManColor;
+    public Color BlackManColor => m_blackManColor;
+
+    [SerializeField, PropertyOrder(3)]
+    private float _dashLineAmount;
+    public float DashLineAmount => _dashLineAmount;
+
+    [SerializeField, PropertyOrder(3)]
+    private float _singuLineAmount;
+    public float SinguLineAmount => _singuLineAmount;
+
+    [SerializeField, PropertyOrder(3)]
+    private float _dashSize = 0.4f;
+    public float DashSize => _dashSize;
+
+    [SerializeField, PropertyOrder(3)]
+    private float _singuSize;
+    public float SinguSize => _singuSize;
+
+    [SerializeField, PropertyOrder(3)]
+    private float _baseSize = 1f;
+    public float BaseSize => _baseSize;
+
+    [SerializeField, PropertyOrder(3)]
+    private float _dashLinesDuration;
+    public float DashLinesDuration => _dashLinesDuration;
+
 }

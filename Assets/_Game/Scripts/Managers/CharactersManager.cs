@@ -44,6 +44,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     internal bool CanThrow => m_singularityBehavior.IsAllowedToBeThrown;
 
+    private bool _speedLinesInitDone = false;
+
     public override void Awake()
     {
         SetInstance(false);
@@ -150,10 +152,10 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     }
 
 
-    private bool IsDistanceBetweenPlayersExceeded()
+    private float DistanceBetweenPlayersInPercents()
     {
         return (Vector3.Distance(m_characterObject.transform.position, m_singularityObject.transform.position)
-            > m_gameplayData.MaxDistanceBetweenPlayers);
+            / m_gameplayData.MaxDistanceBetweenPlayers);
     }
 
     #region Life Cycle
@@ -194,10 +196,10 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         }
 
         // Check if the distance between players is exceeded
-        if (IsDistanceBetweenPlayersExceeded() && !m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
-        {
+        if (DistanceBetweenPlayersInPercents() >= 1f && !m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
             SwitchCharactersPositions();
-        }
+        else if (GameManager.Instance.ActivePlayerState == PlayerState.SINGULARITY)
+            GameManager.Instance.ApplySpeedLinesSingu(DistanceBetweenPlayersInPercents());
     }
 
     private void OnDestroy()
@@ -222,6 +224,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     public void SwitchCharactersPositions()
     {
         if (m_isSwitching) return;
+
+
+        GameManager.Instance.ChangeSpeedLines(SpeedLinesState.NONE);
 
         m_isSwitching = true;
 
@@ -359,10 +364,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         m_singularityBehavior.OnThrow();
         m_characterBehavior.ImobilizeCharacter(true);
-        ShowSingularityPreview();
         GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
-
-        CancelAim();
+        GameManager.Instance.ChangeSpeedLines(SpeedLinesState.BLACK);
+        ShowSingularityPreview();
     }
 
     private void OnThrowPerformed()
@@ -427,6 +431,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         // Jouer le son du dash avec notre méthode dédiée
         PlayDashSound();
+        GameManager.Instance.ChangeSpeedLines(SpeedLinesState.DASH);
 
         SwitchCharactersPositions();
         m_characterBehavior.OnSingularityDash(a_linearVelocityToApply, a_direction);
