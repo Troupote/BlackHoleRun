@@ -84,3 +84,11 @@ MonoBehaviour:
   m_playerTwoColors:
     Exterior: {r: 0, g: 0.42937565, b: 1, a: 1}
     Interior: {r: 1, g: 1, b: 1, a: 1}
+  m_whiteManColor: {r: 0.8980392, g: 0.6627451, b: 0.2784314, a: 1}
+  m_blackManColor: {r: 0.2784314, g: 0.69411767, b: 0.8980392, a: 1}
+  _dashLineAmount: 10
+  _singuLineAmount: 3
+  _dashSize: 0.4
+  _singuSize: 0.15
+  _baseSize: 1
+  _dashLinesDuration: 0.5
