@@ -23,7 +23,7 @@ namespace BHR
         public PlayerState ActivePlayerState => _activePlayerState;
         private int _activePlayerIndex;
         public int ActivePlayerIndex => _activePlayerIndex;
-        private bool _mainPlayerIsPlayerOne = true;
+        public bool _mainPlayerIsPlayerOne = true;
         [SerializeField, ReadOnly]
         private LevelDataSO _selectedLevel = null;
         [SerializeField, ReadOnly]

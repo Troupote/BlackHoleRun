@@ -253,7 +253,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         GameManager.Instance.ChangeMainPlayerState(PlayerState.HUMANOID, false);
 
-        m_singularityBehavior.ShaderColorController.SetPlayerColors(GameManager.Instance.ActivePlayerIndex == 0 ? false : true);
+        m_singularityBehavior.ShaderColorController.SetPlayerColors();
 
         LimitPlayersMovements.ClearPerformedMovements();
 
