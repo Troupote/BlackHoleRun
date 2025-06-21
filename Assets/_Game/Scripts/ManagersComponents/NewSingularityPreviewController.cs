@@ -34,7 +34,7 @@ public class NewSingularityPreviewController : MonoBehaviour
 
         m_shaderColorController = m_currentPreviewObject.GetComponent<SingularityShaderColorController>();
 
-        m_shaderColorController.SetPlayerColors(GameManager.Instance.ActivePlayerIndex == 0 ? false : true);
+        m_shaderColorController.SetPlayerColors();
     }
 
     /// <summary>

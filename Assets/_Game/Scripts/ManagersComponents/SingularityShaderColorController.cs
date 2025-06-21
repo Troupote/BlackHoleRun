@@ -1,3 +1,4 @@
+using BHR;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,20 +38,23 @@ public class SingularityShaderColorController : MonoBehaviour
 
         m_isInitialized = true;
     }
-    public void SetPlayerColors(bool a_isPlayerOne)
+    public void SetPlayerColors()
     {
         if (!m_isInitialized)
         {
             Initialize();
         }
+        bool a_player = GameManager.Instance._mainPlayerIsPlayerOne;
 
-        Debug.Log($"Setting colors for {(a_isPlayerOne ? "Player Two" : "Player One")}", this);
+        Debug.Log($"Setting colors for {(a_player ? "Player Two" : "Player One")}", this);
 
-        m_singularityMaterial.SetColor("_ExteriorColor", a_isPlayerOne ? m_gameplayData.PlayerOneColors.Exterior : m_gameplayData.PlayerTwoColors.Exterior);
-        m_singularityMaterial.SetColor("_InteriorColor", a_isPlayerOne ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
+        m_singularityMaterial.SetColor("_ExteriorColor", a_player ? m_gameplayData.PlayerOneColors.Exterior*12 : m_gameplayData.PlayerTwoColors.Exterior*12);
+        m_singularityMaterial.SetColor("_InteriorColor", a_player ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
 
-        m_horizonMaterial.SetColor("_Color1", a_isPlayerOne ? m_gameplayData.PlayerOneColors.Exterior : m_gameplayData.PlayerTwoColors.Exterior);
-        m_horizonMaterial.SetColor("_Color2", a_isPlayerOne ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
+        m_horizonMaterial.SetColor("_Color2", a_player ? m_gameplayData.PlayerOneColors.Exterior*6 : m_gameplayData.PlayerTwoColors.Exterior*6);
+        m_horizonMaterial.SetColor("_Color1", a_player ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
+
+        a_player = !a_player;
     }
 
 }
