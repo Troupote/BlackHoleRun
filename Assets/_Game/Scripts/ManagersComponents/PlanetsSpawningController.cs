@@ -28,6 +28,9 @@ public class PlanetSpawningController : MonoBehaviour
 
     private List<Material> m_planetMaterials = new List<Material>();
 
+    public Transform PlanetPlacement1 => m_planetPlacement1;
+    public Transform PlanetPlacement2 => m_planetPlacement2;
+
     private void Start()
     {
         PlanetsCollidingManager.Instance.SetSpawner(this);
@@ -95,6 +98,14 @@ public class PlanetSpawningController : MonoBehaviour
         m_planetPlacement2.position = to2;
     }
 
+    public Vector3 GetCenter()
+    {
+        Vector3 center = (m_planetPlacement1.position + m_planetPlacement2.position) / 2f;
+        center.y += m_sphereCollider1.radius * m_sphereCollider1.transform.lossyScale.x;
+        return center;
+    }
+
+    private GameObject m_shockwave;
     public void HandleCollision(Vector3 contactPoint)
     {
         if (m_movementCoroutine != null)
@@ -105,10 +116,23 @@ public class PlanetSpawningController : MonoBehaviour
 
         Debug.Log("Planet collision detected!");
 
+        GameManager.Instance.StopChrono();
+
         CameraManager.Instance.ShakeCamera(8f, 5f);
-        Instantiate(m_shockwavePrefab, contactPoint, Quaternion.identity);
+        m_shockwave = Instantiate(m_shockwavePrefab, contactPoint, Quaternion.identity);
         m_screenFlash.Flash();
         StartCoroutine(LerpMaterialFloat("_DissolveIntensity", 0f, 1f, 3f));
+        GameManager.Instance.OnRespawned.AddListener(DesactivateFlash);
+    }
+
+    private void DesactivateFlash()
+    {
+        if (m_screenFlash != null)
+        {
+            m_shockwave.gameObject.SetActive(false);
+        }
+
+        GameManager.Instance.OnRespawned.RemoveListener(DesactivateFlash);
     }
 
     private IEnumerator LerpMaterialFloat(string propertyName, float from, float to, float duration)
@@ -139,5 +163,13 @@ public class PlanetSpawningController : MonoBehaviour
             if (mat.HasProperty(propertyName))
                 mat.SetFloat(propertyName, to);
         }
+    }
+
+    public void DisableSphereColliders()
+    {
+        if (m_sphereCollider1 != null)
+            m_sphereCollider1.enabled = false;
+        if (m_sphereCollider2 != null)
+            m_sphereCollider2.enabled = false;
     }
 }

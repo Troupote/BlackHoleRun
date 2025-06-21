@@ -37,14 +37,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _LineAmount: 2
+    - _LineAmount: 3
     - _RadialScale: 0
     - _Roughness: 1
     - _Size: 1
-    - _Size2: 0.6
+    - _Size2: 1.5
     - _Spacing: 1.4
     - _Speed: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Color: {r: 0.2784314, g: 0.69411767, b: 0.8980392, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

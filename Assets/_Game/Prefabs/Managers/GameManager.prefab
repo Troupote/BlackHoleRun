@@ -285,6 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameSettings: {fileID: 11400000, guid: 49f454b3b4a35104f81eacf0200146b0, type: 2}
+  VSLevelData: {fileID: 11400000, guid: 204c5e4c971a2aa439096b417137be76, type: 2}
   _activePlayerState: 0
   _selectedLevel: {fileID: 0}
   _currentLevel: {fileID: 0}
@@ -292,6 +293,14 @@ MonoBehaviour:
   OnLaunchLevel:
     m_PersistentCalls:
       m_Calls: []
+  OnTutorielSet:
+    m_PersistentCalls:
+      m_Calls: []
+  SavedTutorielData:
+    TutorielNameKey: 
+    ActionRef: {fileID: 0}
+    DescriptionKey: 
+    Scheme: {fileID: 0}
   OnStartLevel:
     m_PersistentCalls:
       m_Calls: []
@@ -304,6 +313,10 @@ MonoBehaviour:
   _isPlaying: 0
   _isPaused: 0
   _gameTimeScale: 0
+  OnGameTimeScaleChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  _speedLinesMaterial: {fileID: 2100000, guid: 25acb2bf971708b4784bcd5d966fc50f, type: 2}
   OnMainPlayerStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -313,12 +326,13 @@ MonoBehaviour:
   OnResumed:
     m_PersistentCalls:
       m_Calls: []
-  OnRespawn:
+  OnRespawned:
     m_PersistentCalls:
       m_Calls: []
-  isSlowed: 1
-  isFinished: 0
-  isStarted: 0
+  IsPracticeMode: 0
+  isTimeSlowed: 1
+  isSlowMotionSequenceFinished: 0
+  isSlowMotionSequenceStarted: 0
 --- !u!114 &391594483695264458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,6 +347,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _debug: 1
   _enableDebugKeyboardShortcuts: 1
+  _unlockedAllLevels: 0
   _disableStartAnimation: 1
-  _enableCheckpointInfosText: 1
-  _checkpointHUDInfosText: {fileID: 5398624772312287453}
+  _forceTutoriel: 0
+  _disableTutorielPopup: 0
+  _immortal: 0
+  _singularityInstantComeback: 0
+  _deadzonesPreview: 0
+  _displayDeviceData: 0
+  _showControllerKeyinRebinding: 0

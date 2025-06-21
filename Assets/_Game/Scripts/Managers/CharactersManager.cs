@@ -29,6 +29,9 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     [SerializeField]
     private LayerMask groundLayer;
 
+    [SerializeField]
+    private CanvasGroup m_fadeCanvasGroup;
+
     private GameObject m_singularityObject;
     private GameObject m_characterObject;
     public GameObject CharacterObject => m_characterObject;
@@ -83,6 +86,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.OnDash += SingularityDash;
 
         GameManager.Instance.OnRespawned.AddListener(HardReset);
+        GameManager.Instance.OnPaused.AddListener(CancelAim);
     }
 
     private void UnlistenToEvents()
@@ -142,6 +146,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
             HideSingularityPreview();
 
         m_characterBehavior.ImobilizeCharacter(false);
+        m_singularityBehavior.HideHorizon(false);
 
         ResetInputs?.Invoke();
 
@@ -196,6 +201,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         }
 
         // Check if the distance between players is exceeded
+        if (IsEndingCinematicStarted) return;
         if (DistanceBetweenPlayersInPercents() >= 1f && !m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
             SwitchCharactersPositions();
         else if (GameManager.Instance.ActivePlayerState == PlayerState.SINGULARITY)
@@ -287,6 +293,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         rbSingularity.isKinematic = true;
 
+        m_singularityBehavior.HideHorizon(false);
+
         SingularityPreviewController.Deflate();
     }
     private IEnumerator MoveSlowlySingularityToNewCharacter(Action onComplete = null)
@@ -362,12 +370,12 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         if (m_singularityBehavior.IsOverlapping()) return;
 
+        m_singularityBehavior.HideHorizon(true);
         m_singularityBehavior.OnThrow();
         m_characterBehavior.ImobilizeCharacter(true);
         GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
         GameManager.Instance.ChangeSpeedLines(SpeedLinesState.BLACK);
         ShowSingularityPreview();
-        CancelAim();
     }
 
     private void OnThrowPerformed()
@@ -384,6 +392,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     public void HandleAim(bool withThrow)
     {
         m_hasAlreadyCallAim = !m_hasAlreadyCallAim;
+
         if (m_characterBehavior.IsJumping || m_characterBehavior.IsDashing) return;
 
         if (m_hasAlreadyCallAim && CanThrow)
@@ -665,6 +674,185 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     }
 
     #endregion
+    #endregion
+
+    #region End Cinematic
+
+    internal bool IsEndingCinematicStarted { get; set; } = false;
+
+    public void ManageEnding(Vector3 a_targetLook)
+    {
+        IsEndingCinematicStarted = true;
+        DisableCharacterAndSingularityControllerScripts();
+        MakeSureSingularityIsPickedUp();
+        MoveSingularityToDestination(a_targetLook);
+    }
+
+    public void DisableCharacterAndSingularityControllerScripts()
+    {
+        m_singularityObject.GetComponent<SingularityController>().enabled = false;
+        m_characterObject.GetComponent<PlayerController>().enabled = false;
+    }
+
+    public void DisableCharacterAndSingularityBehaviorScripts()
+    {
+        m_singularityBehavior.enabled = false;
+        m_characterBehavior.enabled = false;
+    }
+
+    private IEnumerator RotateCharacterCoroutine(Vector3 a_targetLook, Action onComplete = null)
+    {
+        Vector3 direction = (a_targetLook - CameraManager.Instance.PlayerCam.transform.position).normalized;
+        Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+
+        float rotationSpeed = 5f;
+        float angleThreshold = 1f;
+
+        while (Quaternion.Angle(CameraManager.Instance.PlayerCam.transform.rotation, targetRotation) > angleThreshold)
+        {
+            while (GameManager.Instance.GameTimeScale == 0)
+                yield return null;
+
+            CameraManager.Instance.PlayerCam.transform.rotation = Quaternion.Slerp(
+                CameraManager.Instance.PlayerCam.transform.rotation,
+                targetRotation,
+                Time.deltaTime * rotationSpeed * GameManager.Instance.GameTimeScale
+            );
+
+            yield return null;
+        }
+
+        CameraManager.Instance.PlayerCam.transform.rotation = targetRotation;
+        onComplete?.Invoke();
+    }
+
+    public void MakeSureSingularityIsPickedUp()
+    {
+        if (m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp) return;
+
+        m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(true);
+    }
+
+    public void MoveSingularityToDestination(Vector3 a_destination, Action onComplete = null)
+    {
+        DisableCharacterAndSingularityBehaviorScripts();
+        StartCoroutine(RotateCharacterCoroutine(a_destination, () =>
+        {
+            Debug.Log("Character rotated to target look direction.");
+
+            m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(false);
+            m_singularityBehavior.SingularityCharacterFollowComponent.SetKinematicState(true);
+
+            StartCoroutine(MoveSingularityToDestinationCoroutine(a_destination, () =>
+            {
+                StartCoroutine(RescaleSingularity(() =>
+                {
+                    StartCoroutine(FadeToBlack(4f));
+                }));
+
+            }));
+        }));
+    }
+    private IEnumerator MoveSingularityToDestinationCoroutine(Vector3 a_destination, Action onComplete = null)
+    {
+        float timer = 0f;
+        Vector3 startPosition = m_singularityObject.transform.position;
+        while (Vector3.Distance(m_singularityObject.transform.position, a_destination) > 0.1f)
+        {
+            while (GameManager.Instance.GameTimeScale == 0)
+                yield return null;
+            float speed = 200f;
+            m_singularityObject.transform.position = Vector3.MoveTowards(
+                m_singularityObject.transform.position,
+                a_destination,
+                speed * Time.deltaTime * GameManager.Instance.GameTimeScale);
+            timer += Time.deltaTime * GameManager.Instance.GameTimeScale;
+            yield return null;
+        }
+        m_singularityObject.transform.position = a_destination;
+        onComplete?.Invoke();
+    }
+
+    private Vector3 m_singularityDefaultScale;
+    private IEnumerator RescaleSingularity(Action onComplete = null)
+    {
+        float timer = 0f;
+        float duration = 5f;
+        Vector3 startScale = m_singularityObject.transform.localScale;
+        Vector3 targetScale = Vector3.one * 400f;
+
+        Vector3 singularityPos = m_singularityObject.transform.position;
+
+        Transform planet1 = PlanetsCollidingManager.Instance.Spawner.PlanetPlacement1;
+        Transform planet2 = PlanetsCollidingManager.Instance.Spawner.PlanetPlacement2;
+
+        Vector3 planet1StartPos = planet1.position;
+        Vector3 planet2StartPos = planet2.position;
+
+        Vector3 planet1StartScale = planet1.localScale;
+        Vector3 planet2StartScale = planet2.localScale;
+
+        Vector3 planetTargetScale = Vector3.zero;
+
+        CameraManager.Instance.ShakeCamera(3f, 5f);
+
+        m_singularityDefaultScale = startScale;
+
+        PlanetsCollidingManager.Instance.Spawner.DisableSphereColliders();
+
+        while (timer < duration)
+        {
+            while (GameManager.Instance.GameTimeScale == 0)
+                yield return null;
+
+            float t = Mathf.Clamp01(timer / duration);
+
+            m_singularityObject.transform.localScale = Vector3.Lerp(startScale, targetScale, t);
+
+            planet1.position = Vector3.Lerp(planet1StartPos, singularityPos, t);
+            planet2.position = Vector3.Lerp(planet2StartPos, singularityPos, t);
+
+            planet1.localScale = Vector3.Lerp(planet1StartScale, planetTargetScale, t);
+            planet2.localScale = Vector3.Lerp(planet2StartScale, planetTargetScale, t);
+
+            timer += Time.deltaTime * GameManager.Instance.GameTimeScale;
+            yield return null;
+        }
+
+        m_singularityObject.transform.localScale = targetScale;
+        planet1.position = singularityPos;
+        planet2.position = singularityPos;
+
+        planet1.localScale = planetTargetScale;
+        planet2.localScale = planetTargetScale;
+
+        onComplete?.Invoke();
+    }
+
+    public IEnumerator FadeToBlack(float duration)
+    {
+        float timer = 0f;
+        while (timer < duration / 2)
+        {
+            m_fadeCanvasGroup.alpha = Mathf.Lerp(0f, 1f, timer / (duration / 2));
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        m_fadeCanvasGroup.alpha = 1f;
+
+        yield return new WaitForSeconds(2f);
+
+        GameManager.Instance.EndLevel();
+
+        while (timer < duration)
+        {
+            m_fadeCanvasGroup.alpha = Mathf.Lerp(1f, 0f, (timer - duration / 2) / (duration / 2));
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        m_fadeCanvasGroup.alpha = 0f;
+    }
+
     #endregion
 }
 

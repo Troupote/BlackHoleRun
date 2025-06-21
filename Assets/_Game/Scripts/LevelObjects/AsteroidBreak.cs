@@ -105,6 +105,7 @@ public class AsteroidBreak : MonoBehaviour
     private void OnRespawned()
     {
         m_countdown = m_initialCountdown;
+        m_startTimer = false;
         DisableObject(false);
     }
 

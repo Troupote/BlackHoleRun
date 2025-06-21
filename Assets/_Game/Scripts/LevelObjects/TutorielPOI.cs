@@ -36,6 +36,7 @@ namespace BHR
                 fade.DistanceFade = _distanceFade;
 
             _hasAlreadyPopup = false;
+            GameManager.Instance.CanOpenPopup = false;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -46,12 +47,13 @@ namespace BHR
             // @todo remove tuto if level completed ? -> make a settings option ?
             if(other.CompareTag("Player"))
             {
+                if (CharactersManager.Instance.isHumanoidAiming) return;
                 ToggleUI(false);
-                Debug.Log("COUCOU");
                 if(_hasAlreadyPopup)
                 {
                     ModuleManager.Instance.transform.GetComponentInChildren<HUDModuleUI>(includeInactive: true).TogglePopup(true);
                     GameManager.Instance.SavedTutorielData = _turorialData;
+                    GameManager.Instance.CanOpenPopup = true;
                 }
                 else
                 {
@@ -65,6 +67,7 @@ namespace BHR
             if (other.CompareTag("Player"))
             {
                 ToggleUI(true);
+                GameManager.Instance.CanOpenPopup = false;
 
                 if (!_hasAlreadyPopup)
                 {

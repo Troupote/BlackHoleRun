@@ -44,6 +44,7 @@ namespace BHR
         public UnityEvent<bool> OnLaunchLevel, OnTutorielSet;
         private bool _tutorielEnable;
         public TutorielData SavedTutorielData;
+        public bool CanOpenPopup = false;
         public UnityEvent OnStartLevel;
         /// <summary>
         /// Float End timer, bool HasHitNewBestTime, bool HasPlayedSolo
@@ -122,7 +123,7 @@ namespace BHR
             PlayersInputManager.Instance.OnPause.AddListener(TogglePause);
             PlayersInputManager.Instance.OnRestartLevel.AddListener(() => RestartLevel(false));
             PlayersInputManager.Instance.OnRespawn.AddListener(Respawning);
-            PlayersInputManager.Instance.OnOpenTutorial.AddListener(() => LoadTutorielData(SavedTutorielData));
+            PlayersInputManager.Instance.OnOpenTutorial.AddListener(() => TryLoadTutorielData(SavedTutorielData));
         }
 
         private void Update()
@@ -187,7 +188,8 @@ namespace BHR
         {
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
-            PlanetsCollidingManager.Instance.StartPlanetsMovement(20f);
+
+            PlanetsCollidingManager.Instance.StartPlanetsMovement(_currentLevel.Times[MedalsType.EARTH]);
         }
 
         public void TogglePause()
@@ -301,11 +303,19 @@ namespace BHR
             //IsPlaying = true;
         }
 
+        private void TryLoadTutorielData(TutorielData data)
+        {
+            if (CanOpenPopup)
+                LoadTutorielData(data);
+        }
+
         public void LoadTutorielData(TutorielData data)
         {
             ModuleManager.Instance.GetModule(ModuleType.TUTORIEL).GetComponent<TutorielModuleUI>().LoadTutorielData(data);
             Pause(ModuleManager.Instance.GetModule(ModuleType.TUTORIEL));
             ModuleManager.Instance.ClearNavigationHistoric();
+
+            CharactersManager.Instance.CancelAim();
         }
 
 
@@ -341,8 +351,14 @@ namespace BHR
         #region Time gestion
         private void Chrono()
         {
-            if (IsPlaying || IsRespawning)
+            if ((IsPlaying || IsRespawning) && !m_isChronoStopped)
                 Timer += Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
+        }
+
+        private bool m_isChronoStopped = false;
+        public void StopChrono()
+        {
+            m_isChronoStopped = true;
         }
 
         private const float _outerWildsEasterEggBonus = -0.22f;

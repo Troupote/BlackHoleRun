@@ -224,7 +224,7 @@ public class CharacterBehavior : MonoBehaviour
         Invoke("ResetCoyotteTimer", 0.2f);
     }
 
-    public bool CanJump() => (m_isGrounded || m_coyotteTimeTimer > 0f) && !CharactersManager.Instance.isHumanoidAiming;
+    public bool CanJump() => (m_isGroundedForJump || m_coyotteTimeTimer > 0f) && !CharactersManager.Instance.isHumanoidAiming;
 
     private void CheckCoyotteTime()
     {
@@ -320,6 +320,8 @@ public class CharacterBehavior : MonoBehaviour
     public void OnThrowSingularity()
     {
         if (!CharactersManager.Instance.CanThrow) return;
+
+        CharactersManager.Instance.CancelAim();
 
         RegisterActionsToLimitActions();
 

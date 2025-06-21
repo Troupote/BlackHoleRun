@@ -128,6 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <SingularityCharacterFollowComponent>k__BackingField: {fileID: 3849761146508189987}
   ShaderColorController: {fileID: 5782027782673378553}
+  m_singularityHorizon: {fileID: 9110185248387051278}
 --- !u!54 &9170475032202126854
 Rigidbody:
   m_ObjectHideFlags: 0
