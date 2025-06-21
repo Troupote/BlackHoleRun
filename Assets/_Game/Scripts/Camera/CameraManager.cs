@@ -94,11 +94,12 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     public void ForceCameraLookAt(Vector3 targetLook)
     {
+        targetLook.Normalize();
         PlayerCam.transform.localRotation = Quaternion.LookRotation(targetLook);
-        Debug.Log(PlayerCam.transform.localRotation);
         rotationX = PlayerCam.transform.localRotation.eulerAngles.x;
         rotationY = PlayerCam.transform.localRotation.eulerAngles.y;
     }
+
 
     public void ForceSingularityCamLookAt()
     {
