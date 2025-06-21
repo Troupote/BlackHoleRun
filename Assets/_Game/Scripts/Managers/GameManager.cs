@@ -314,6 +314,8 @@ namespace BHR
             ModuleManager.Instance.GetModule(ModuleType.TUTORIEL).GetComponent<TutorielModuleUI>().LoadTutorielData(data);
             Pause(ModuleManager.Instance.GetModule(ModuleType.TUTORIEL));
             ModuleManager.Instance.ClearNavigationHistoric();
+
+            CharactersManager.Instance.CancelAim();
         }
 
 
@@ -349,8 +351,14 @@ namespace BHR
         #region Time gestion
         private void Chrono()
         {
-            if (IsPlaying || IsRespawning)
+            if ((IsPlaying || IsRespawning) && !m_isChronoStopped)
                 Timer += Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
+        }
+
+        private bool m_isChronoStopped = false;
+        public void StopChrono()
+        {
+            m_isChronoStopped = true;
         }
 
         private const float _outerWildsEasterEggBonus = -0.22f;

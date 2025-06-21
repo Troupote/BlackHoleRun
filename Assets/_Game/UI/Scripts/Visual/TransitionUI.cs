@@ -50,15 +50,16 @@ public class TransitionUI : MonoBehaviour
         // Init
         _counter.gameObject.SetActive(false);
         transform.localScale = Vector3.one * startScale;
-        _counter.color = color3;
+        _counter.color = new Color(color3.r, color3.g, color3.b, color3.a);
         _counter.text = "3";
         _counter.transform.localScale = Vector3.one * startTextScale;
 
         transform.DOScale(scale3, 0.4f);
+        _counter.gameObject.SetActive(true);
+        _counter.DOColor(color3, 0.4f);
         yield return new WaitForSeconds(0.4f);
 
         gameObject.SetActive(true);
-        _counter.gameObject.SetActive(true);
         _counter.DOColor(color2, 1f);
         _counter.transform.DOScale(textScale3, 1f);
         transform.DOScale(scale2, 1f);

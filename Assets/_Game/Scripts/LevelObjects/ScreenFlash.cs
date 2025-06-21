@@ -1,3 +1,5 @@
+using BHR;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,13 +30,22 @@ public class ScreenFlash : MonoBehaviour
         float timer = 0f;
 
         // Fade in
+        yield return new WaitForSeconds(1f);
         while (timer < halfDuration)
         {
             timer += Time.deltaTime;
             SetAlpha(Mathf.Lerp(0f, 1f, timer / halfDuration));
             yield return null;
         }
+        SetAlpha(1f);
 
+        CharactersManager.Instance.DisableCharacterAndSingularityControllerScripts();
+        CharactersManager.Instance.DisableCharacterAndSingularityBehaviorScripts();
+        CharactersManager.Instance.IsEndingCinematicStarted = true;
+
+        yield return new WaitForSeconds(4f);
+
+        GameManager.Instance.EndLevel();
         // Fade out
         timer = 0f;
         while (timer < halfDuration)
