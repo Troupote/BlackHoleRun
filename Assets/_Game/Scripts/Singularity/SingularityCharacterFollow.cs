@@ -37,6 +37,7 @@ public class SingularityCharacterFollowComponent : MonoBehaviour
             SetKinematicState(true);
             m_singularityTransform.SetParent(m_camRefPlacement);
             m_singularityTransform.localPosition = Vector3.zero;
+            m_singularityTransform.localRotation = Quaternion.identity;
         }
         else
         {
