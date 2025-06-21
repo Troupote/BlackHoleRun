@@ -136,11 +136,34 @@ namespace BHR
         }
 
         /// <summary>
-        /// Joue un son 2D sans déclaration d'attributs 3D
+        /// Joue un son 2D sans déclaration d'attributs 3D (deprecated)
         /// </summary>
+        [System.Obsolete("Bro y'as playsfx2d et playmuwsic2d qui marchent mieux qu'est tu me fais la ???", false)]
         public void Play2D(EventReference soundReference)
         {
             var instance = CreateEventInstance(soundReference);
+            instance.start();
+            instance.release();
+        }
+
+        /// <summary>
+        /// Joue un effet sonore 2D en appliquant le volume SFX
+        /// </summary>
+        public void PlaySFX2D(EventReference soundReference)
+        {
+            var instance = CreateEventInstance(soundReference);
+            instance.setVolume(SFXVolume);
+            instance.start();
+            instance.release();
+        }
+
+        /// <summary>
+        /// Joue une musique 2D sans attributs 3D en appliquant le volume Music
+        /// </summary>
+        public void PlayMusic2D(EventReference soundReference)
+        {
+            var instance = CreateEventInstance(soundReference);
+            instance.setVolume(MusicVolume);
             instance.start();
             instance.release();
         }

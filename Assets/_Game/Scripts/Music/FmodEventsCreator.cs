@@ -41,6 +41,12 @@ namespace _Game.Scripts.Music
 
         [field: FoldoutGroup("UI"), Header("Forwaard Button")]
         [field: SerializeField] public EventReference UIForwardButton { get; private set; }
+        
+        [field: FoldoutGroup("SFX"), Header("Destroy asteroid with dash")]
+        [field: SerializeField] public EventReference DestroyAstdWDash { get; private set; }
+        
+        [field: FoldoutGroup("SFX"), Header("Destroy asteroid with standing")]
+        [field: SerializeField] public EventReference DestroyAstdWSTD { get; private set; }
 
         public static FmodEventsCreator instance;
         
