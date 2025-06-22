@@ -62584,7 +62584,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 391594483695264458, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: _forceTutoriel
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 391594483695264458, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: _displayDeviceData
@@ -62596,7 +62596,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 391594483695264458, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: _disableTutorielPopup
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 391594483695264458, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: _playableZoneDisabled
@@ -62604,7 +62604,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 391594483695264458, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: _disableStartAnimation
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 391594483695264458, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: _singularityInstantComeback

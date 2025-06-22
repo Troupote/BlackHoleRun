@@ -29,6 +29,8 @@ namespace _Game.Scripts.Music
 
         [field: FoldoutGroup("Music"), Header("Music Beat Rigolo")]
         [field: SerializeField] public EventReference musicBeatRigolo { get; private set; }
+        [field: FoldoutGroup("Music"), Header("General Menu Music")]
+        [field: SerializeField] public EventReference MusicGeneralMenu { get; private set; }
 
         [field: FoldoutGroup("UI"), Header("Return Button")]
         [field: SerializeField] public EventReference UIReturnButton { get; private set; }
@@ -41,6 +43,12 @@ namespace _Game.Scripts.Music
 
         [field: FoldoutGroup("UI"), Header("Forwaard Button")]
         [field: SerializeField] public EventReference UIForwardButton { get; private set; }
+        
+        [field: FoldoutGroup("SFX"), Header("Destroy asteroid with dash")]
+        [field: SerializeField] public EventReference DestroyAstdWDash { get; private set; }
+        
+        [field: FoldoutGroup("SFX"), Header("Destroy asteroid with standing")]
+        [field: SerializeField] public EventReference DestroyAstdWSTD { get; private set; }
 
         public static FmodEventsCreator instance;
         

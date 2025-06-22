@@ -128,6 +128,20 @@ MonoBehaviour:
       Data3: 1753576071
       Data4: 1520050259
     Path: event:/UI/forwardpanel
+  <DestroyAstdWDash>k__BackingField:
+    Guid:
+      Data1: 1574025907
+      Data2: 1341961232
+      Data3: -153452388
+      Data4: 1853571502
+    Path: event:/Destroy Dash
+  <DestroyAstdWSTD>k__BackingField:
+    Guid:
+      Data1: 901439842
+      Data2: 1278678703
+      Data3: 32364427
+      Data4: -1420062342
+    Path: event:/Destroy Standing
 --- !u!1 &5058785138657031254
 GameObject:
   m_ObjectHideFlags: 0

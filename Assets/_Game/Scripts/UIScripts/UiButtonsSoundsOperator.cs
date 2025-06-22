@@ -25,17 +25,17 @@ namespace _Game.Scripts.UIScripts
         private void HandleClick()
         {
             if (isBackButton && FmodEventsCreator.instance != null)
-                AudioManager.Instance.Play2D(FmodEventsCreator.instance.UIReturnButton);
+                AudioManager.Instance.PlaySFX2D(FmodEventsCreator.instance.UIReturnButton);
 
             if (!isBackButton && FmodEventsCreator.instance != null)
-                AudioManager.Instance.Play2D(FmodEventsCreator.instance.UIForwardButton);
+                AudioManager.Instance.PlaySFX2D(FmodEventsCreator.instance.UIForwardButton);
         }
 
         private void HandleToggle(bool isOn)
         {
             if (FmodEventsCreator.instance == null) return;
             var evt = isOn ? FmodEventsCreator.instance.TogglePassedTrue_sfx : FmodEventsCreator.instance.TogglePassedFalse_sfx;
-            AudioManager.Instance.Play2D(evt);
+            AudioManager.Instance.PlaySFX2D(evt);
         }
     }
 }
