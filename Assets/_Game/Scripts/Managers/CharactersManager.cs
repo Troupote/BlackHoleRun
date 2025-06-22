@@ -317,6 +317,11 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
             while (GameManager.Instance.GameTimeScale == 0)
                 yield return null;
 
+            if (m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
+            {
+                break;
+            }
+
             float speed = m_gameplayData.ComingBackCurve.Evaluate(timer);
 
             m_singularityObject.transform.position = Vector3.MoveTowards(
@@ -330,8 +335,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
             yield return null;
         }
 
-
-        m_singularityObject.transform.position = targetTransform.position;
+        if (!m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
+            m_singularityObject.transform.position = targetTransform.position;
 
         onComplete?.Invoke();
 
@@ -683,6 +688,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     public void ManageEnding(Vector3 a_targetLook)
     {
         IsEndingCinematicStarted = true;
+        ModuleManager.Instance.transform.GetComponentInChildren<HUDModuleUI>()?.ToggleCrosshair(false);
+        SerKinematicToSinguAndCharacter();
         DisableCharacterAndSingularityControllerScripts();
         MakeSureSingularityIsPickedUp();
         MoveSingularityToDestination(a_targetLook);
@@ -698,6 +705,12 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     {
         m_singularityBehavior.enabled = false;
         m_characterBehavior.enabled = false;
+    }
+
+    public void SerKinematicToSinguAndCharacter()
+    {
+        m_singularityObject.GetComponent<Rigidbody>().isKinematic = true;
+        m_characterObject.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     private IEnumerator RotateCharacterCoroutine(Vector3 a_targetLook, Action onComplete = null)

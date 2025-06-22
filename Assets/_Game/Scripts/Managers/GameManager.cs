@@ -260,8 +260,10 @@ namespace BHR
             if(!late)
             {
                 // Clean all we need to clean immediatly
+                /*
                 CharactersManager.Instance.DestroyInstance();
                 CameraManager.Instance.DestroyInstance();
+                */
             }
             else // Cleann all we need to clean after end level gestion
             {

@@ -75,6 +75,7 @@ public class SingularityBehavior : MonoBehaviour
 
         if (CharactersManager.Instance.IsCurrentlySwitching)
         {
+            m_isPaused = false;
             return;
         }
 
@@ -91,7 +92,6 @@ public class SingularityBehavior : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log($"Singularity FixedUpdate: Initialized: {m_isInitialized}, Paused: {m_isPaused}, isKinematic {m_rigidbody.isKinematic}");
         if (!m_isInitialized || m_isPaused) return;
 
         HandleThrowCurve();
@@ -222,9 +222,7 @@ public class SingularityBehavior : MonoBehaviour
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
-        Vector3 dashDir = cam.forward;
-        dashDir.y = 0;
-        dashDir.Normalize();
+        Vector3 dashDir = Vector3.ProjectOnPlane(cam.forward, Vector3.up).normalized;
 
         OnDash?.Invoke(m_rigidbody.linearVelocity, dashDir);
     }

@@ -29,6 +29,7 @@ public class SingularityCharacterFollowComponent : MonoBehaviour
 
     public void PickupSingularity(bool shouldPickup)
     {
+        if (m_isPickedUp == shouldPickup) return;
         m_isPickedUp = shouldPickup;
 
         if (shouldPickup)
