@@ -375,12 +375,12 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_characterBehavior.ImobilizeCharacter(true);
         GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
         GameManager.Instance.ChangeSpeedLines(SpeedLinesState.BLACK);
-        ShowSingularityPreview();
     }
 
     private void OnThrowPerformed()
     {
         CameraManager.Instance.SwitchCameraToSingularity();
+        Invoke(nameof(ShowSingularityPreview), 0.5f);
         SetMusicLowFilterTo0();
     }
     #endregion
