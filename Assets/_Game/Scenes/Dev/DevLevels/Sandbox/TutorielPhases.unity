@@ -13807,6 +13807,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8686162784396502564, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: textScale1
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8891995199216074899, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
       value: 

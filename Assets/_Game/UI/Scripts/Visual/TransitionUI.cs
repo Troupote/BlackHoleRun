@@ -47,48 +47,50 @@ public class TransitionUI : MonoBehaviour
 
     IEnumerator StartAnimation()
     {
-        // Init
-        _counter.gameObject.SetActive(false);
-        transform.localScale = Vector3.one * startScale;
-        _counter.color = new Color(color3.r, color3.g, color3.b, color3.a);
-        _counter.text = "3";
-        _counter.transform.localScale = Vector3.one * startTextScale;
-
-        transform.DOScale(scale3, 0.4f);
         _counter.gameObject.SetActive(true);
-        _counter.DOColor(color3, 0.4f);
-        yield return new WaitForSeconds(0.4f);
-
         gameObject.SetActive(true);
-        _counter.DOColor(color2, 1f);
-        _counter.transform.DOScale(textScale3, 1f);
-        transform.DOScale(scale2, 1f);
-        yield return new WaitForSeconds(1f);
 
-        // 2->1
-        _counter.text = "2";
-        _counter.DOColor(color1, 1f);
-        _counter.transform.DOScale(textScale2, 1f);
-        transform.DOScale(scale1, 1f);
-        yield return new WaitForSeconds(1f);
+        IEnumerator AnimateNumber(string text, Color color, float scale, float textScale, float duration)
+        {
+            _counter.text = text;
+            _counter.color = new Color(color.r, color.g, color.b, 0);
+            _counter.transform.localScale = Vector3.zero;
 
-        // 1-> Go
-        _counter.text = "1";
-        _counter.DOColor(color0, 1f);
-        transform.DOScale(scale0, 1f);
-        _counter.transform.DOScale(textScale1, 1f);
-        yield return new WaitForSeconds(1f);
+            Sequence seq = DOTween.Sequence();
+            seq.Append(_counter.DOColor(color, 0.2f));
+            seq.Join(_counter.transform.DOScale(textScale, 0.4f).SetEase(Ease.OutBack));
+            seq.Join(transform.DOScale(scale, 0.4f).SetEase(Ease.OutQuad));
+            yield return seq.WaitForCompletion();
 
-        // GO
+            yield return new WaitForSeconds(duration);
+        }
+
+        // Animate 3
+        yield return AnimateNumber("3", color3, scale3, textScale3, 0.6f);
+
+        // Animate 2
+        yield return AnimateNumber("2", color2, scale2, textScale2, 0.6f);
+
+        // Animate 1
+        yield return AnimateNumber("1", color1, scale1, textScale1, 0.6f);
+
+        // GO Animation
         _counter.text = "GO";
+        _counter.color = new Color(color0.r, color0.g, color0.b, 0);
+        _counter.transform.localScale = Vector3.zero;
 
-        _counter.DOColor(Color.black, 0.3f);
-        transform.DOScale(0, 0.3f);
-        _counter.transform.DOScale(textScale0, 0.3f);
+        Sequence goSeq = DOTween.Sequence();
+        goSeq.Append(_counter.DOColor(Color.white, 0.1f));
+        goSeq.Join(_counter.transform.DOScale(textScale0, 0.3f).SetEase(Ease.OutBack));
+        goSeq.Join(transform.DOScale(scale0, 0.3f).SetEase(Ease.InOutQuad));
+        goSeq.Append(_counter.transform.DOShakeScale(0.3f, 0.2f));
+        goSeq.Join(_counter.DOFade(0, 0.3f));
+        goSeq.Join(transform.DOScale(0f, 0.3f).SetEase(Ease.InBack));
+        yield return goSeq.WaitForCompletion();
 
-        yield return new WaitForSeconds(0.3f);
-        gameObject.SetActive(false);
         _counter.gameObject.SetActive(false);
+        gameObject.SetActive(false);
         GameManager.Instance.StartLevel();
     }
+
 }
