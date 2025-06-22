@@ -100,6 +100,13 @@ MonoBehaviour:
       Data3: -1885356670
       Data4: -1339071831
     Path: event:/Music/Lo-FiMusic
+  <MusicGeneralMenu>k__BackingField:
+    Guid:
+      Data1: 1854287881
+      Data2: 1338789756
+      Data3: -274620255
+      Data4: -1714069649
+    Path: event:/Music/MenuMusic
   <UIReturnButton>k__BackingField:
     Guid:
       Data1: -911270816
