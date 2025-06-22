@@ -243,8 +243,10 @@ public class CharacterBehavior : MonoBehaviour
         m_moveLockTimer = 0.5f;
 
         m_rigidbody.linearVelocity = a_linearVelocityToApply;
+        Debug.Log($"Singularity Jump velocity set to: {m_rigidbody.linearVelocity}");
 
-        m_rigidbody.AddForce(Vector3.up * m_gameplayData.SingularityJumpForce * GameManager.Instance.GameTimeScale, ForceMode.Impulse);
+        m_rigidbody.AddForce(Vector3.up * m_gameplayData.SingularityJumpForce, ForceMode.Impulse);
+        Debug.Log($"Singularity Jump force applied: {m_gameplayData.SingularityJumpForce * GameManager.Instance.GameTimeScale}");
     }
 
     #endregion
