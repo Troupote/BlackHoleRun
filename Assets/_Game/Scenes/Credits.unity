@@ -143,7 +143,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737796}
   m_LocalRotation: {x: 0.25881916, y: -0, z: 0.0000000037252899, w: 0.9659258}
-  m_LocalPosition: {x: 0, y: 0, z: 1707}
+  m_LocalPosition: {x: 0, y: 0, z: 2427.0002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -151,7 +151,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 3484}
+  m_AnchoredPosition: {x: -0.000061035156, y: 3463.0002}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &124669186
@@ -198,41 +198,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 124669186}
   m_CullTransparentMesh: 1
---- !u!1 &233332281
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 233332282}
-  m_Layer: 5
-  m_Name: GameObject (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &233332282
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 233332281}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 249291503}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &249291502
 GameObject:
   m_ObjectHideFlags: 0
@@ -259,7 +224,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 249291502}
   m_LocalRotation: {x: 0.25881916, y: -0, z: 0.0000000037252899, w: 0.9659258}
-  m_LocalPosition: {x: 0, y: 0, z: 2257}
+  m_LocalPosition: {x: 0, y: 0, z: -1212}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -267,14 +232,11 @@ RectTransform:
   - {fileID: 1623007320}
   - {fileID: 1181470832}
   - {fileID: 1058715175}
-  - {fileID: 1652597731}
-  - {fileID: 233332282}
-  - {fileID: 1956223621}
   m_Father: {fileID: 1536758642}
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 3167}
+  m_AnchoredPosition: {x: 0, y: -2840}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &249291504
@@ -352,7 +314,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1280.0001, y: -1451.115}
+  m_AnchoredPosition: {x: 960.00006, y: -1924.725}
   m_SizeDelta: {x: 1820, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &491421772
@@ -389,18 +351,21 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "il ya bien longtemps, dans une galaxie lointaine, tr\xE8s lointaine..\n..se
-    trouvait la Black Hole Team ! \nConnus sous les <i> Hole Men </i>, ils se pr\xE9noment
+  m_text: "\"Il ya bien longtemps, dans une galaxie lointaine, tr\xE8s lointaine..\n..se
+    trouvait la Black Hole Team ! \nConnus sous les <i>Hole Men</i>, ils se pr\xE9noment
     :\n\nMarius BOULANDET\nChef de projet, Game et Level Designer\nProgrammeur Manager,
     UI, Inputs\nAide Shader, 3D and UI\n\nNathan CUENI DOLIS\nArtiste 3D et Shader\nAide
     programmation 3C\n\nHugo IMP\xC9RAT\nProgrammeur Gameplay / 3C\nAide animation
-    3D\n\nThybault JALLU\nConception et int\xE9gration sonore\nAide Git\n\n\nMERCI
-    \xC0\n\nTrou Noir (@blackholed sur X) - Illustration de l'affiche\n\nEdgar \"\"Head\"\"
-    Rousseau (@ed_rss sur Instagram)\nLogo, Pr\xE9production Affiche et recherches
-    graphiques 2D\nPlaytesteur\n\nNathan - Playtesteur\nRain - Playtesteuse\nNo\xE9
-    - Playtesteur\nMarie - Playtesteuse <3\n\nPSINJ et Beber\n\nLa Let Me Team\n\n\nProjet
-    r\xE9alis\xE9 dans le cadre de la \nlicence informatique parcours jeux vid\xE9o
-    \n(promo P5 / 2024-2027)"
+    3D\n\nThybault JALLU\nConception et int\xE9gration sonore\nAide Git\n\n\nASSETS
+    UTILIS\xC9S\n\nUI\nFonts : Archivo, Dunkin, Overpass Mono\nKenney Inputs Prompts\n\n3D
+    & VFX\nMoon by Poly By Google\nDust effect from Hovl Studio magic effects pack\nSpace
+    skybox from the Tyro's free online generator\n\n\nMERCI \xC0\n\nTrou Noir (@blackholed
+    sur X) - Illustration de l'affiche\n\nEdgar \"\"Head\"\" Rousseau (@ed_rss sur
+    Instagram)\nLogo, Pr\xE9production Affiche et recherches graphiques 2D, Playtesteur.\n\nGLaPI
+    - Aide avec le g\xE9n\xE9rateur de la ceinture d'ast\xE9ro\xEFde\n\nNathan -
+    Playtesteur\nRain - Playtesteuse\nNo\xE9 - Playtesteur\nMarie - Playtesteuse
+    <3\n\nLa Let Me Team\n\nPSINJ et Beber\n\n\nProjet r\xE9alis\xE9 dans le cadre
+    de la licence informatique parcours jeux vid\xE9o \n(promo P5 / 2024-2027)\""
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 027e53bf063d2d74badb31b42b7a24c1, type: 2}
   m_sharedMaterial: {fileID: -1700728973679544269, guid: 027e53bf063d2d74badb31b42b7a24c1, type: 2}
@@ -801,7 +766,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1280.0001, y: -3977.79}
+  m_AnchoredPosition: {x: 960.00006, y: -5127.9697}
   m_SizeDelta: {x: 1820, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1058715176
@@ -953,7 +918,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1280.0001, y: -3725.83}
+  m_AnchoredPosition: {x: 960.00006, y: -4673.05}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1181470833
@@ -1391,7 +1356,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1280.0001, y: -3289.03}
+  m_AnchoredPosition: {x: 960.00006, y: -4236.25}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1623007321
@@ -1509,41 +1474,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1629813056}
   m_CullTransparentMesh: 1
---- !u!1 &1652597730
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1652597731}
-  m_Layer: 5
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1652597731
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1652597730}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 249291503}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1749723990
 GameObject:
   m_ObjectHideFlags: 0
@@ -1568,7 +1498,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1749723990}
   m_LocalRotation: {x: 0.25881916, y: -0, z: 0.0000000037252899, w: 0.9659258}
-  m_LocalPosition: {x: 0, y: 0, z: -1978}
+  m_LocalPosition: {x: 0, y: 0, z: -1212}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1576,43 +1506,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -2899}
+  m_AnchoredPosition: {x: 0, y: -2840.0005}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1956223620
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1956223621}
-  m_Layer: 5
-  m_Name: GameObject (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1956223621
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1956223620}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 249291503}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2007637529
 GameObject:
