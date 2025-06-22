@@ -59,7 +59,15 @@ namespace BHR
             private set
             {
                 _timer = value;
-                OnTimerChanged.Invoke(_timer);
+            }
+        }
+        private float _timerBeforeCollision;
+        public float TimerBeforeCollision
+        {
+            get => _timerBeforeCollision;
+            private set
+            {
+                _timerBeforeCollision = value;
             }
         }
         public UnityEvent<float> OnTimerChanged;
@@ -168,6 +176,7 @@ namespace BHR
             _mainPlayerIsPlayerOne = !PlayersInputManager.Instance.IsSwitched;
 
             Timer = 0f;
+            TimerBeforeCollision = SelectedLevel.Times[MedalsType.EARTH];
             IsPlaying = false;
             OnLaunchLevel.Invoke(firstStart);
             if(!firstStart) StartLevel();
@@ -353,7 +362,14 @@ namespace BHR
         private void Chrono()
         {
             if ((IsPlaying || IsRespawning) && !m_isChronoStopped)
-                Timer += Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
+            {
+                float timeDelta = Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
+                Timer += timeDelta;
+                float TimerBeforeCollisionCheck = TimerBeforeCollision - timeDelta;
+                TimerBeforeCollision = Mathf.Max(TimerBeforeCollisionCheck,0f);
+
+                OnTimerChanged.Invoke(IsPracticeMode ? Timer : TimerBeforeCollision);
+            }
         }
 
         private bool m_isChronoStopped = false;
@@ -366,6 +382,7 @@ namespace BHR
         public void ILoveOuterWidls()
         {
             Timer += _outerWildsEasterEggBonus;
+            TimerBeforeCollision -= _outerWildsEasterEggBonus;
         }
 
 

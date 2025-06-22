@@ -9,6 +9,8 @@ namespace BHR
         [SerializeField, FoldoutGroup("Refs")] private TextMeshProUGUI _chronoText;
         [SerializeField, FoldoutGroup("Refs")] private GameObject _tutorielPopup;
         [SerializeField, FoldoutGroup("Refs")] private GameObject _crosshair;
+        [SerializeField, FoldoutGroup("Settings")] private Color _startChronoColor;
+        [SerializeField, FoldoutGroup("Settings")] private Color _endChronoColor;
 
         private void OnEnable()
         {
@@ -23,6 +25,7 @@ namespace BHR
 
         private void DisplayChrono(float timeInSeconds)
         {
+            _chronoText.color = Color.Lerp(_endChronoColor, _startChronoColor, timeInSeconds / GameManager.Instance.SelectedLevel.Times[MedalsType.EARTH]);
             _chronoText.text = UtilitiesFunctions.TimeFormat(timeInSeconds);
         }
 

@@ -35707,6 +35707,8 @@ MonoBehaviour:
   _chronoText: {fileID: 5407303836052473753}
   _tutorielPopup: {fileID: 7056355821673704322}
   _crosshair: {fileID: 7865413293257377495}
+  _startChronoColor: {r: 0.049548388, g: 1, b: 0, a: 1}
+  _endChronoColor: {r: 1, g: 0.2924527, b: 0.40850362, a: 1}
 --- !u!1 &7865413293257377495
 GameObject:
   m_ObjectHideFlags: 0
