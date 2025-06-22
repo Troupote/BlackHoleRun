@@ -74,7 +74,10 @@ public class SingularityBehavior : MonoBehaviour
         if (SingularityCharacterFollowComponent.IsPickedUp) return;
 
         if (CharactersManager.Instance.IsCurrentlySwitching)
+        {
+            m_isPaused = false;
             return;
+        }
 
         m_rigidbody.isKinematic = false;
         m_rigidbody.linearVelocity = m_oldVelocity;
@@ -103,6 +106,8 @@ public class SingularityBehavior : MonoBehaviour
     public void Move(Vector2 a_movementValue)
     {
         if (a_movementValue.x == 0) return;
+
+        if (IsAligning) return;
 
         Vector3 velocity = m_rigidbody.linearVelocity;
         if (velocity.sqrMagnitude < 0.01f) return;
@@ -134,9 +139,10 @@ public class SingularityBehavior : MonoBehaviour
 
         m_alignAndThrowCoroutine = StartCoroutine(AlignAndThrow(throwDirection));
 
-        m_throwTime = 0f;
         OnThrowPerformed?.Invoke();
     }
+
+    internal bool IsAligning => m_alignAndThrowCoroutine != null;
 
     private IEnumerator AlignAndThrow(Vector3 direction)
     {
@@ -155,15 +161,17 @@ public class SingularityBehavior : MonoBehaviour
         }
 
         transform.position = targetPos;
+        m_throwTime = 0f;
 
         m_rigidbody.isKinematic = false;
         m_rigidbody.AddForce(direction * m_gameplayData.ThrowForce, ForceMode.Impulse);
+        m_alignAndThrowCoroutine = null;
     }
 
 
     private void HandleThrowCurve()
     {
-        if (SingularityCharacterFollowComponent.IsPickedUp) return;
+        if (SingularityCharacterFollowComponent.IsPickedUp || m_rigidbody.isKinematic) return;
 
         //Debug.Log("Handling Throw Curve for Singularity");
 
@@ -196,6 +204,8 @@ public class SingularityBehavior : MonoBehaviour
         if (CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Jump) ||
             CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth()) return;
 
+        if (IsAligning) return;
+
         OnJump?.Invoke(m_rigidbody.linearVelocity);
     }
 
@@ -208,11 +218,11 @@ public class SingularityBehavior : MonoBehaviour
         if (CharactersManager.Instance.LimitPlayersMovements.HasPerformed(LimitPlayersMovementsController.CharacterMovementType.Dash) ||
             CharactersManager.Instance.LimitPlayersMovements.HasPerformedBoth()) return;
 
+        if (IsAligning) return;
+
         Transform cam = CameraManager.Instance.CurrentCam.transform;
 
-        Vector3 dashDir = cam.forward;
-        dashDir.y = 0;
-        dashDir.Normalize();
+        Vector3 dashDir = Vector3.ProjectOnPlane(cam.forward, Vector3.up).normalized;
 
         OnDash?.Invoke(m_rigidbody.linearVelocity, dashDir);
     }

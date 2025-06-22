@@ -8,6 +8,7 @@ namespace BHR
     {
         [SerializeField, FoldoutGroup("Refs")] private TextMeshProUGUI _chronoText;
         [SerializeField, FoldoutGroup("Refs")] private GameObject _tutorielPopup;
+        [SerializeField, FoldoutGroup("Refs")] private GameObject _crosshair;
 
         private void OnEnable()
         {
@@ -26,5 +27,6 @@ namespace BHR
         }
 
         public void TogglePopup(bool enable) => _tutorielPopup.SetActive(enable);
+        public void ToggleCrosshair(bool enable) => _crosshair.SetActive(enable);
     }
 }

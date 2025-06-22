@@ -35706,6 +35706,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _chronoText: {fileID: 5407303836052473753}
   _tutorielPopup: {fileID: 7056355821673704322}
+  _crosshair: {fileID: 7865413293257377495}
 --- !u!1 &7865413293257377495
 GameObject:
   m_ObjectHideFlags: 0

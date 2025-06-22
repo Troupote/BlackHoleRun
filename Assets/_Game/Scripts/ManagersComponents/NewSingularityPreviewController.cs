@@ -32,6 +32,8 @@ public class NewSingularityPreviewController : MonoBehaviour
         }
         m_currentPreviewObject = Instantiate(m_singularityPreviewPrefab, a_characterPosition.position, Quaternion.identity);
 
+        m_currentPreviewObject.transform.Find("Horizon").gameObject.SetActive(false);
+
         m_shaderColorController = m_currentPreviewObject.GetComponent<SingularityShaderColorController>();
 
         m_shaderColorController.SetPlayerColors();

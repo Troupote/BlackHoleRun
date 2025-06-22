@@ -266,13 +266,11 @@ public class CharacterBehavior : MonoBehaviour
         GameManager.Instance.ChangeSpeedLines(SpeedLinesState.DASH);
 
         Transform cam = CameraManager.Instance.CurrentCam.transform;
-
-        Vector3 dashDir = cam.forward;
-        dashDir.y = 0f;
-        dashDir.Normalize();
-
+        Vector3 dashDir = Vector3.ProjectOnPlane(cam.forward, Vector3.up).normalized;
         Vector3 dashVelocity = dashDir * m_gameplayData.DashForce;
         m_rigidbody.linearVelocity = new Vector3(dashVelocity.x, 0f, dashVelocity.z);
+
+        Debug.Log($"Dash velocity set to: {m_rigidbody.linearVelocity}. NORMAL DASH | IsGravityEnabled: {m_isGrounded} || Dashdir: {dashDir}");
 
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
@@ -303,15 +301,24 @@ public class CharacterBehavior : MonoBehaviour
     public void OnSingularityDash(Vector3 a_linearVelocityToApply, Vector3 a_direction)
     {
         m_moveLockTimer = 0.5f;
-        m_rigidbody.linearVelocity = new Vector3(a_linearVelocityToApply.x, a_linearVelocityToApply.y * 0f, a_linearVelocityToApply.z);
+        m_rigidbody.linearVelocity = new Vector3(
+            a_linearVelocityToApply.x,
+            0f, 
+            a_linearVelocityToApply.z
+        );
 
+        a_direction.y = 0f;
+        a_direction.Normalize();
 
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
         m_dashCooldownCoroutine = StartCoroutine(AirDashCooldown());
 
         m_rigidbody.AddForce(a_direction * m_gameplayData.SingularityDashForce, ForceMode.VelocityChange);
+
+        Debug.Log($"Dash velocity set to: {m_rigidbody.linearVelocity}. SINGU DASH | IsGravityEnabled: {m_isGrounded}");
     }
+
 
     #endregion
 
@@ -339,7 +346,7 @@ public class CharacterBehavior : MonoBehaviour
         if (!m_canDash)
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
 
-        if (!CanJump())
+        if (IsJumping)
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
     }
 
