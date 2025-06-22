@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: HorizonMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: 187a021ed3a6cef4e872665d7eb4870f, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 1e0a48f61e9daa94681f8fba2da9d16e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -38,6 +38,10 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Texture2DAsset_03231df4feba4030b3efb0ff6d21da85_Out_0_Texture2D:
+        m_Texture: {fileID: 2800000, guid: f87080f1095d1914a8a20d4cb8b07e15, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_54801a005a4643f09bc37e7ec13716d9_Out_0_Texture2D:
         m_Texture: {fileID: 2800000, guid: f87080f1095d1914a8a20d4cb8b07e15, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}

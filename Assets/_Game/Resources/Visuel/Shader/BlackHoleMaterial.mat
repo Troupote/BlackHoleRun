@@ -68,7 +68,7 @@ Material:
     m_Colors:
     - _Color: {r: 0, g: 0.47189426, b: 1, a: 0}
     - _Color2: {r: 1, g: 0, b: 0.31303692, a: 0}
-    - _ExteriorColor: {r: 32, g: 32, b: 32, a: 0}
-    - _InteriorColor: {r: 0, g: 0, b: 0, a: 0}
+    - _ExteriorColor: {r: 42.722507, g: 0.6045627, b: 0.6045627, a: 0}
+    - _InteriorColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

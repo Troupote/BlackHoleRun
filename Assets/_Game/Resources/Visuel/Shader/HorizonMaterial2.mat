@@ -61,7 +61,7 @@ Material:
     - _Twirl2Speed: 1
     - _TwirlStrength: 25
     m_Colors:
-    - _Color1: {r: 4, g: 4, b: 4, a: 0}
+    - _Color1: {r: 5.3403134, g: 5.3403134, b: 5.3403134, a: 0}
     - _Color2: {r: 16, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
