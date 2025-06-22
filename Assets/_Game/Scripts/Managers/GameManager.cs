@@ -36,7 +36,7 @@ namespace BHR
 
         [SerializeField, ReadOnly]
         private bool _soloMode = true;
-        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) _hasPlayedInSolo = true; } }
+        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) { _hasPlayedInSolo = true; IsPracticeMode = true; } } }
         private bool _hasPlayedInSolo = false;
         public bool HasPlayedInSolo => _hasPlayedInSolo;
 
