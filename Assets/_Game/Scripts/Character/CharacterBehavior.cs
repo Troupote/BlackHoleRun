@@ -346,7 +346,7 @@ public class CharacterBehavior : MonoBehaviour
         if (!m_canDash)
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
 
-        if (!CanJump())
+        if (IsJumping)
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
     }
 
