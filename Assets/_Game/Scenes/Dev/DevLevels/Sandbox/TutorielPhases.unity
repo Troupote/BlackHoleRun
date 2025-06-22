@@ -13703,6 +13703,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1461145542219962952, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1461145542219962952, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1461145542219962952, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3369411794807273830, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 4734163077719743939, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
       propertyPath: m_Name
       value: UIModulesManager
@@ -13785,6 +13801,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6046980556903365440, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7785376865808398953, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8891995199216074899, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
