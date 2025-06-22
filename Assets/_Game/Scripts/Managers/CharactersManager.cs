@@ -379,7 +379,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_singularityBehavior.OnThrow();
         m_characterBehavior.ImobilizeCharacter(true);
         GameManager.Instance.ChangeMainPlayerState(PlayerState.SINGULARITY, true);
-        GameManager.Instance.ChangeSpeedLines(SpeedLinesState.BLACK);
+        GameManager.Instance.ChangeSpeedLines(GameManager.Instance._mainPlayerIsPlayerOne ? SpeedLinesState.BLACK : SpeedLinesState.WHITE);
         ShowSingularityPreview();
     }
 
