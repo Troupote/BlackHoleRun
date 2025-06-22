@@ -273,7 +273,7 @@ public class CharacterBehavior : MonoBehaviour
 
         Vector3 dashVelocity = dashDir * m_gameplayData.DashForce;
         m_rigidbody.linearVelocity = new Vector3(dashVelocity.x, 0f, dashVelocity.z);
-        Debug.Log($"Dash velocity set to: {m_rigidbody.linearVelocity}. NORMAL DASH | IsGravityEnabled: {m_isGrounded}");
+        Debug.Log($"Dash velocity set to: {m_rigidbody.linearVelocity}. NORMAL DASH | IsGravityEnabled: {m_isGrounded} || Dashdir: {dashDir}");
 
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;

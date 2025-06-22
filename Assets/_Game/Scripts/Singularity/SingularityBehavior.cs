@@ -91,6 +91,7 @@ public class SingularityBehavior : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Debug.Log($"Singularity FixedUpdate: Initialized: {m_isInitialized}, Paused: {m_isPaused}, isKinematic {m_rigidbody.isKinematic}");
         if (!m_isInitialized || m_isPaused) return;
 
         HandleThrowCurve();
