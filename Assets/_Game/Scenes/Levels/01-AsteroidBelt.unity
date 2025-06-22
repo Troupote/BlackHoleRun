@@ -13811,10 +13811,6 @@ PrefabInstance:
       propertyPath: textScale1
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 8891995199216074899, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
-      propertyPath: m_Navigation.m_SelectOnUp
-      value: 
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -62654,14 +62650,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4846799805334316505, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
-      propertyPath: VSLevelData
-      value: 
-      objectReference: {fileID: 11400000, guid: 204c5e4c971a2aa439096b417137be76, type: 2}
-    - target: {fileID: 4846799805334316505, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
-      propertyPath: _speedLines
-      value: 
-      objectReference: {fileID: 2100000, guid: 25acb2bf971708b4784bcd5d966fc50f, type: 2}
     - target: {fileID: 4942750028036633372, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: m_Name
       value: GameManager

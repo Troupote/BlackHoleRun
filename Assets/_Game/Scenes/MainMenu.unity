@@ -508,26 +508,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 349964028091419502, guid: 75f8c23dec482e448a88e2b0c73cdd22, type: 3}
-      propertyPath: <MusicGeneralMenu>k__BackingField.Path
-      value: event:/Music/MenuMusic
-      objectReference: {fileID: 0}
-    - target: {fileID: 349964028091419502, guid: 75f8c23dec482e448a88e2b0c73cdd22, type: 3}
-      propertyPath: <MusicGeneralMenu>k__BackingField.Guid.Data1
-      value: 1854287881
-      objectReference: {fileID: 0}
-    - target: {fileID: 349964028091419502, guid: 75f8c23dec482e448a88e2b0c73cdd22, type: 3}
-      propertyPath: <MusicGeneralMenu>k__BackingField.Guid.Data2
-      value: 1338789756
-      objectReference: {fileID: 0}
-    - target: {fileID: 349964028091419502, guid: 75f8c23dec482e448a88e2b0c73cdd22, type: 3}
-      propertyPath: <MusicGeneralMenu>k__BackingField.Guid.Data3
-      value: -274620255
-      objectReference: {fileID: 0}
-    - target: {fileID: 349964028091419502, guid: 75f8c23dec482e448a88e2b0c73cdd22, type: 3}
-      propertyPath: <MusicGeneralMenu>k__BackingField.Guid.Data4
-      value: -1714069649
-      objectReference: {fileID: 0}
     - target: {fileID: 5058785138657031254, guid: 75f8c23dec482e448a88e2b0c73cdd22, type: 3}
       propertyPath: m_Name
       value: AudioManagerObject
@@ -646,14 +626,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: DataManager
       objectReference: {fileID: 0}
-    - target: {fileID: 5643024956058840588, guid: ba72bcc73fc99cb4587844a42b7b367e, type: 3}
-      propertyPath: DebugUnlockedMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5643024956058840588, guid: ba72bcc73fc99cb4587844a42b7b367e, type: 3}
-      propertyPath: _levelsFolderPath
-      value: Assets/_Game/ScriptableObjects/Datas/ScenesLevels/Levels
-      objectReference: {fileID: 0}
     - target: {fileID: 7681573604665701232, guid: ba72bcc73fc99cb4587844a42b7b367e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.722455
@@ -711,18 +683,6 @@ PrefabInstance:
       propertyPath: _debug
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 391594483695264458, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 391594483695264458, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
-      propertyPath: _unlockedAllLevels
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 391594483695264458, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
-      propertyPath: _showControllerKeyinRebinding
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2256550512557629699, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.722455
@@ -763,10 +723,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4846799805334316505, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
-      propertyPath: VSLevelData
-      value: 
-      objectReference: {fileID: 11400000, guid: 204c5e4c971a2aa439096b417137be76, type: 2}
     - target: {fileID: 4942750028036633372, guid: 20818f41021ecb648b3dbeffc86ee381, type: 3}
       propertyPath: m_Name
       value: GameManager
