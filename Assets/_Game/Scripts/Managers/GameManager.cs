@@ -70,7 +70,7 @@ namespace BHR
                 _timerBeforeCollision = value;
             }
         }
-        public UnityEvent<float> OnTimerChanged;
+        public UnityEvent<float, bool> OnTimerChanged;
         [SerializeField, ReadOnly]
         private bool _isPlaying = false;
         public bool IsPlaying
@@ -368,7 +368,7 @@ namespace BHR
                 float TimerBeforeCollisionCheck = TimerBeforeCollision - timeDelta;
                 TimerBeforeCollision = Mathf.Max(TimerBeforeCollisionCheck,0f);
 
-                OnTimerChanged.Invoke(IsPracticeMode ? Timer : TimerBeforeCollision);
+                OnTimerChanged.Invoke(IsPracticeMode ? Timer : TimerBeforeCollision, IsPracticeMode);
             }
         }
 
