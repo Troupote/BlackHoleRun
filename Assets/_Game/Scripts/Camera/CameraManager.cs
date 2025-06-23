@@ -114,8 +114,6 @@ public class CameraManager : ManagerSingleton<CameraManager>
     {
         if (CurrentCam == SingularityCam) return;
 
-        Debug.Log("Switching camera to Singularity...");
-
         initialRotationY = PlayerCam.transform.eulerAngles.y;
         rotationY = initialRotationY;
 

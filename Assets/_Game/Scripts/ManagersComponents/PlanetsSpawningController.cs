@@ -114,8 +114,6 @@ public class PlanetSpawningController : MonoBehaviour
             m_movementCoroutine = null;
         }
 
-        Debug.Log("Planet collision detected!");
-
         Invoke(nameof(StopChrono), 0.01f);
 
         CameraManager.Instance.ShakeCamera(8f, 5f);

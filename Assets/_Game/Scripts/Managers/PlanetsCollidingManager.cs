@@ -15,7 +15,6 @@ public class PlanetsCollidingManager : ManagerSingleton<PlanetsCollidingManager>
     {
         if (Spawner != null)
         {
-            Debug.Log("Starting planets movement with timer: " + a_timer);
             Spawner.SpawnPlanets(a_timer);
         }
         else

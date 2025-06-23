@@ -146,7 +146,7 @@ public class CharacterBehavior : MonoBehaviour
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Jump);
         }
 
-        IsJumping = !CanJump();
+        IsJumping = !CanJump() && m_rigidbody.linearVelocity.y > 0;
 
         if (IsDashing)
         {
@@ -286,8 +286,6 @@ public class CharacterBehavior : MonoBehaviour
         Vector3 dashVelocity = dashDir * m_gameplayData.DashForce;
         m_rigidbody.linearVelocity = new Vector3(dashVelocity.x, 0f, dashVelocity.z);
 
-        Debug.Log($"Dash velocity set to: {m_rigidbody.linearVelocity}. NORMAL DASH | IsGravityEnabled: {m_isGrounded} || Dashdir: {dashDir}");
-
         _isDashing = true;
         _dashDurationTimer = CharactersManager.Instance.GameplayData.DashDuration;
 
@@ -332,7 +330,6 @@ public class CharacterBehavior : MonoBehaviour
 
         m_rigidbody.AddForce(a_direction * m_gameplayData.SingularityDashForce, ForceMode.VelocityChange);
 
-        Debug.Log($"Dash velocity set to: {m_rigidbody.linearVelocity}. SINGU DASH | IsGravityEnabled: {m_isGrounded}");
     }
 
 

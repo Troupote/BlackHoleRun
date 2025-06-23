@@ -120,8 +120,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void HardReset()
     {
-        Debug.Log("Hard Reset Characters Manager");
-
         ResetAmbience();
         ResetMusic();
         if (BringNewSingularityToNewCharacterCoroutine != null)
@@ -486,7 +484,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     public void StartAmbience()
     {
-        Debug.Log("Starting ambience");
         if (m_ambienceStarted) return;
         m_ambienceInstance = AudioManager.Instance.CreateEventInstance(FmodEventsCreator.instance.windAmbient);
         m_ambienceInstance.start();
@@ -756,7 +753,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         DisableCharacterAndSingularityBehaviorScripts();
         StartCoroutine(RotateCharacterCoroutine(a_destination, () =>
         {
-            Debug.Log("Character rotated to target look direction.");
 
             m_singularityBehavior.SingularityCharacterFollowComponent.PickupSingularity(false);
             m_singularityBehavior.SingularityCharacterFollowComponent.SetKinematicState(true);
