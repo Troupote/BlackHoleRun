@@ -338,8 +338,6 @@ namespace BHR
             }
 
             PlayerInputController playerInputController = playerInput.GetComponent<PlayerInputController>();
-            Debug.Log($"Player {playerInputController.playerIndex} joined !\nController : {playerInput.devices[0]} (Scheme : {playerInput.currentControlScheme})\nAction map : {playerInput.currentActionMap.name}");
-
 
             playerInputController.transform.SetParent(transform);
 
@@ -374,7 +372,6 @@ namespace BHR
 
             if (freeIndex == -1)
             {
-                Debug.Log("All players index are full");
                 return false;
             }
             else
@@ -389,7 +386,6 @@ namespace BHR
         {
             if (change == InputDeviceChange.Disconnected)
             {
-                Debug.Log(device.name + " is disconnecting");
                 foreach (PlayerInputController playerInputController in PlayersInputControllerRef)
                 {
                     if (playerInputController != null && playerInputController.GetComponent<PlayerInput>().devices.Count == 0) // Found the player ref that disconnected
@@ -414,7 +410,6 @@ namespace BHR
 
             SetAllowedInput(playerInputController.playerIndex, true);
 
-            Debug.Log($"Player {playerInputController.playerIndex} is disconnecting");
             OnPlayerDisconnected.Invoke(playerInputController.playerIndex);
             Destroy(playerInputController.gameObject);
 
