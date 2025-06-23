@@ -4017,10 +4017,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 2618999504781620463}
+    m_SelectOnDown: {fileID: 8891995199216074899}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -22951,8 +22951,8 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 6185513615065586030}
-    m_SelectOnDown: {fileID: 5546862427995546179}
+    m_SelectOnUp: {fileID: 6561031259621282287}
+    m_SelectOnDown: {fileID: 7585897018652046053}
     m_SelectOnLeft: {fileID: 3013003429840261828}
     m_SelectOnRight: {fileID: 5546862427995546179}
   m_Transition: 1
@@ -25770,12 +25770,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnUp: {fileID: 2605093217509033939}
+    m_SelectOnDown: {fileID: 3266840791539447664}
+    m_SelectOnLeft: {fileID: 3207778967796539479}
+    m_SelectOnRight: {fileID: 1190680225383178637}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -32476,10 +32476,10 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 6185513615065586030}
-    m_SelectOnDown: {fileID: 5546862427995546179}
-    m_SelectOnLeft: {fileID: 3013003429840261828}
-    m_SelectOnRight: {fileID: 5546862427995546179}
+    m_SelectOnUp: {fileID: 3207778967796539479}
+    m_SelectOnDown: {fileID: 5839036052987000531}
+    m_SelectOnLeft: {fileID: 3207778967796539479}
+    m_SelectOnRight: {fileID: 1190680225383178637}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -34473,10 +34473,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 2
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 2360116065294668896}
+    m_SelectOnDown: {fileID: 2618999504781620463}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -35283,8 +35283,8 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 1
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 139321245112256600}
+    m_SelectOnUp: {fileID: 7585897018652046053}
+    m_SelectOnDown: {fileID: 2890643262433237947}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
