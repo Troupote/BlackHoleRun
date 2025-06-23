@@ -62,7 +62,10 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     private bool m_isInstancied = false;
     private void InstanciatePrefabsOnScene()
     {
-        m_characterObject = Instantiate(m_characterPrefab);
+        // hard coded ATTENTION !!!
+        Vector3 pos = CheckpointsManager.Instance.CurrentCheckpoint.position;
+
+        m_characterObject = Instantiate(m_characterPrefab, pos, Quaternion.identity);
         m_singularityObject = Instantiate(m_singularityPrefab);
 
         m_singularityBehavior = m_singularityObject.GetComponent<SingularityBehavior>();
