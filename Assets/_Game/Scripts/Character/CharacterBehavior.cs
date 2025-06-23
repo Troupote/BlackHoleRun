@@ -137,7 +137,7 @@ public class CharacterBehavior : MonoBehaviour
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypeDone(LimitPlayersMovementsController.CharacterMovementType.Jump);
         }
 
-        IsJumping = !CanJump() && m_rigidbody.linearVelocity.y > 0f;
+        IsJumping = !CanJump();
 
         if (IsDashing)
         {
