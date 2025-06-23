@@ -116,6 +116,15 @@ public class CharacterBehavior : MonoBehaviour
                 m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 10f, m_rigidbody.linearVelocity.z);
             }
         }
+
+        if (m_hasJumped && m_isGrounded && m_timeXhenJumped > 0f && (Time.time - m_timeXhenJumped > 0.3f))
+        {
+            m_hasJumped = false;
+            m_timeXhenJumped = 0f;
+        }
+        {
+
+        }
     }
 
     private bool m_isGrounded;
@@ -208,11 +217,13 @@ public class CharacterBehavior : MonoBehaviour
 
     internal bool IsJumping { get; private set; } = false;
     private bool m_hasJumped = false;
+    private float m_timeXhenJumped = 0f;
     public void OnJump()
     {
         if (!CanJump()) return;
 
         m_hasJumped = true;
+        m_timeXhenJumped = Time.time;
 
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
         m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
@@ -351,11 +362,12 @@ public class CharacterBehavior : MonoBehaviour
         if (!m_canDash)
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
 
-        if (IsJumping && m_hasJumped)
+        if (!m_isGrounded && m_hasJumped)
         {
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
-            m_hasJumped = false;
         }
+
+        m_hasJumped = false;
     }
 
 
