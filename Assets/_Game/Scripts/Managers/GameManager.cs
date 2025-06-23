@@ -16,6 +16,8 @@ namespace BHR
         [Required]
         public LevelDataSO VSLevelData;
 
+        private bool isStartingGame = true;
+
         private CharacterGameplayData _characterGameplayData => CharactersManager.Instance.GameplayData;
 
         [SerializeField]
@@ -151,6 +153,7 @@ namespace BHR
 
         public void LaunchLevel(bool firstStart = true)
         {
+            isStartingGame = true;
             ChangeSpeedLines(SpeedLinesState.NONE);
             SoloMode = PlayersInputManager.Instance.SoloModeEnabled;
             PlayersInputManager.Instance.CanConnect = false;
@@ -198,10 +201,14 @@ namespace BHR
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
             PlanetsCollidingManager.Instance.StartPlanetsMovement(_currentLevel.Times[MedalsType.EARTH]);
+
+            isStartingGame = false;
         }
 
         public void TogglePause()
         {
+            if (isStartingGame) return;
+
             if (IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleType.PAUSE))
                 Resume(); 
             else if(!IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleType.HUD))
