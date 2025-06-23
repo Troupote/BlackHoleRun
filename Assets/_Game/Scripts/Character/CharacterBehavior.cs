@@ -1,7 +1,9 @@
 using BHR;
 using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterBehavior : MonoBehaviour
@@ -205,9 +207,12 @@ public class CharacterBehavior : MonoBehaviour
     #region Jump
 
     internal bool IsJumping { get; private set; } = false;
+    private bool m_hasJumped = false;
     public void OnJump()
     {
         if (!CanJump()) return;
+
+        m_hasJumped = true;
 
         m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
         m_rigidbody.AddForce(Vector3.up * m_gameplayData.JumpForce, ForceMode.Impulse);
@@ -243,10 +248,8 @@ public class CharacterBehavior : MonoBehaviour
         m_moveLockTimer = 0.5f;
 
         m_rigidbody.linearVelocity = a_linearVelocityToApply;
-        Debug.Log($"Singularity Jump velocity set to: {m_rigidbody.linearVelocity}");
 
         m_rigidbody.AddForce(Vector3.up * m_gameplayData.SingularityJumpForce, ForceMode.Impulse);
-        Debug.Log($"Singularity Jump force applied: {m_gameplayData.SingularityJumpForce * GameManager.Instance.GameTimeScale}");
     }
 
     #endregion
@@ -348,8 +351,11 @@ public class CharacterBehavior : MonoBehaviour
         if (!m_canDash)
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Dash);
 
-        if (IsJumping)
+        if (IsJumping && m_hasJumped)
+        {
             CharactersManager.Instance.LimitPlayersMovements.OnCharacterMovementTypePerformed(LimitPlayersMovementsController.CharacterMovementType.Jump);
+            m_hasJumped = false;
+        }
     }
 
 

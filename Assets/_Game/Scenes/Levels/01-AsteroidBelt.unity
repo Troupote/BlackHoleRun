@@ -14222,6 +14222,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIModulesManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5407303836052473753, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
+      propertyPath: m_text
+      value: 0:00:00
+      objectReference: {fileID: 0}
     - target: {fileID: 6046980556903365440, guid: 17f379bf200e47a4db6c1f2ac0a91baf, type: 3}
       propertyPath: m_Pivot.x
       value: 0

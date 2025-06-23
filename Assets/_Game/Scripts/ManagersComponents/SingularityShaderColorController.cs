@@ -46,8 +46,6 @@ public class SingularityShaderColorController : MonoBehaviour
         }
         bool a_player = GameManager.Instance._mainPlayerIsPlayerOne;
 
-        Debug.Log($"Setting colors for {(a_player ? "Player Two" : "Player One")}", this);
-
         m_singularityMaterial.SetColor("_ExteriorColor", a_player ? m_gameplayData.PlayerOneColors.Exterior*12 : m_gameplayData.PlayerTwoColors.Exterior*12);
         m_singularityMaterial.SetColor("_InteriorColor", a_player ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
 
