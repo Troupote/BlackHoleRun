@@ -30,6 +30,11 @@ namespace BHR
 
         private void DisplayChrono(float timeInSeconds, bool practiceMode)
         {
+            if(timeInSeconds <= -1f)
+            {
+                _chronoText.gameObject.SetActive(false);
+                return;
+            }
             float t = practiceMode ? 1 - (timeInSeconds / GameManager.Instance.SelectedLevel.BestTime()) : timeInSeconds / GameManager.Instance.SelectedLevel.Times[MedalsType.EARTH];
             _chronoText.color = Color.Lerp(_endChronoColor, _startChronoColor, t);
             _chronoText.text = UtilitiesFunctions.TimeFormat(timeInSeconds);
