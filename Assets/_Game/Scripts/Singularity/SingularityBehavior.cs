@@ -132,7 +132,6 @@ public class SingularityBehavior : MonoBehaviour
 
     public void OnThrow()
     {
-        Debug.Log("SThrow performed");
         SingularityCharacterFollowComponent.PickupSingularity(false);
 
         Vector3 throwDirection = CameraManager.Instance.MainCam.transform.forward;

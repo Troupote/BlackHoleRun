@@ -56,7 +56,6 @@ namespace BHR
 
             if(SceneManager.GetActiveScene().name != sceneData.SceneName)
             {
-                Debug.Log($"Changing scene from {SceneManager.GetActiveScene().name} to {sceneData.SceneName}");
                 LoadSceneWithTransition(sceneData.SceneName, withEndTransition);
             }
         }
@@ -65,7 +64,6 @@ namespace BHR
         {
             if(CurrentSceneData != null)
             {
-                Debug.Log($"Reloading {CurrentSceneData.SceneName} scene");
                 if (withTransition)
                     LoadSceneWithTransition(CurrentSceneData.SceneName, false);
                 else
