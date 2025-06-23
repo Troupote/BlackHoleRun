@@ -1,0 +1,46 @@
+Keys,Français,English
+M/T/Resume,Compris !,Got it !
+M/T/MoveDesc,Déplacer vous sur l'astéroïde,Move on the asteroid
+M/T/LookDesc,Regarder aux alentours en déplaçant la caméra,Look around by moving the camera
+M/T/JumpDesc,Saute sur l'astéroïde devant toi,Jump on the asteroid in front of you
+M/T/SingularityDesc,"La sphère que tu tiens est l'autre joueur, dans sa forme Singularité.
+Tu peux le lancer. Essaye !","The sphere you hold is the other player, in the form of Singularity.
+You can throw it. Try it !"
+M/T/Coop,Coopération,Cooperation
+M/T/CoopDesc,"Comme vous venez de le découvrir, lancer l'autre joueur vous fait échanger les rôles.
+Après un lancer, le nouveau joueur humanoïde attire l'autre, désormais sous forme de singularité, automatiquement dans sa main, mais cela prend un certain temps.","As you just discovered it, throwing other player makes you switch roles.
+After a launch, the new humanoid player automatically draws the other, now as a Singularity, into their hand, but it takes a moment."
+M/T/Goal,Objectif,Goal
+M/T/GoalDesc,"Rapproche toi vite des astres avant qu'une catastrophe arrive..
+Le chrono au dessus t'affiche combien de temps il te reste.
+Alternez, coopérez et lancez-vous… avant qu’il ne soit trop tard.","
+Get close to the stars quickly before disaster strikes...
+The timer above shows how much time you have left.
+Switch, cooperate, and launch yourselves… before it’s too late."
+M/T/DashDesc,"Tu peux aussi dasher tout droit, pour aller aussi vite que la lumière, même si c'est le comble pour un trou noir !
+Tu récupères ton dash quand tu touches le sol.","You can also dash straight ahead, moving as fast as light. Quite ironic for a black hole ! (indicate timer)
+You regain your dash when you touch ground."
+M/T/ThrowAim,Viser puis tirer (Maintenir),Aim then throw (Hold)
+M/T/ThrowAimDesc,"Maintiens enfoncée la touche pour tirer, cela va déclencher la visée.
+Quand tu vises, tu déformes l'espace-temps ce qui te permet de ralentir et concentrer ton tir.
+Au relâchement, la Singularité sera lancée.","Press and hold the throw button, which triggers the Aiming.
+When you aim, you distort space-time, allowing you to slow down and concentrate your shot.
+On release, the Singularity will be throwed."
+M/T/AimDesc,"Tu peux aussi viser sans forcément lancer la Singularité au relâchement.
+Tu peux changer le mode de visée (Maintenir ou Basculer) dans les paramètres.
+Quand tu vises, tu déformes l'espace-temps ce qui te permet de ralentir et concentrer ton tir.","You can also aim without throwing the Singularity on release.
+You can change the aim mode (Hold or Toggle) in settings.
+When you aim, you distort space-time, allowing you to slow down and concentrate your shot."
+M/T/GoBeyond,Plus loin !,Go beyond !
+M/T/GoBeyondDesc,"Tu peux viser et lancer la singularité à n'importe quel moment, même après avoir sauter et dasher !","You can aim and throw the singularity at any time, even after jumping and dashing !"
+M/T/UnmorphDesc,"Quand tu es en Singularité après avoir été lancée, tu peux en jaillir avec un saut ou un dash.
+Cela te permet d'aller plus haut ou plus loin, avec plus de contrôle !
+Cependant, tes actions sont contraintes par le lanceur : si ce dernier avait déjà sauté ou dashé, tu ne pourras pas jaillir de la singularité en sautant ou dashant.","When you are in Singularity after been throwed, you can unmorph from it by jumping or dashing.
+This let you go higher or farther with more control !
+However, your actions are constrained by the thrower : if this one already has jumped or dashed, you won't be able to jump or dash."
+M/T/Restart,Recommencer (maintenir),Restart (hold)
+M/T/RestartDesc,Tu peux recommencer le niveau depuis le menu pause mais aussi de manière rapide en maintenant cette touche.,You can restart level from pause menu but also faster by holding this input.
+M/T/Respawn,Réapparaître (double click),Respawn (double tap)
+M/T/RespawnDesc,Tu peux réapparaître au dernier checkpoint en double cliquant sur cette touche.,You can respawn at last checkpoint by double tap this input.
+M/T/PauseDesc,Met le jeu en pause à n'importe quel moment !,Pause the game at anytime !
+M/T/Open,Ouvrir la pop up,Open pop up

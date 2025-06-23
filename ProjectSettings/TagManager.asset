@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Singleton
+  - Singularity
+  - Planet
   layers:
   - Default
   - TransparentFX
