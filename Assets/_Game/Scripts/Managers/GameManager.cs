@@ -36,7 +36,7 @@ namespace BHR
 
         [SerializeField, ReadOnly]
         private bool _soloMode = true;
-        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) { _hasPlayedInSolo = true; IsPracticeMode = true; } } }
+        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) { _hasPlayedInSolo = true; } } }
         private bool _hasPlayedInSolo = false;
         public bool HasPlayedInSolo => _hasPlayedInSolo;
 
@@ -376,6 +376,7 @@ namespace BHR
         public void StopChrono()
         {
             m_isChronoStopped = true;
+            OnTimerChanged.Invoke(-1f, false);
         }
 
         private const float _outerWildsEasterEggBonus = -0.22f;
