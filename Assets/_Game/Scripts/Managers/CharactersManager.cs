@@ -208,8 +208,10 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         if (IsEndingCinematicStarted) return;
         if (DistanceBetweenPlayersInPercents() >= 1f && !m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp && m_gameplayData.ActivateMaxDistanceBetweenPlayers)
             SwitchCharactersPositions();
+        /*
         else if (GameManager.Instance.ActivePlayerState == PlayerState.SINGULARITY)
             GameManager.Instance.ApplySpeedLinesSingu(DistanceBetweenPlayersInPercents());
+        */
     }
 
     private void OnDestroy()
