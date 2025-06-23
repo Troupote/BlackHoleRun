@@ -84,8 +84,15 @@ public class CharacterBehavior : MonoBehaviour
 
         if ((!m_isGrounded || !m_isGroundedForJump) && !_isDashing)
         {
-            Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale * GameManager.Instance.GameTimeScale;
+            Vector3 gravityForce = m_gravity * m_gameplayData.CharacterGravityScale;
             m_rigidbody.AddForce(gravityForce);
+
+            Vector3 velocity = m_rigidbody.linearVelocity;
+            if (velocity.y < 0)
+            {
+                velocity.y *= GameManager.Instance.GameTimeScale;
+                m_rigidbody.linearVelocity = velocity;
+            }
         }
 
         // Lock the move when Singularity Jump is performed
