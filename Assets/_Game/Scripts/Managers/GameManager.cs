@@ -16,6 +16,8 @@ namespace BHR
         [Required]
         public LevelDataSO VSLevelData;
 
+        private bool isStartingGame = true;
+
         private CharacterGameplayData _characterGameplayData => CharactersManager.Instance.GameplayData;
 
         [SerializeField]
@@ -36,7 +38,7 @@ namespace BHR
 
         [SerializeField, ReadOnly]
         private bool _soloMode = true;
-        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) { _hasPlayedInSolo = true; IsPracticeMode = true; } } }
+        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) { _hasPlayedInSolo = true; } } }
         private bool _hasPlayedInSolo = false;
         public bool HasPlayedInSolo => _hasPlayedInSolo;
 
@@ -151,6 +153,7 @@ namespace BHR
 
         public void LaunchLevel(bool firstStart = true)
         {
+            isStartingGame = true;
             ChangeSpeedLines(SpeedLinesState.NONE);
             SoloMode = PlayersInputManager.Instance.SoloModeEnabled;
             PlayersInputManager.Instance.CanConnect = false;
@@ -195,13 +198,18 @@ namespace BHR
 
         public void StartLevel()
         {
+            m_isChronoStopped = false;
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
             PlanetsCollidingManager.Instance.StartPlanetsMovement(_currentLevel.Times[MedalsType.EARTH]);
+
+            isStartingGame = false;
         }
 
         public void TogglePause()
         {
+            if (isStartingGame) return;
+
             if (IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleType.PAUSE))
                 Resume(); 
             else if(!IsPaused && ModuleManager.Instance.CurrentModule == ModuleManager.Instance.GetModule(ModuleType.HUD))
@@ -278,6 +286,7 @@ namespace BHR
             {
                 _hasPlayedInSolo = false;
                 _currentLevel = null;
+                m_isChronoStopped = false;
             }
         }
 
@@ -376,6 +385,7 @@ namespace BHR
         public void StopChrono()
         {
             m_isChronoStopped = true;
+            OnTimerChanged.Invoke(-1f, false);
         }
 
         private const float _outerWildsEasterEggBonus = -0.22f;
