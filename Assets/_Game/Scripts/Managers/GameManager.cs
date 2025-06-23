@@ -361,7 +361,7 @@ namespace BHR
         #region Time gestion
         private void Chrono()
         {
-            if ((IsPlaying || IsRespawning) && !m_isChronoStopped)
+            if ((IsPlaying || IsRespawning) && !m_isChronoStopped && !IsPracticeMode)
             {
                 float timeDelta = Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
                 Timer += timeDelta;
