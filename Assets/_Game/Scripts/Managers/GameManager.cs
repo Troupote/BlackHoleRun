@@ -195,6 +195,7 @@ namespace BHR
 
         public void StartLevel()
         {
+            m_isChronoStopped = false;
             IsPlaying = true; OnStartLevel.Invoke();
             ChangeMainPlayerState(PlayerState.HUMANOID, PlayersInputManager.Instance.IsSwitched);
             PlanetsCollidingManager.Instance.StartPlanetsMovement(_currentLevel.Times[MedalsType.EARTH]);
@@ -278,6 +279,7 @@ namespace BHR
             {
                 _hasPlayedInSolo = false;
                 _currentLevel = null;
+                m_isChronoStopped = false;
             }
         }
 
