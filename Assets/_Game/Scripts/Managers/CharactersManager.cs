@@ -158,6 +158,8 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         {
             LimitPlayersMovements.ClearPerformedMovements();
         }
+
+        m_singularityBehavior.ShaderColorController.SetPlayerColors();
     }
 
 
