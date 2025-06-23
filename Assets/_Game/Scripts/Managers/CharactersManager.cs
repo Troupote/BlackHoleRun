@@ -206,7 +206,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         // Check if the distance between players is exceeded
         if (IsEndingCinematicStarted) return;
-        if (DistanceBetweenPlayersInPercents() >= 1f && !m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
+        if (DistanceBetweenPlayersInPercents() >= 1f && !m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp && m_gameplayData.ActivateMaxDistanceBetweenPlayers)
             SwitchCharactersPositions();
         else if (GameManager.Instance.ActivePlayerState == PlayerState.SINGULARITY)
             GameManager.Instance.ApplySpeedLinesSingu(DistanceBetweenPlayersInPercents());

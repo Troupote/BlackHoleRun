@@ -19,6 +19,11 @@ public class CharacterGameplayData : ScriptableObject
     private void InitCurve(float timeStart, float startValue, float endTime, float endValue) => _comingBackCurve = AnimationCurve.Linear(timeStart, startValue, endTime, endValue);
 
     [SerializeField, PropertyOrder(3)]
+    private bool m_activateDistanceLimit = false;
+
+    public bool ActivateMaxDistanceBetweenPlayers => m_activateDistanceLimit;
+
+    [SerializeField, PropertyOrder(3), ShowIf(nameof(m_activateDistanceLimit))]
     private float m_maxDistanceBetweenPlayers = 125f;
 
     public float MaxDistanceBetweenPlayers => m_maxDistanceBetweenPlayers;
