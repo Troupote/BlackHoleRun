@@ -53,7 +53,5 @@ public class LimitPlayersMovementsController : MonoBehaviour
         if (!CharactersManager.Instance.GameplayData.ActivateMovementsLimit) return;
 
         m_performedMovementTypes.Clear();
-
-        Debug.Log("All performed movements cleared.");
     }
 }

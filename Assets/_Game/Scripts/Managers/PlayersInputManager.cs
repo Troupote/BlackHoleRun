@@ -338,8 +338,6 @@ namespace BHR
             }
 
             PlayerInputController playerInputController = playerInput.GetComponent<PlayerInputController>();
-            Debug.Log($"Player {playerInputController.playerIndex} joined !\nController : {playerInput.devices[0]} (Scheme : {playerInput.currentControlScheme})\nAction map : {playerInput.currentActionMap.name}");
-
 
             playerInputController.transform.SetParent(transform);
 
