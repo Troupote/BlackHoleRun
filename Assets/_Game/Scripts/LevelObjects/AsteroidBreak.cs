@@ -2,6 +2,7 @@ using BHR;
 using Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine;
+using _Game.Scripts.Music;
 
 public class AsteroidBreak : MonoBehaviour
 {
@@ -73,6 +74,14 @@ public class AsteroidBreak : MonoBehaviour
     {
         if (shouldDisable)
         {
+            // Audio
+            #region Audio
+            if (withParticles)
+                PlayDashDestroyAudio();
+            else
+                PlayStandDestroyAudio();
+            #endregion
+
             if(withParticles && _particleEffects != null)
             {
                 var particles = Instantiate(_particleEffects, transform);
@@ -127,4 +136,17 @@ public class AsteroidBreak : MonoBehaviour
             }
         }
     }
+
+    // Audio region: play destroy sounds
+    #region Audio
+    private void PlayDashDestroyAudio()
+    {
+        AudioManager.Instance.PlaySFX2D(FmodEventsCreator.instance.DestroyAstdWDash);
+    }
+
+    private void PlayStandDestroyAudio()
+    {
+        AudioManager.Instance.PlaySFX2D(FmodEventsCreator.instance.DestroyAstdWSTD);
+    }
+    #endregion
 }

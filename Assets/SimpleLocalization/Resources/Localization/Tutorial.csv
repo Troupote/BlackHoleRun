@@ -11,11 +11,12 @@ M/T/CoopDesc,"Comme vous venez de le découvrir, lancer l'autre joueur vous fait
 Après un lancer, le nouveau joueur humanoïde attire l'autre, désormais sous forme de singularité, automatiquement dans sa main, mais cela prend un certain temps.","As you just discovered it, throwing other player makes you switch roles.
 After a launch, the new humanoid player automatically draws the other, now as a Singularity, into their hand, but it takes a moment."
 M/T/Goal,Objectif,Goal
-M/T/GoalDesc,"
-La coopération est donc essentielle. Alternez, lancez-vous, et atteignez le bout de cette ceinture d'astéroïde, avant qu'il ne soit trop tard...
-Le chrono au dessus de vous bah jsp hein","
-Then, cooperation is essential. Switch, throwing yourselves, and reach the end of this asteroids belt before it's too late..
-Chrono ?"
+M/T/GoalDesc,"Rapproche toi vite des astres avant qu'une catastrophe arrive..
+Le chrono au dessus t'affiche combien de temps il te reste.
+Alternez, coopérez et lancez-vous… avant qu’il ne soit trop tard.","
+Get close to the stars quickly before disaster strikes...
+The timer above shows how much time you have left.
+Switch, cooperate, and launch yourselves… before it’s too late."
 M/T/DashDesc,"Tu peux aussi dasher tout droit, pour aller aussi vite que la lumière, même si c'est le comble pour un trou noir !
 Tu récupères ton dash quand tu touches le sol.","You can also dash straight ahead, moving as fast as light. Quite ironic for a black hole ! (indicate timer)
 You regain your dash when you touch ground."

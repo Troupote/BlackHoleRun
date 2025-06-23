@@ -19368,7 +19368,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6575271692814775182
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25893,7 +25893,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentLevelState: {fileID: 4397355336840089429}
-  _practiceToggle: {fileID: 0}
+  _practiceToggle: {fileID: 2618999504781620463}
 --- !u!1 &5619587058873474706
 GameObject:
   m_ObjectHideFlags: 0
@@ -27400,7 +27400,7 @@ MonoBehaviour:
   startTextScale: 2.5
   textScale3: 2
   textScale2: 1.6
-  textScale1: 1
+  textScale1: 4
   textScale0: 2
   color3: {r: 0.5372549, g: 0, b: 1, a: 1}
   color2: {r: 1, g: 0.4, b: 0, a: 1}
@@ -33694,7 +33694,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &602650807171561061
 RectTransform:
   m_ObjectHideFlags: 0
@@ -35707,6 +35707,8 @@ MonoBehaviour:
   _chronoText: {fileID: 5407303836052473753}
   _tutorielPopup: {fileID: 7056355821673704322}
   _crosshair: {fileID: 7865413293257377495}
+  _startChronoColor: {r: 0.049548388, g: 1, b: 0, a: 1}
+  _endChronoColor: {r: 1, g: 0.2924527, b: 0.40850362, a: 1}
 --- !u!1 &7865413293257377495
 GameObject:
   m_ObjectHideFlags: 0

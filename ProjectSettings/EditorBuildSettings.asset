@@ -8,9 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Game/Scenes/MainMenu.unity
     guid: 69d946f3a6964f2409a3e81b982130b0
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Game/Scenes/Dev/InGameTest.unity
     guid: 1fbd07a13d12b2b499260a65db471d5f
+  - enabled: 1
+    path: Assets/_Game/Scenes/Credits.unity
+    guid: 764616e26131ada40a2abd2e3d137c9a
+  - enabled: 1
+    path: Assets/_Game/Scenes/Levels/01-AsteroidBelt.unity
+    guid: 7c8ce0fbd3f7a084191b06cf1b1d7b8c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

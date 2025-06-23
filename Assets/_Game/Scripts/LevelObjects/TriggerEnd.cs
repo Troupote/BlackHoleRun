@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TriggerEnd : MonoBehaviour
 {
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {

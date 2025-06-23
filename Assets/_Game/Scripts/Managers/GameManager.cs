@@ -36,7 +36,7 @@ namespace BHR
 
         [SerializeField, ReadOnly]
         private bool _soloMode = true;
-        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) _hasPlayedInSolo = true; } }
+        public bool SoloMode { get => _soloMode; set { _soloMode = value; if (_soloMode) { _hasPlayedInSolo = true; IsPracticeMode = true; } } }
         private bool _hasPlayedInSolo = false;
         public bool HasPlayedInSolo => _hasPlayedInSolo;
 
@@ -59,10 +59,18 @@ namespace BHR
             private set
             {
                 _timer = value;
-                OnTimerChanged.Invoke(_timer);
             }
         }
-        public UnityEvent<float> OnTimerChanged;
+        private float _timerBeforeCollision;
+        public float TimerBeforeCollision
+        {
+            get => _timerBeforeCollision;
+            private set
+            {
+                _timerBeforeCollision = value;
+            }
+        }
+        public UnityEvent<float, bool> OnTimerChanged;
         [SerializeField, ReadOnly]
         private bool _isPlaying = false;
         public bool IsPlaying
@@ -168,6 +176,7 @@ namespace BHR
             _mainPlayerIsPlayerOne = !PlayersInputManager.Instance.IsSwitched;
 
             Timer = 0f;
+            TimerBeforeCollision = SelectedLevel.Times[MedalsType.EARTH];
             IsPlaying = false;
             OnLaunchLevel.Invoke(firstStart);
             if(!firstStart) StartLevel();
@@ -353,7 +362,14 @@ namespace BHR
         private void Chrono()
         {
             if ((IsPlaying || IsRespawning) && !m_isChronoStopped)
-                Timer += Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
+            {
+                float timeDelta = Time.deltaTime * (IsPlaying ? GameTimeScale : _savedGameTimeScale);
+                Timer += timeDelta;
+                float TimerBeforeCollisionCheck = TimerBeforeCollision - timeDelta;
+                TimerBeforeCollision = Mathf.Max(TimerBeforeCollisionCheck,0f);
+
+                OnTimerChanged.Invoke(IsPracticeMode ? Timer : TimerBeforeCollision, IsPracticeMode);
+            }
         }
 
         private bool m_isChronoStopped = false;
@@ -366,6 +382,7 @@ namespace BHR
         public void ILoveOuterWidls()
         {
             Timer += _outerWildsEasterEggBonus;
+            TimerBeforeCollision -= _outerWildsEasterEggBonus;
         }
 
 

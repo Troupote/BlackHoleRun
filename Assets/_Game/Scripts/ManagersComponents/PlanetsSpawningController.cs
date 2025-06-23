@@ -60,8 +60,6 @@ public class PlanetSpawningController : MonoBehaviour
 
     public void SpawnPlanets(float movementDuration)
     {
-        if (GameManager.Instance.IsPracticeMode) return;
-
         m_planetsObject.SetActive(true);
 
         if (m_movementCoroutine != null)
@@ -85,9 +83,9 @@ public class PlanetSpawningController : MonoBehaviour
 
         while (timer < duration)
         {
-            if (!GameManager.Instance.IsPaused)
+            if (!GameManager.Instance.IsPaused && !GameManager.Instance.IsPracticeMode)
             {
-                timer += Time.deltaTime;
+                timer += Time.deltaTime * GameManager.Instance.GameTimeScale;
                 float t = Mathf.Clamp01(timer / duration);
 
                 m_planetPlacement1.position = Vector3.Lerp(from1, to1, t);
