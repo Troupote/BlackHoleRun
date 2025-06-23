@@ -238,13 +238,15 @@ namespace BHR
             OnResumed?.Invoke();
         }
 
-        public void EndLevel()
+        public void EndLevel(bool lose = false)
         {
+            if(lose) _timer = float.MaxValue;
+
             OnPaused?.Invoke();
             CleanInGame(false);
             IsPlaying = false;
             bool newBestTime = false;
-            if (!_hasPlayedInSolo && !IsPracticeMode)
+            if (!_hasPlayedInSolo && !IsPracticeMode && !lose)
                 newBestTime = CurrentLevel.SaveTime(Timer);
             ChangeMainPlayerState(PlayerState.UI, false);
             ModuleManager.Instance.OnModuleEnable(ModuleManager.Instance.GetModule(ModuleType.END_LEVEL));
