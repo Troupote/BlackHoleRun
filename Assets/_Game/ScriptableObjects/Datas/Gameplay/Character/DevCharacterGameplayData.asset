@@ -25,27 +25,36 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 3.2063465
-      value: 93.42872
-      inSlope: 49.999992
-      outSlope: 49.999992
+      time: 2.1215787
+      value: 118.50896
+      inSlope: 72.01783
+      outSlope: 72.01783
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0.12612352
     - serializedVersion: 3
-      time: 5
-      value: 250
-      inSlope: 50
-      outSlope: 50
+      time: 3.9446864
+      value: 324.56866
+      inSlope: 160.0539
+      outSlope: 160.0539
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.09722395
+      outWeight: 0.20548601
+    - serializedVersion: 3
+      time: 5
+      value: 600
+      inSlope: 275.94333
+      outSlope: 275.94333
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.030769253
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_activateDistanceLimit: 1
+  m_activateDistanceLimit: 0
   m_maxDistanceBetweenPlayers: 125
   m_activateMovementsLimit: 1
   m_throwForce: 30
