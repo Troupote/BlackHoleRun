@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51228f81240179440ad754544151abd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugUnlockedMode: 1
-  _levelsFolderPath: Assets/_Game/ScriptableObjects/Datas/ScenesLevels/Levels/Dev
+  _levelDatas:
+  - {fileID: 11400000, guid: 204c5e4c971a2aa439096b417137be76, type: 2}

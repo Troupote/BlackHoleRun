@@ -1,7 +1,6 @@
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace BHR
@@ -9,30 +8,12 @@ namespace BHR
     public class DataManager : ManagerSingleton<DataManager>
     {
         [Header("Levels Data")]
-        [SerializeField, Required] private string _levelsFolderPath;
-
-        private List<LevelDataSO> _levelDatas = new List<LevelDataSO>();
+        [SerializeField, Required] private List<LevelDataSO> _levelDatas = new List<LevelDataSO>();
         public List<LevelDataSO> LevelDatas => _levelDatas;
 
         public override void Awake()
         {
             base.Awake();
-            FindLevelDatas();
-        }
-
-        private void FindLevelDatas()
-        {
-            _levelDatas = new List<LevelDataSO>();
-            string[] guids = AssetDatabase.FindAssets("t:" + typeof(LevelDataSO).Name, new[] { _levelsFolderPath });
-            foreach (string guid in guids)
-            {
-
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                LevelDataSO data = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
-                if (data != null)
-                    _levelDatas.Add(data);
-            }
-            _levelDatas = _levelDatas.OrderBy(d => d.ID).ToList();
         }
 
         public Dictionary<int, float> GetLevelsBestTime()
