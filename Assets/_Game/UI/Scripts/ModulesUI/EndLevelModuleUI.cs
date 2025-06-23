@@ -79,7 +79,10 @@ public class EndLevelModuleUI : MonoBehaviour
     private void UpdateRunInfos(bool newBest)
     {
         _levelNameText.text = $"{LocalizationManager.Localize("Level")} {_currentLevel.ID.ToString("D2")} - {_currentLevel.LevelName}"; // @todo localization level name
-        _currentTimeText.text = LocalizationManager.Localize("Time").ToUpper() + " : " + UtilitiesFunctions.TMPBalises(UtilitiesFunctions.TimeFormat(_endTimer), "OverpassMono-VariableFont_wght SDF", true);
+        if (_endTimer >= float.MaxValue)
+            _currentTimeText.text = "";
+        else
+            _currentTimeText.text = LocalizationManager.Localize("Time").ToUpper() + " : " + UtilitiesFunctions.TMPBalises(UtilitiesFunctions.TimeFormat(_endTimer), "OverpassMono-VariableFont_wght SDF", true);
         _bestTimeText.text = newBest ? LocalizationManager.Localize(_newBestLocalizationKey).ToUpper() : LocalizationManager.Localize("Best").ToUpper() + " : " + UtilitiesFunctions.TMPBalises(UtilitiesFunctions.TimeFormat(_currentLevel.BestTime()), "OverpassMono-VariableFont_wght SDF", true);
     }
     #endregion

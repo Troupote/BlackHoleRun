@@ -45,7 +45,7 @@ public class ScreenFlash : MonoBehaviour
 
         yield return new WaitForSeconds(4f);
 
-        GameManager.Instance.EndLevel();
+        GameManager.Instance.EndLevel(true);
         // Fade out
         timer = 0f;
         while (timer < halfDuration)
