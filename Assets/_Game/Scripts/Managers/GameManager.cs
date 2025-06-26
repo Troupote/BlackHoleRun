@@ -189,7 +189,6 @@ namespace BHR
         {
             CheckpointsManager.Instance.ReplacePlayer();
             OnTutorielSet?.Invoke(_tutorielEnable);
-            _tutorielEnable = false;
 #if UNITY_EDITOR
             if (DebugManager.Instance.ForceTutoriel)
                 OnTutorielSet?.Invoke(true);

@@ -112,16 +112,9 @@ public class LevelSelectionUI : AModuleUI
 
     public override void Back()
     {
-        if(_levelSelectedPanel.activeSelf && false)
         {
-            UnloadLevel();
-        }
-        else
-        {
-            if (ModuleManager.Instance.Historic.Count == 0)
-                ModuleManager.Instance.OnModuleEnableWithTransition(ModuleManager.Instance.GetModule(ModuleType.MAIN_TITLE), true);
-            else
-                base.Back();
+            base.Back();
+            ModuleManager.Instance.OnModuleEnableWithTransition(ModuleManager.Instance.GetModule(ModuleType.MAIN_TITLE), true);
             ModuleManager.Instance.SaveBackSelectable(_playMenuButton);
 
         }

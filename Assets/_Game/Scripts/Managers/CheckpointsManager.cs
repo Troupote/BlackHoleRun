@@ -39,6 +39,7 @@ namespace BHR
 
         public void ReplacePlayer()
         {
+            if(_currentCheckpoint == null) return;
             CharactersManager.Instance.CharacterObject.transform.position = _currentCheckpoint.position;
             CameraManager.Instance.ForceCameraLookAt(_currentCheckpoint.forward);
         }
