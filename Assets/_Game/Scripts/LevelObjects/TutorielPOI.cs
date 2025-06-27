@@ -30,6 +30,9 @@ namespace BHR
         [SerializeField, Required, ShowIf(nameof(_hasComposite))]
         private GameObject _compositeBindingsParent;
 
+        [SerializeField]
+        private bool _lastPOI = false;
+
         private void Awake()
         {
             foreach(FadeWithDistanceUI fade in GetComponentsInChildren<FadeWithDistanceUI>())
@@ -68,6 +71,8 @@ namespace BHR
                 else
                 {
                     GameManager.Instance.LoadTutorielData(_turorialData);
+                    if (_lastPOI)
+                        GameManager.Instance.FinishTutoriel();
                 }
             }
         }

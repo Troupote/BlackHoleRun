@@ -78,15 +78,20 @@ public class LevelSelectionUI : AModuleUI
     public void LoadLevel(LevelDataSO data)
     {
         // Enable tutoriel set if level one
-        _tutorielSet.SetActive(data.ID <= 1);
+        _tutorielSet.SetActive(data.ID <= 1 && PlayerPrefs.GetInt("TutorielFinished", 0) == 1);
 
         _playButton.onClick.RemoveListener(() => GameManager.Instance.SaveSelectedLevel(data));
         _playButton.onClick.AddListener(() => GameManager.Instance.SaveSelectedLevel(data));
 
         if (data.ID <= 1)
         {
-            _playButton.onClick.RemoveListener(() => GameManager.Instance.SetTutoriel(_tutorielSet.GetComponentInChildren<Toggle>().isOn));
-            _playButton.onClick.AddListener(() => GameManager.Instance.SetTutoriel(_tutorielSet.GetComponentInChildren<Toggle>().isOn));
+            if(PlayerPrefs.GetInt("TutorielFinished", 0) == 1)
+            {
+                _playButton.onClick.RemoveListener(() => GameManager.Instance.SetTutoriel(_tutorielSet.GetComponentInChildren<Toggle>().isOn));
+                _playButton.onClick.AddListener(() => GameManager.Instance.SetTutoriel(_tutorielSet.GetComponentInChildren<Toggle>().isOn));
+            }
+            else
+                GameManager.Instance.SetTutoriel(true);
         }
 
         _playButton.onClick.RemoveListener(() => GameManager.Instance.IsPracticeMode = _practiceToggle.isOn);

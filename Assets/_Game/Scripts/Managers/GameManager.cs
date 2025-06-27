@@ -153,6 +153,8 @@ namespace BHR
 
         public void SetTutoriel(bool enable) => _tutorielEnabled = enable;
 
+        public void FinishTutoriel() => PlayerPrefs.SetInt("TutorielFinished", 1);
+
         public void LaunchLevel(bool firstStart = true)
         {
 #if UNITY_EDITOR
@@ -239,7 +241,8 @@ namespace BHR
 
         public void EndLevel(bool lose = false)
         {
-            if(lose) _timer = float.MaxValue;
+            if (lose) _timer = float.MaxValue;
+            else if (PlayerPrefs.GetInt("TutorielFinished", 0) == 0) PlayerPrefs.SetInt("TutorielFinished", 1);
 
             OnPaused?.Invoke();
             CleanInGame(false);
