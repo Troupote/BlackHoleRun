@@ -22,6 +22,7 @@ namespace BHR
             TogglePopup(false);
             GameManager.Instance.OnLaunchLevel.AddListener((state) => TogglePopup(false));
             _chronoText.gameObject.SetActive(false);
+            GameManager.Instance.OnLaunchLevel.AddListener((state) => _chronoText.gameObject.SetActive(false));
 
             GameManager.Instance.OnStartLevel.AddListener(() =>  _chronoText.gameObject.SetActive(true));
         }
