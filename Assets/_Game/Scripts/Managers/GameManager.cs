@@ -43,8 +43,10 @@ namespace BHR
         public bool HasPlayedInSolo => _hasPlayedInSolo;
 
         public LevelDataSO CurrentLevel => _currentLevel;
-        public UnityEvent<bool> OnLaunchLevel, OnTutorielSet;
-        private bool _tutorielEnable;
+        public UnityEvent<bool> OnLaunchLevel;
+        [SerializeField]
+        private bool _tutorielEnabled;
+        public bool TutorielEnabled => _tutorielEnabled;
         public TutorielData SavedTutorielData;
         public bool CanOpenPopup = false;
         public UnityEvent OnStartLevel;
@@ -149,10 +151,15 @@ namespace BHR
         #region Level gestion
         public void SaveSelectedLevel(LevelDataSO data) => SelectedLevel = data;
 
-        public void SetTutoriel(bool enable) => _tutorielEnable = enable;
+        public void SetTutoriel(bool enable) => _tutorielEnabled = enable;
+
+        public void FinishTutoriel() => PlayerPrefs.SetInt("TutorielFinished", 1);
 
         public void LaunchLevel(bool firstStart = true)
         {
+#if UNITY_EDITOR
+            if (DebugManager.Instance.ForceTutoriel) _tutorielEnabled = true;
+#endif
             isStartingGame = true;
             ChangeSpeedLines(SpeedLinesState.NONE);
             SoloMode = PlayersInputManager.Instance.SoloModeEnabled;
@@ -188,12 +195,6 @@ namespace BHR
         public void PreAnimationStartLevel()
         {
             CheckpointsManager.Instance.ReplacePlayer();
-            OnTutorielSet?.Invoke(_tutorielEnable);
-            _tutorielEnable = false;
-#if UNITY_EDITOR
-            if (DebugManager.Instance.ForceTutoriel)
-                OnTutorielSet?.Invoke(true);
-#endif
         }
 
         public void StartLevel()
@@ -240,7 +241,8 @@ namespace BHR
 
         public void EndLevel(bool lose = false)
         {
-            if(lose) _timer = float.MaxValue;
+            if (lose) _timer = float.MaxValue;
+            else if (PlayerPrefs.GetInt("TutorielFinished", 0) == 0) PlayerPrefs.SetInt("TutorielFinished", 1);
 
             OnPaused?.Invoke();
             CleanInGame(false);

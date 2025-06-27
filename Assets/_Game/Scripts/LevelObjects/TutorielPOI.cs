@@ -10,6 +10,8 @@ namespace BHR
     {
         public string TutorielNameKey;
         public InputActionReference ActionRef;
+        public bool HasPopup;
+        [ShowIf(nameof(HasPopup))]
         public string DescriptionKey;
         public Sprite Scheme;
     }
@@ -30,6 +32,9 @@ namespace BHR
         [SerializeField, Required, ShowIf(nameof(_hasComposite))]
         private GameObject _compositeBindingsParent;
 
+        [SerializeField]
+        private bool _lastPOI = false;
+
         private void Awake()
         {
             foreach(FadeWithDistanceUI fade in GetComponentsInChildren<FadeWithDistanceUI>())
@@ -39,13 +44,23 @@ namespace BHR
             GameManager.Instance.CanOpenPopup = false;
         }
 
+        private void OnEnable()
+        {
+            ToggleObject(GameManager.Instance.TutorielEnabled);
+        }
+
+        private void ToggleObject(bool enable)
+        {
+            gameObject.SetActive(enable);
+        }
+
         private void OnTriggerEnter(Collider other)
         {
 #if UNITY_EDITOR
             if (DebugManager.Instance.DisableTutorielPopup) return;
 #endif
             // @todo remove tuto if level completed ? -> make a settings option ?
-            if(other.CompareTag("Player"))
+            if(other.CompareTag("Player") && _turorialData.HasPopup)
             {
                 if (CharactersManager.Instance.isHumanoidAiming) return;
                 ToggleUI(false);
@@ -58,6 +73,8 @@ namespace BHR
                 else
                 {
                     GameManager.Instance.LoadTutorielData(_turorialData);
+                    if (_lastPOI)
+                        GameManager.Instance.FinishTutoriel();
                 }
             }
         }
@@ -88,7 +105,6 @@ namespace BHR
                 CheckComposite();
             }
 
-            GameManager.Instance.OnTutorielSet.AddListener(gameObject.SetActive);
             GameManager.Instance.OnLaunchLevel.AddListener((state) => _hasAlreadyPopup = false);
             ToggleUI(true);
         }
