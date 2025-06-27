@@ -39,6 +39,16 @@ namespace BHR
             GameManager.Instance.CanOpenPopup = false;
         }
 
+        private void OnEnable()
+        {
+            ToggleObject(GameManager.Instance.TutorielEnabled);
+        }
+
+        private void ToggleObject(bool enable)
+        {
+            gameObject.SetActive(enable);
+        }
+
         private void OnTriggerEnter(Collider other)
         {
 #if UNITY_EDITOR
@@ -88,7 +98,6 @@ namespace BHR
                 CheckComposite();
             }
 
-            GameManager.Instance.OnTutorielSet.AddListener(gameObject.SetActive);
             GameManager.Instance.OnLaunchLevel.AddListener((state) => _hasAlreadyPopup = false);
             ToggleUI(true);
         }
