@@ -10,6 +10,8 @@ namespace BHR
     {
         public string TutorielNameKey;
         public InputActionReference ActionRef;
+        public bool HasPopup;
+        [ShowIf(nameof(HasPopup))]
         public string DescriptionKey;
         public Sprite Scheme;
     }
@@ -58,7 +60,7 @@ namespace BHR
             if (DebugManager.Instance.DisableTutorielPopup) return;
 #endif
             // @todo remove tuto if level completed ? -> make a settings option ?
-            if(other.CompareTag("Player"))
+            if(other.CompareTag("Player") && _turorialData.HasPopup)
             {
                 if (CharactersManager.Instance.isHumanoidAiming) return;
                 ToggleUI(false);
