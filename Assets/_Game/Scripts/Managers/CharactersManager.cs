@@ -566,7 +566,6 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
     #region Music
     private EventInstance m_musicInstance;
     private bool m_musicStarted = false;
-
     public void StartMusic()
     {
         if (m_musicStarted) return;
