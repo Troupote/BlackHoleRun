@@ -314,7 +314,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960.00006, y: -1392.8}
+  m_AnchoredPosition: {x: 959.8205, y: -1443.545}
   m_SizeDelta: {x: 1820, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &491421772
@@ -352,20 +352,21 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\"Il ya bien longtemps, dans une galaxie lointaine, tr\xE8s lointaine..\n..se
-    trouvait la Black Hole Team ! \nConnus sous les <i>Hole Men</i>, ils se pr\xE9noment
+    trouvait la Black Hole Team ! \nConnus sous les <i>Hole Men</i>, ils se pr\xE9nomment
     :\n\nMarius BOULANDET\nChef de projet, Game et Level Designer\nProgrammeur Manager,
     UI, Inputs\nAide Shader, 3D and UI\n\nNathan CUENI DOLIS\nArtiste 3D et Shader\nAide
     programmation 3C\n\nHugo IMP\xC9RAT\nProgrammeur Gameplay / 3C\nAide animation
     3D\n\nThybault JALLU\nConception et int\xE9gration sonore\nAide Git\n\n\nASSETS
-    UTILIS\xC9S\n\nUI\nFonts : Archivo, Dunkin, Overpass Mono\nKenney Inputs Prompts\n\n3D
-    & VFX\nMoon by Poly By Google\nDust effect from Hovl Studio magic effects pack\nSpace
-    skybox from the Tyro's free online generator\n\n\nMERCI \xC0\n\nTrou Noir (@blackholed
+    UTILIS\xC9S\n\nUI\nPolices : Archivo, Dunkin, Overpass Mono\nKenney Inputs Prompts\n\n3D
+    & VFX\nMoon by Poly By Google\nDust effect du pack Hovl Studio magic effects\nCiels
+    d'espace du g\xE9n\xE9rateur en ligne de Tyro\n\n\nMERCI \xC0\n\nTrou Noir (@blackholed
     sur X) - Illustration de l'affiche\n\nEdgar \"\"Head\"\" Rousseau (@ed_rss sur
     Instagram)\nLogo, Pr\xE9production Affiche et recherches graphiques 2D, Playtesteur.\n\nGLaPI
     - Aide avec le g\xE9n\xE9rateur de la ceinture d'ast\xE9ro\xEFde\n\nNathan -
     Playtesteur\nRain - Playtesteuse\nNo\xE9 - Playtesteur\nMarie - Playtesteuse
-    <3\n\nLa Let Me Team\n\nPSINJ et Beber\n\n\nProjet r\xE9alis\xE9 dans le cadre
-    de la licence informatique parcours jeux vid\xE9o \n(promo P5 / 2024-2027)\""
+    <3\n\nLa Let Me Team\n\nPSINJ et Beber\n\n..et tout le reste, jury, amis, camarades
+    qui nous ont conseill\xE9 et encourag\xE9 !\n\n\nProjet r\xE9alis\xE9 dans le
+    cadre de la licence informatique parcours jeux vid\xE9o \n(promo P5 / 2024-2027)\""
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 027e53bf063d2d74badb31b42b7a24c1, type: 2}
   m_sharedMaterial: {fileID: -1700728973679544269, guid: 027e53bf063d2d74badb31b42b7a24c1, type: 2}
@@ -766,7 +767,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960.00006, y: -4002.0552}
+  m_AnchoredPosition: {x: 959.8205, y: -4158.04}
   m_SizeDelta: {x: 1820, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1058715176
@@ -918,7 +919,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960.00006, y: -3609.2002}
+  m_AnchoredPosition: {x: 959.8205, y: -3710.6902}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1181470833
@@ -1062,7 +1063,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1427468392}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -929.00006}
+  m_LocalPosition: {x: 0, y: 0, z: -909}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1137,7 +1138,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1519822037}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -929}
+  m_LocalPosition: {x: 0, y: 0, z: -909}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1235,12 +1236,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -1311,14 +1312,14 @@ MonoBehaviour:
   _logo: {fileID: 1427468393}
   _startLogoPos: {fileID: 1519822038}
   _endLogoPos: {fileID: 124669187}
-  _logoMoveDuration: 5
-  _logoFadeDuration: 2
+  _logoMoveDuration: 3
+  _logoFadeDuration: 1.5
   _container: {fileID: 249291503}
   _thanks: {fileID: 1058715177}
   _credits: {fileID: 491421773}
   _startPos: {fileID: 1749723991}
   _endPos: {fileID: 1737797}
-  _scrollDuration: 40
+  _scrollDuration: 50
 --- !u!1 &1623007319
 GameObject:
   m_ObjectHideFlags: 0
@@ -1356,7 +1357,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960.00006, y: -3172.4001}
+  m_AnchoredPosition: {x: 959.8205, y: -3273.8901}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1623007321
