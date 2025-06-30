@@ -193,7 +193,7 @@ public class CharacterBehavior : MonoBehaviour
     #region Movement
     public void Move(Vector2 a_moveValue)
     {
-        if (m_rigidbody.isKinematic || m_moveLockTimer > 0f) return;
+        if (m_rigidbody.isKinematic) return;
 
         float moveX = a_moveValue.x;
         float moveZ = a_moveValue.y;
