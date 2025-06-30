@@ -59,7 +59,7 @@ MonoBehaviour:
   m_activateMovementsLimit: 1
   m_throwForce: 30
   m_movingCurveForce: 10
-  m_DashForce: 30
+  m_DashForce: 200
   m_JumpForce: 35
   m_throwingCenterDistanceMultiplier: 10
   m_timeTakenToGoToCenter: 0.05

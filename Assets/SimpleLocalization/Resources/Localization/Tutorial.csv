@@ -44,3 +44,7 @@ M/T/Respawn,Réapparaître (double click),Respawn (double tap)
 M/T/RespawnDesc,Tu peux réapparaître au dernier checkpoint en double cliquant sur cette touche.,You can respawn at last checkpoint by double tap this input.
 M/T/PauseDesc,Met le jeu en pause à n'importe quel moment !,Pause the game at anytime !
 M/T/Open,Ouvrir la pop up,Open pop up
+M/T/DeadzonesDesc,"Tu ne peux pas traverser la ceinture d'astéroïdes gris.
+Tu peux néanmoins désactiver le visuel d'aide dans les options.","You can't go through the gray asteroids belt.
+However, you can disable the deadzones preview in settings."
+M/T/Deadzones,Limites de zones,Deadzones

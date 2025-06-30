@@ -300,7 +300,7 @@
                 {
                     "name": "",
                     "id": "d8854a60-7dfa-487e-b25f-560a4a7b2325",
-                    "path": "<Keyboard>/p",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardMouse",
@@ -494,7 +494,7 @@
                 {
                     "name": "",
                     "id": "839bed8a-625b-418a-ae17-ea6ac1760947",
-                    "path": "<Keyboard>/p",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardMouse",
@@ -1226,7 +1226,7 @@
                 {
                     "name": "",
                     "id": "34328c0f-c8da-4c4e-803c-aa236478c577",
-                    "path": "<Keyboard>/p",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardMouse",
