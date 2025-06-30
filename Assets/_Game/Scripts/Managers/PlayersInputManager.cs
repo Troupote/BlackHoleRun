@@ -184,7 +184,7 @@ namespace BHR
                     Vector2 value = ctx.ReadValue<Vector2>();
 
                     // Deadzone check 
-                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(CurrentActivePlayerDevice))
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude < SettingsSave.LoadRightStickDeadzone(CurrentActivePlayerDevice))
                         value = Vector2.zero;
 
                     // Invert axe Y check
@@ -199,7 +199,7 @@ namespace BHR
                     Vector2 value = ctx.ReadValue<Vector2>();
 
                     // Deadzone check 
-                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadLeftStickDeadzone(CurrentActivePlayerDevice))
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude < SettingsSave.LoadLeftStickDeadzone(CurrentActivePlayerDevice))
                         value = Vector2.zero;
 
                     OnHMove.Invoke(value);
@@ -235,8 +235,8 @@ namespace BHR
                     Vector2 value = ctx.ReadValue<Vector2>();
 
                     // Deadzone check 
-                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadRightStickDeadzone(CurrentActivePlayerDevice))
-                        return;
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude < SettingsSave.LoadRightStickDeadzone(CurrentActivePlayerDevice))
+                        value = Vector2.zero;
 
                     // Invert axe Y check
                     if (SettingsSave.LoadInvertAxeY(CurrentActivePlayerDevice))
@@ -250,7 +250,7 @@ namespace BHR
                     Vector2 value = ctx.ReadValue<Vector2>();
 
                     // Deadzone check 
-                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude <= SettingsSave.LoadLeftStickDeadzone(CurrentActivePlayerDevice))
+                    if (controller == PlayerControllerState.GAMEPAD && value.magnitude < SettingsSave.LoadLeftStickDeadzone(CurrentActivePlayerDevice))
                         return;
 
                     OnSMove.Invoke(value);
