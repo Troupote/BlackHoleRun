@@ -161,7 +161,7 @@ namespace BHR
             if (DebugManager.Instance.ForceTutoriel) _tutorielEnabled = true;
 #endif
             isStartingGame = true;
-            ChangeSpeedLines(SpeedLinesState.NONE);
+            ResetSpeedLines();
             SoloMode = PlayersInputManager.Instance.SoloModeEnabled;
             PlayersInputManager.Instance.CanConnect = false;
             ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleType.HUD));
@@ -291,6 +291,7 @@ namespace BHR
                 _hasPlayedInSolo = false;
                 _currentLevel = null;
                 m_isChronoStopped = false;
+                ResetSpeedLines();
             }
         }
 
