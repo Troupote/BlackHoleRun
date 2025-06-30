@@ -45,6 +45,8 @@ namespace BHR
             LocalizationManager.Language = SettingsSave.LoadLanguage();
         }
 
+        public void UpdateDeadzonePreview() => GameManager.Instance.OnDeadzonePreviewToggled.Invoke(SettingsSave.LoadDeadzonePreview()==1);
+
         public void UpdateVolume()
         {
             if (AudioManager.Instance == null) return;
@@ -89,6 +91,7 @@ namespace BHR
             UpdateLanguage();
             UpdateResolutionAndWindowed();
             UpdateVolume();
+            UpdateDeadzonePreview();
             OnGlobalDatasLoaded?.Invoke();
         }
 

@@ -124,6 +124,7 @@ namespace BHR
         public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
         public UnityEvent OnPaused, OnResumed, OnRespawned;
 
+        public UnityEvent<bool> OnDeadzonePreviewToggled;
 
         public bool IsPracticeMode = false;
         private void Start()

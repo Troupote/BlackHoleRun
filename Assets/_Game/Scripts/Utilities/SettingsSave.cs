@@ -12,6 +12,7 @@ namespace BHR
         private const string MASTER_VOLUME_KEY = "MasterVolume"; private const float DEFAULT_MASTER_VOLUME = 0.5f;
         private const string MUSIC_VOLUME_KEY = "MusicVolume"; private const float DEFAULT_MUSIC_VOLUME = 0.5f;
         private const string SOUND_VOLUME_KEY = "MasterVolume"; private const float DEFAULT_SOUND_VOLUME = 0.5f;
+        private const string DEADZONE_PREVIEW_KEY = "Deadzone"; private const int DEFAULT_DEADZONE_PREVIEW = 1;
         #endregion
 
         #region Users settings keys and default values
@@ -40,6 +41,8 @@ namespace BHR
         public static float LoadMusicVolume() => PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, DEFAULT_MUSIC_VOLUME);
         public static void SaveSoundsVolume(float value = DEFAULT_SOUND_VOLUME) => PlayerPrefs.SetFloat(SOUND_VOLUME_KEY, DEFAULT_SOUND_VOLUME);
         public static float LoadSoundsVolume() => PlayerPrefs.GetFloat(SOUND_VOLUME_KEY, DEFAULT_SOUND_VOLUME);
+        public static void SaveDeadzonePreview(int value = DEFAULT_DEADZONE_PREVIEW) => PlayerPrefs.SetInt(DEADZONE_PREVIEW_KEY, value);
+        public static float LoadDeadzonePreview() => PlayerPrefs.GetInt(DEADZONE_PREVIEW_KEY, DEFAULT_DEADZONE_PREVIEW);
 
         #endregion
 
