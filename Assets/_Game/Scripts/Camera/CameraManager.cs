@@ -94,8 +94,16 @@ public class CameraManager : ManagerSingleton<CameraManager>
 
     public void ForceCameraLookAt(Vector3 targetLook)
     {
-        targetLook.Normalize();
-        PlayerCam.transform.localRotation = Quaternion.LookRotation(targetLook);
+        if(CurrentCam == SingularityCam)
+            SwitchCameraToCharacter(CharactersManager.Instance.CharacterObject.transform.position);
+
+        StartCoroutine(ForceCameraLookAtCoroutine(targetLook.normalized));
+    }
+
+    IEnumerator ForceCameraLookAtCoroutine(Vector3 lookAt)
+    {
+        yield return new WaitForSeconds(0.01f);
+        PlayerCam.transform.localRotation = Quaternion.LookRotation(lookAt);
         rotationX = PlayerCam.transform.localRotation.eulerAngles.x;
         rotationY = PlayerCam.transform.localRotation.eulerAngles.y;
     }
