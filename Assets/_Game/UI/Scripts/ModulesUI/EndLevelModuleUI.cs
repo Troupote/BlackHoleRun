@@ -183,12 +183,7 @@ public class EndLevelModuleUI : MonoBehaviour
         else
         {
             _nextLevelPanel.GetComponentInChildren<TextMeshProUGUI>().text = LocalizationManager.Localize("M/MT/Credits");
-            _nextLevelPanel.onClick.AddListener(() =>
-            {
-                ModuleManager.Instance.ClearNavigationHistoric();
-                ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleType.CREDITS));
-                ScenesManager.Instance.ChangeScene(ScenesManager.Instance.MenuScene);
-            });
+            _nextLevelPanel.onClick.AddListener(() => GameManager.Instance.QuitLevel(ModuleType.CREDITS));
         }
     }
 
@@ -197,6 +192,6 @@ public class EndLevelModuleUI : MonoBehaviour
         GameManager.Instance.IsPracticeMode = _practiceToggle.isOn;
         GameManager.Instance.RestartLevel(true);
     }
-    public void QuitLevel() => GameManager.Instance.QuitLevel();
+    public void QuitLevel() => GameManager.Instance.QuitLevel(ModuleType.LEVEL_SELECTION);
 
 }

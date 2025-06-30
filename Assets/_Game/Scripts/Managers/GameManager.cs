@@ -256,12 +256,12 @@ namespace BHR
             OnEndLevel.Invoke(Timer, newBestTime, _hasPlayedInSolo, IsPracticeMode);
         }
 
-        public void QuitLevel()
+        public void QuitLevel(ModuleType moduleToLoad)
         {
             CleanInGame(false);
             IsPaused = false;
             ChangeMainPlayerState(PlayerState.UI, false);
-            ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(ModuleType.LEVEL_SELECTION));
+            ModuleManager.Instance.SetModuleToLoad(ModuleManager.Instance.GetModule(moduleToLoad));
             ScenesManager.Instance.ChangeScene(ScenesManager.Instance.MenuScene);
             ModuleManager.Instance.ClearNavigationHistoric();
             CleanInGame(true);

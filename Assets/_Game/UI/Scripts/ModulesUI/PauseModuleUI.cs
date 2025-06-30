@@ -24,7 +24,7 @@ namespace BHR
             GameManager.Instance.RestartLevel(true);
         }
         public void Resume() => GameManager.Instance.Resume();
-        public void QuitLevel() => GameManager.Instance.QuitLevel();
+        public void QuitLevel() => GameManager.Instance.QuitLevel(ModuleType.LEVEL_SELECTION);
 
         public override void Back()
         {

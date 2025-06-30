@@ -71073,11 +71073,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 371c4d0b7ed8a6848bc4caeac9570b46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &2084078627 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2310266131685152686, guid: 0c70cb5b63a1c774790ff680dd56c59a, type: 3}
-  m_PrefabInstance: {fileID: 1015478699653224723}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2090872861
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -75080,7 +75075,7 @@ PrefabInstance:
     - target: {fileID: 4607888428053869629, guid: 0c70cb5b63a1c774790ff680dd56c59a, type: 3}
       propertyPath: _currentCheckpoint
       value: 
-      objectReference: {fileID: 2084078627}
+      objectReference: {fileID: 794133988}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
