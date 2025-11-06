@@ -11,6 +11,9 @@ public class ProceduralGeneration : MonoBehaviour
 
     public float generationDensity = .1f;
     public float objectSpacing = 10;
+    
+    [Tooltip("Layer mask for overlap checking - set to environment/ground layers")]
+    public LayerMask overlapCheckLayers = -1; // Default to all layers for backward compatibility
 
     void Start()
     {
@@ -49,7 +52,7 @@ public class ProceduralGeneration : MonoBehaviour
             objectPrefab.transform.localScale = randomSize;
 
             //Check if the object do not overlap with another
-            if (!Physics.CheckSphere(randomPosition, objectSpacing))
+            if (!Physics.CheckSphere(randomPosition, objectSpacing, overlapCheckLayers))
             {
                 Instantiate(objectPrefab, randomPosition, Random.rotation);
             }

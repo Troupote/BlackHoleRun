@@ -22,6 +22,9 @@ public class CharacterGameplayData : ScriptableObject
     private float m_maxDistanceBetweenPlayers = 125f;
 
     public float MaxDistanceBetweenPlayers => m_maxDistanceBetweenPlayers;
+    
+    // Cache squared distance for performance
+    public float MaxDistanceBetweenPlayersSquared => m_maxDistanceBetweenPlayers * m_maxDistanceBetweenPlayers;
 
     [SerializeField, PropertyOrder(3)]
     private bool m_activateMovementsLimit = false;

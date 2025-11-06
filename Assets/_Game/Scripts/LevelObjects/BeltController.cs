@@ -12,6 +12,12 @@ namespace BHR
         private List<Material> _runtimeMats = new List<Material>();
         private bool _init = false;
         private float _angle = 0f;
+        
+        // Cache material property IDs for better performance
+        private static readonly int AnglePropertyID = Shader.PropertyToID("_Angle");
+        private static readonly int GameTimeScalePropertyID = Shader.PropertyToID("_GameTimeScale");
+        private static readonly int SpeedPropertyID = Shader.PropertyToID("_Speed");
+        private static readonly int DirectionPropertyID = Shader.PropertyToID("_Direction");
 
         private void Awake()
         {
@@ -27,9 +33,9 @@ namespace BHR
                 Material mat = new Material(_rotateMat);
                 _runtimeMats.Add(mat);
                 
-                mat.SetFloat("_GameTimeScale", 1f);
-                mat.SetFloat("_Speed", Random.Range(_speedFork.x, _speedFork.y));
-                mat.SetVector("_Direction", new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f)));
+                mat.SetFloat(GameTimeScalePropertyID, 1f);
+                mat.SetFloat(SpeedPropertyID, Random.Range(_speedFork.x, _speedFork.y));
+                mat.SetVector(DirectionPropertyID, new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f)));
             }
         }
 
@@ -46,7 +52,7 @@ namespace BHR
         private void SetMats(float angle)
         {
             foreach (Material mat in _runtimeMats)
-                mat.SetFloat("_Angle", angle);
+                mat.SetFloat(AnglePropertyID, angle);
         }
 
         private void Update()

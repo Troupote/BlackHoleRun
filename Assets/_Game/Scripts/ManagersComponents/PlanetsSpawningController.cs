@@ -27,6 +27,9 @@ public class PlanetSpawningController : MonoBehaviour
     private SphereCollider m_sphereCollider2;
 
     private List<Material> m_planetMaterials = new List<Material>();
+    
+    // Cache material property ID for better performance
+    private static readonly int DissolveIntensityPropertyID = Shader.PropertyToID("_DissolveIntensity");
 
     public Transform PlanetPlacement1 => m_planetPlacement1;
     public Transform PlanetPlacement2 => m_planetPlacement2;
@@ -47,7 +50,7 @@ public class PlanetSpawningController : MonoBehaviour
                     Material mat = renderer.material;
                     if (mat != null)
                     {
-                        mat.SetFloat("_DissolveIntensity", 0f);
+                        mat.SetFloat(DissolveIntensityPropertyID, 0f);
                         m_planetMaterials.Add(mat);
                     }
                 }
@@ -154,10 +157,10 @@ public class PlanetSpawningController : MonoBehaviour
                 float t = Mathf.Clamp01(timer / duration);
                 float value = Mathf.Lerp(from, to, t);
 
+                // Use cached property ID for better performance
                 foreach (var mat in m_planetMaterials)
                 {
-                    if (mat.HasProperty(propertyName))
-                        mat.SetFloat(propertyName, value);
+                    mat.SetFloat(DissolveIntensityPropertyID, value);
                 }
             }
             yield return null;
@@ -165,8 +168,7 @@ public class PlanetSpawningController : MonoBehaviour
 
         foreach (var mat in m_planetMaterials)
         {
-            if (mat.HasProperty(propertyName))
-                mat.SetFloat(propertyName, to);
+            mat.SetFloat(DissolveIntensityPropertyID, to);
         }
     }
 

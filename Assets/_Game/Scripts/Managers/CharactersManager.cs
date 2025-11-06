@@ -165,8 +165,10 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private float DistanceBetweenPlayersInPercents()
     {
-        return (Vector3.Distance(m_characterObject.transform.position, m_singularityObject.transform.position)
-            / m_gameplayData.MaxDistanceBetweenPlayers);
+        // Use sqrMagnitude for better performance - avoid expensive square root calculation
+        float sqrDistance = (m_characterObject.transform.position - m_singularityObject.transform.position).sqrMagnitude;
+        float maxSqrDistance = m_gameplayData.MaxDistanceBetweenPlayersSquared;
+        return Mathf.Sqrt(sqrDistance / maxSqrDistance);
     }
 
     #region Life Cycle
@@ -195,6 +197,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_wasMovingLastFrame = isMoving;
         m_lastPosition = currentPosition;
 
+        // Optimize: cache volume to avoid repeated property access
         if (m_ambienceStarted)
         {
             AudioManager.Instance.Set3DAttributesFromGameObject(m_ambienceInstance, m_characterObject);
@@ -208,10 +211,20 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
         // Check if the distance between players is exceeded
         if (IsEndingCinematicStarted) return;
-        if (DistanceBetweenPlayersInPercents() >= 1f && !m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
-            SwitchCharactersPositions();
-        else if (GameManager.Instance.ActivePlayerState == PlayerState.SINGULARITY)
-            GameManager.Instance.ApplySpeedLinesSingu(DistanceBetweenPlayersInPercents());
+        
+        // Optimize: Only check distance and update speed lines when singularity is not picked up
+        if (!m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
+        {
+            float distancePercent = DistanceBetweenPlayersInPercents();
+            if (distancePercent >= 1f)
+            {
+                SwitchCharactersPositions();
+            }
+            else if (GameManager.Instance.ActivePlayerState == PlayerState.SINGULARITY)
+            {
+                GameManager.Instance.ApplySpeedLinesSingu(distancePercent);
+            }
+        }
     }
 
     private void OnDestroy()

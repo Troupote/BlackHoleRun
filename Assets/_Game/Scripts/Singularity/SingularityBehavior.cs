@@ -256,7 +256,8 @@ public class SingularityBehavior : MonoBehaviour
 
     public bool IsOverlapping()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, 1f, ~0, QueryTriggerInteraction.Ignore);
+        // Use GroundMask to only check against relevant layers for better performance
+        Collider[] hits = Physics.OverlapSphere(transform.position, 1f, m_gameplayData.GroundMask, QueryTriggerInteraction.Ignore);
         foreach (var hit in hits)
         {
             if (hit.attachedRigidbody != m_rigidbody) // ignore self
