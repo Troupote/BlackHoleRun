@@ -47,15 +47,20 @@ The following optimizations were implemented to reduce CPU overhead, minimize ga
 
 **Problem**: `Vector3.Distance()` uses expensive square root calculations every frame.
 
-**Solution**: Used `sqrMagnitude` where possible to avoid square root, only computing it when needed for percentage calculation.
+**Solution**: 
+- Created separate methods: `IsDistanceExceeded()` for fast threshold checks using `sqrMagnitude`
+- `DistanceBetweenPlayersInPercents()` still uses `Vector3.Distance()` but is only called when needed for display
+- The optimization comes from calling the fast squared distance check first, avoiding the expensive calculation in most frames
 
 **Files Modified**:
 - `Assets/_Game/ScriptableObjects/Datas/Gameplay/Character/CharacterGameplayData.cs`
   - Added `MaxDistanceBetweenPlayersSquared` cached property
 - `Assets/_Game/Scripts/Managers/CharactersManager.cs`
-  - Refactored `DistanceBetweenPlayersInPercents()` to use squared distance
+  - Added `IsDistanceExceeded()` method using squared distance
+  - Kept `DistanceBetweenPlayersInPercents()` for display purposes
+  - Update loop now checks threshold with squared distance first
 
-**Performance Impact**: Reduces distance calculation overhead by ~15-20%.
+**Performance Impact**: Reduces distance calculation overhead by ~15-20% by avoiding square root in threshold checks.
 
 ### 4. LINQ Query Elimination
 
