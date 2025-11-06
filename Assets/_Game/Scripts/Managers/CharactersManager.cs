@@ -165,13 +165,15 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private float DistanceBetweenPlayersInPercents()
     {
-        // Use sqrMagnitude for better performance when comparing to threshold
-        // For percentage display, we still need the actual distance
+    private float DistanceBetweenPlayersInPercents()
+    {
+        // This method is only called when we need the actual percentage for display
+        // For threshold checking, use IsDistanceExceeded() which avoids the square root
         float distance = Vector3.Distance(m_characterObject.transform.position, m_singularityObject.transform.position);
         return distance / m_gameplayData.MaxDistanceBetweenPlayers;
     }
     
-    // Helper method to check if distance exceeds threshold without square root
+    // Optimized distance check using squared distance to avoid expensive square root calculation
     private bool IsDistanceExceeded()
     {
         float sqrDistance = (m_characterObject.transform.position - m_singularityObject.transform.position).sqrMagnitude;
@@ -204,7 +206,7 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         m_wasMovingLastFrame = isMoving;
         m_lastPosition = currentPosition;
 
-        // Optimize: cache volume to avoid repeated property access
+        // Update audio instances each frame
         if (m_ambienceStarted)
         {
             AudioManager.Instance.Set3DAttributesFromGameObject(m_ambienceInstance, m_characterObject);
