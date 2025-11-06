@@ -346,13 +346,20 @@ namespace BHR
             if(_soloMode)
             {
                 _activePlayerIndex = Array.IndexOf(PlayersInputManager.Instance.PlayersReadyState, PlayerReadyState.READY);
-                PlayersInputManager.Instance.PlayersInputControllerRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
-
-                // Optimize: avoid LINQ in hot path - just check the second player directly
-                if (PlayersInputManager.Instance.PlayersInputControllerRef.Length == 2 && 
-                    PlayersInputManager.Instance.PlayersInputControllerRef[1 - _activePlayerIndex] != null)
+                
+                // Bounds check before array access
+                if (_activePlayerIndex >= 0 && _activePlayerIndex < PlayersInputManager.Instance.PlayersInputControllerRef.Length)
                 {
-                    PlayersInputManager.Instance.PlayersInputControllerRef[1 - _activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = state == PlayerState.UI ? state : PlayerState.INACTIVE;
+                    PlayersInputManager.Instance.PlayersInputControllerRef[_activePlayerIndex].GetComponent<PlayerInputController>().PlayerState = _activePlayerState;
+
+                    // Check if we have a second player and it's valid
+                    int secondPlayerIndex = 1 - _activePlayerIndex;
+                    if (PlayersInputManager.Instance.PlayersInputControllerRef.Length == 2 && 
+                        secondPlayerIndex >= 0 && secondPlayerIndex < 2 &&
+                        PlayersInputManager.Instance.PlayersInputControllerRef[secondPlayerIndex] != null)
+                    {
+                        PlayersInputManager.Instance.PlayersInputControllerRef[secondPlayerIndex].GetComponent<PlayerInputController>().PlayerState = state == PlayerState.UI ? state : PlayerState.INACTIVE;
+                    }
                 }
             }
             else

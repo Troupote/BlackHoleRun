@@ -165,10 +165,17 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
 
     private float DistanceBetweenPlayersInPercents()
     {
-        // Use sqrMagnitude for better performance - avoid expensive square root calculation
+        // Use sqrMagnitude for better performance when comparing to threshold
+        // For percentage display, we still need the actual distance
+        float distance = Vector3.Distance(m_characterObject.transform.position, m_singularityObject.transform.position);
+        return distance / m_gameplayData.MaxDistanceBetweenPlayers;
+    }
+    
+    // Helper method to check if distance exceeds threshold without square root
+    private bool IsDistanceExceeded()
+    {
         float sqrDistance = (m_characterObject.transform.position - m_singularityObject.transform.position).sqrMagnitude;
-        float maxSqrDistance = m_gameplayData.MaxDistanceBetweenPlayersSquared;
-        return Mathf.Sqrt(sqrDistance / maxSqrDistance);
+        return sqrDistance >= m_gameplayData.MaxDistanceBetweenPlayersSquared;
     }
 
     #region Life Cycle
@@ -212,17 +219,16 @@ public class CharactersManager : ManagerSingleton<CharactersManager>
         // Check if the distance between players is exceeded
         if (IsEndingCinematicStarted) return;
         
-        // Optimize: Only check distance and update speed lines when singularity is not picked up
+        // Optimize: Check distance threshold using squared distance (fast), only compute actual distance for display
         if (!m_singularityBehavior.SingularityCharacterFollowComponent.IsPickedUp)
         {
-            float distancePercent = DistanceBetweenPlayersInPercents();
-            if (distancePercent >= 1f)
+            if (IsDistanceExceeded())
             {
                 SwitchCharactersPositions();
             }
             else if (GameManager.Instance.ActivePlayerState == PlayerState.SINGULARITY)
             {
-                GameManager.Instance.ApplySpeedLinesSingu(distancePercent);
+                GameManager.Instance.ApplySpeedLinesSingu(DistanceBetweenPlayersInPercents());
             }
         }
     }

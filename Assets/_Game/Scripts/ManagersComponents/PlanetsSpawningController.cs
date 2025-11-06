@@ -157,7 +157,8 @@ public class PlanetSpawningController : MonoBehaviour
                 float t = Mathf.Clamp01(timer / duration);
                 float value = Mathf.Lerp(from, to, t);
 
-                // Use cached property ID for better performance
+                // Note: Assumes all materials in the list have the _DissolveIntensity property
+                // This is safe because we control the material assignment in Start()
                 foreach (var mat in m_planetMaterials)
                 {
                     mat.SetFloat(DissolveIntensityPropertyID, value);
