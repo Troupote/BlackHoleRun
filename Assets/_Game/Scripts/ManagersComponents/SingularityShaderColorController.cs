@@ -16,6 +16,12 @@ public class SingularityShaderColorController : MonoBehaviour
 
     private CharacterGameplayData m_gameplayData;
 
+    // Cache shader property IDs for better performance
+    private static readonly int ExteriorColorPropertyID = Shader.PropertyToID("_ExteriorColor");
+    private static readonly int InteriorColorPropertyID = Shader.PropertyToID("_InteriorColor");
+    private static readonly int Color1PropertyID = Shader.PropertyToID("_Color1");
+    private static readonly int Color2PropertyID = Shader.PropertyToID("_Color2");
+
     private bool m_isInitialized = false;
     private void Initialize()
     {
@@ -48,11 +54,11 @@ public class SingularityShaderColorController : MonoBehaviour
 
         Debug.Log($"Setting colors for {(a_player ? "Player Two" : "Player One")}", this);
 
-        m_singularityMaterial.SetColor("_ExteriorColor", a_player ? m_gameplayData.PlayerOneColors.Exterior*12 : m_gameplayData.PlayerTwoColors.Exterior*12);
-        m_singularityMaterial.SetColor("_InteriorColor", a_player ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
+        m_singularityMaterial.SetColor(ExteriorColorPropertyID, a_player ? m_gameplayData.PlayerOneColors.Exterior*12 : m_gameplayData.PlayerTwoColors.Exterior*12);
+        m_singularityMaterial.SetColor(InteriorColorPropertyID, a_player ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
 
-        m_horizonMaterial.SetColor("_Color2", a_player ? m_gameplayData.PlayerOneColors.Exterior*6 : m_gameplayData.PlayerTwoColors.Exterior*6);
-        m_horizonMaterial.SetColor("_Color1", a_player ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
+        m_horizonMaterial.SetColor(Color2PropertyID, a_player ? m_gameplayData.PlayerOneColors.Exterior*6 : m_gameplayData.PlayerTwoColors.Exterior*6);
+        m_horizonMaterial.SetColor(Color1PropertyID, a_player ? m_gameplayData.PlayerOneColors.Interior : m_gameplayData.PlayerTwoColors.Interior);
 
         a_player = !a_player;
     }

@@ -115,6 +115,11 @@ namespace BHR
         public UnityEvent<float> OnGameTimeScaleChanged;
 
         [SerializeField] private Material _speedLines;
+        
+        // Cache speed lines material property IDs for better performance
+        private static readonly int SpeedLinesColorPropertyID = Shader.PropertyToID("_Color");
+        private static readonly int SpeedLinesLineAmountPropertyID = Shader.PropertyToID("_LineAmount");
+        private static readonly int SpeedLinesSize2PropertyID = Shader.PropertyToID("_Size2");
         #endregion
 
         public UnityEvent<PlayerState, bool> OnMainPlayerStateChanged;
@@ -451,19 +456,19 @@ namespace BHR
                     TweenSpeedLinesSize(1.5f);
                     break;
                 case SpeedLinesState.DASH:
-                    _speedLines.SetColor("_Color", Color.white);
-                    _speedLines.SetFloat("_LineAmount", 15);
+                    _speedLines.SetColor(SpeedLinesColorPropertyID, Color.white);
+                    _speedLines.SetFloat(SpeedLinesLineAmountPropertyID, 15);
                     TweenSpeedLinesSize(_characterGameplayData.DashSize);
                     Invoke("ResetSpeedLines", _characterGameplayData.DashLinesDuration);
                     break;
                 case SpeedLinesState.BLACK:
-                    _speedLines.SetColor("_Color", _characterGameplayData.BlackManColor);
-                    _speedLines.SetFloat("_LineAmount", _characterGameplayData.SinguLineAmount);
+                    _speedLines.SetColor(SpeedLinesColorPropertyID, _characterGameplayData.BlackManColor);
+                    _speedLines.SetFloat(SpeedLinesLineAmountPropertyID, _characterGameplayData.SinguLineAmount);
                     TweenSpeedLinesSize(_characterGameplayData.SinguSize);
                     break;
                 case SpeedLinesState.WHITE:
-                    _speedLines.SetColor("_Color", _characterGameplayData.WhiteManColor);
-                    _speedLines.SetFloat("_LineAmount", _characterGameplayData.SinguLineAmount);
+                    _speedLines.SetColor(SpeedLinesColorPropertyID, _characterGameplayData.WhiteManColor);
+                    _speedLines.SetFloat(SpeedLinesLineAmountPropertyID, _characterGameplayData.SinguLineAmount);
                     TweenSpeedLinesSize(_characterGameplayData.SinguSize);
                     break;
             }
@@ -474,7 +479,7 @@ namespace BHR
             if(_sizeTweenFinished)
             {
                 float size = distance * (_characterGameplayData.BaseSize - _characterGameplayData.SinguSize) + _characterGameplayData.SinguSize;
-                _speedLines.SetFloat("_Size2", size);
+                _speedLines.SetFloat(SpeedLinesSize2PropertyID, size);
             }
         }
 
@@ -482,7 +487,7 @@ namespace BHR
 
         private void TweenSpeedLinesSize(float newSize)
         {
-            Tween tween = DOTween.To(() => _speedLines.GetFloat("_Size2"), x => _speedLines.SetFloat("_Size2", x), newSize, 0.3f);
+            Tween tween = DOTween.To(() => _speedLines.GetFloat(SpeedLinesSize2PropertyID), x => _speedLines.SetFloat(SpeedLinesSize2PropertyID, x), newSize, 0.3f);
             tween.onComplete = () => _sizeTweenFinished = true;
             tween.Play();
         }
